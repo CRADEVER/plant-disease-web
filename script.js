@@ -31,8 +31,8 @@ async function loadModel() {
 
   try {
     // UPDATE THIS PATH to where you uploaded the plant_model_js folder
-    console.log('Loading model from:', '/plant_model_js/model.json'); // Log the model path
-    model = await tf.loadLayersModel('/plant_model_js/model.json', {
+    console.log('Loading model from:', 'plant_model_js/model.json'); // Log the model path
+    model = await tf.loadLayersModel('plant_model_js/model.json', {
       inputs: tf.layers.input({shape: [224, 224, 3]})
     });
     console.log('Model đã tải xong.'); // Add this log
