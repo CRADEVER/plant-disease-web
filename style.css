@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f5fff5;
+  padding: 20px;
+}
+
+h1 {
+  color: #2e7d32;
+}
+
+video, canvas {
+  width: 90%;
+  max-width: 400px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 2px solid #4caf50;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #388e3c;
+}
+
+#result {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
