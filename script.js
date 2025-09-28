@@ -1,105 +1,97 @@
-# 1️⃣ Mount Google Drive (tùy chọn)
-from google.colab import drive
-drive.mount('/content/drive')
+// =======================
+// script.js
+// =======================
+let model;
+const CLASS_NAMES = [
+  // ⚠️ Điền đầy đủ tên class đã train (ví dụ trong PlantVillage)
+  "Apple___Apple_scab",
+  "Apple___Black_rot",
+  "Apple___Cedar_apple_rust",
+  "Apple___healthy",
+  "Corn___Cercospora_leaf_spot",
+  "Corn___Common_rust",
+  "Corn___Northern_Leaf_Blight",
+  "Corn___healthy",
+    "Grape___Black_rot",
+    "Grape___Esca_(Black_Measles)",
+    "Grape___healthy",
+];
 
-# 2️⃣ Cài đặt thư viện
-!pip install tensorflow matplotlib tensorflowjs --quiet
+const video = document.getElementById('camera');
+const captureBtn = document.getElementById('capture');
+const snapshotCanvas = document.getElementById('snapshot');
+const resultDiv = document.getElementById('result');
+const ctx = snapshotCanvas.getContext('2d');
 
-# 3️⃣ Import thư viện
-import os
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-import matplotlib.pyplot as plt
+// =======================
+// Kết nối camera
+// =======================
+async function setupCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    await video.play();
+  } catch (err) {
+    console.error("Không thể truy cập camera:", err);
+    resultDiv.innerText = "⚠️ Không thể truy cập camera!";
+  }
+}
 
-# 4️⃣ Đường dẫn dataset & model
-DATASET_PATH = '/content/drive/MyDrive/dataset'  # Thay bằng đường dẫn của bạn
-MODEL_PATH = '/content/drive/MyDrive/plant_model.keras' # Changed to .keras format
-TFJS_PATH = '/content/drive/MyDrive/plant_model_js'
+// =======================
+// Load AI model TF.js
+// =======================
+async function loadModel() {
+  resultDiv.innerText = "⌛ Đang load model AI...";
+  try {
+    model = await tf.loadLayersModel("plant_model_js/model.json");
+    resultDiv.innerText = "✅ Model AI đã sẵn sàng!";
+    console.log("Model loaded!");
+  } catch (err) {
+    console.error("Không thể load model:", err);
+    resultDiv.innerText = "⚠️ Không thể load model AI! Lỗi: " + err.message;
+  }
+}
 
-# 5️⃣ Tham số
-IMG_HEIGHT = 224
-IMG_WIDTH = 224
-BATCH_SIZE = 32
-EPOCHS = 10
+// =======================
+// Chụp ảnh và dự đoán
+// =======================
+captureBtn.addEventListener("click", async () => {
+  if (!model) {
+    alert("Model chưa load xong!");
+    return;
+  }
 
-# 6️⃣ Data generator
-datagen = ImageDataGenerator(
-    preprocessing_function=preprocess_input,
-    validation_split=0.2,
-    rotation_range=20,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    horizontal_flip=True,
-    zoom_range=0.2
-)
+  snapshotCanvas.width = video.videoWidth;
+  snapshotCanvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
 
-train_gen = datagen.flow_from_directory(
-    DATASET_PATH,
-    target_size=(IMG_HEIGHT, IMG_WIDTH),
-    batch_size=BATCH_SIZE,
-    class_mode='categorical',
-    subset='training',
-    shuffle=True
-)
+  let tensor = tf.browser.fromPixels(snapshotCanvas)
+    .resizeNearestNeighbor([224, 224]) // ⚠️ chỉnh theo kích thước train
+    .toFloat()
+    .expandDims();
 
-val_gen = datagen.flow_from_directory(
-    DATASET_PATH,
-    target_size=(IMG_HEIGHT, IMG_WIDTH),
-    batch_size=BATCH_SIZE,
-    class_mode='categorical',
-    subset='validation',
-    shuffle=False
-)
+  // Chuẩn hóa [-1,1] nếu dùng MobileNetV2
+  const offset = tf.scalar(127.5);
+  tensor = tensor.sub(offset).div(offset);
 
-num_classes = len(train_gen.class_indices)
-print("Number of classes:", num_classes)
-print("CLASS_NAMES =", list(train_gen.class_indices.keys()))
+  try {
+    const predictions = await model.predict(tensor).data();
+    const maxIndex = predictions.indexOf(Math.max(...predictions));
+    const predictedClass = CLASS_NAMES[maxIndex] || "Unknown";
+    const confidence = (predictions[maxIndex] * 100).toFixed(2);
 
-# 7️⃣ Tạo mới model (luôn tạo mới để tránh lỗi output)
-base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(IMG_HEIGHT, IMG_WIDTH, 3))
-base_model.trainable = False
+    resultDiv.innerHTML = `
+      🌿 Prediction: <b>${predictedClass}</b><br>
+      📊 Confidence: ${confidence}%
+    `;
+  } catch (err) {
+    console.error("Lỗi khi dự đoán:", err);
+    resultDiv.innerText = "⚠️ Lỗi khi dự đoán!";
+  }
+});
 
-x = base_model.output
-x = GlobalAveragePooling2D()(x)
-x = Dense(256, activation='relu')(x)
-x = Dropout(0.5)(x)
-predictions = Dense(num_classes, activation='softmax')(x)
-
-model = Model(inputs=base_model.input, outputs=predictions)
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.summary()
-
-# 8️⃣ Train model
-checkpoint = ModelCheckpoint(MODEL_PATH, save_best_only=True, monitor='val_accuracy', mode='max')
-history = model.fit(
-    train_gen,
-    validation_data=val_gen,
-    epochs=EPOCHS,
-    callbacks=[checkpoint]
-)
-
-# 9️⃣ Vẽ đồ thị
-plt.figure(figsize=(12,5))
-plt.subplot(1,2,1)
-plt.plot(history.history['accuracy'], label='train_accuracy')
-plt.plot(history.history['val_accuracy'], label='val_accuracy')
-plt.legend()
-plt.title('Accuracy')
-
-plt.subplot(1,2,2)
-plt.plot(history.history['loss'], label='train_loss')
-plt.plot(history.history['val_loss'], label='val_loss')
-plt.legend()
-plt.title('Loss')
-plt.show()
-
-# 🔟 Convert sang TensorFlow.js
-!tensorflowjs_converter --input_format keras {MODEL_PATH} {TFJS_PATH}
-print("TensorFlow.js model saved to:", TFJS_PATH)
-
-# 1️⃣1️⃣ In ra CLASS_NAMES cho web
-print("CLASS_NAMES =", list(train_gen.class_indices.keys()))
+// =======================
+// Khởi tạo
+// =======================
+setupCamera();
+loadModel();
