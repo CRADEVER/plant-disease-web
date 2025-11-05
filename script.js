@@ -20,68 +20,59 @@ const snapshotCanvas = document.getElementById('snapshot');
 const resultDiv = document.getElementById('result');
 const ctx = snapshotCanvas.getContext('2d');
 
-// Load the model
-async function loadModel() {
-  resultDiv.innerText = 'Đang tải model...';
-  console.log('Bắt đầu tải model...');
+captureBtn.disabled = true;
 
+async function loadModel() {
   try {
-    console.log('Loading model from:', 'plant_model_js/model.json');
-    model = await tf.loadLayersModel('plant_model_js/model.json');
-    console.log('✅ Model đã tải xong.');
-    resultDiv.innerText = '✅ Model đã tải xong. Hãy chụp ảnh để phân tích';
-    captureBtn.disabled = false;
-  } catch (error) {
-    console.error('❌ Lỗi khi tải model:', error);
-    resultDiv.innerText = '⚠️ Không thể tải model. Kiểm tra console để biết chi tiết.';
-  }
+  console.log('Loading model from: plant_model_js/model.json');
+  model = await tf.loadLayersModel('plant_model_js/model.json');
+  captureBtn.disabled = false;
+  resultDiv.innerText = 'Mô hình sẵn sàng! 👉 Hãy chụp ảnh để phân tích';
+  } 
 }
 
-// Start camera
 async function startCamera() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+try {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+    video: { facingMode: 'environment' }
     video.srcObject = stream;
     await video.play();
-  } catch (err) {
-    console.error("❌ Error accessing camera: ", err);
-    resultDiv.innerText = '⚠️ Không thể truy cập camera.';
-  }
+ } 
 }
 
-// Capture snapshot and predict
 captureBtn.addEventListener('click', () => {
-  snapshotCanvas.width = video.videoWidth;
-  snapshotCanvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
-
-  if (model) {
-    predict();
+   resultDiv.innerText = 'Đang phân tích... 🔍';
+   captureBtn.disabled = true;
+   snapshotCanvas.width = video.videoWidth;
+   snapshotCanvas.height = video.videoHeight;
+ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+if (model) {
+predict();
   } else {
-    resultDiv.innerText = '⚠️ Model chưa tải xong.';
-  }
+    captureBtn.disabled = false;
+   }
 });
 
-// Predict function
-async function predict() {
-  try {
-    const img = tf.browser.fromPixels(snapshotCanvas)
-      .resizeNearestNeighbor([224, 224])
-      .toFloat()
-      .expandDims();
-
-    const predictions = await model.predict(img).data();
-    const maxIndex = predictions.indexOf(Math.max(...predictions));
-    const predictedClass = CLASS_NAMES[maxIndex];
-    const confidence = (predictions[maxIndex] * 100).toFixed(2);
-
-    resultDiv.innerText = `🌿 Kết quả: ${predictedClass}\n📊 Độ chính xác: ${confidence}%`;
-  } catch (error) {
-    console.error('❌ Lỗi khi phân tích ảnh:', error);
-    resultDiv.innerText = '⚠️ Lỗi khi phân tích ảnh. Kiểm tra console.';
-  }
+async function predict() { 
+     tf.tidy(() => {
+        const img = tf.browser.fromPixels(snapshotCanvas);
+        const preprocessedImg = img
+         .resizeNearestNeighbor([224, 224])
+         .toFloat()
+         .div(tf.scalar(255)) 
+         .expandDims(); 
+     const predictions = model.predict(preprocessedImg);
+     const values = predictions.dataSync();
+     const maxIndex = values.indexOf(Math.max(...values));
+     const predictedClass = CLASS_NAMES[maxIndex];
+     const confidence = (values[maxIndex] * 100).toFixed(2);
+resultDiv.innerHTML = `
+ 🌳 **Bệnh được nhận diện:** **${predictedClass}**
+<br>
+  📊 **Độ tin cậy:** **${confidence}%**
+ `;
+ captureBtn.disabled = false;
+  }); 
 }
-
-// Initialize
 startCamera();
 loadModel();
