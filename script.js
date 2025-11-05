@@ -54,8 +54,7 @@ async function startCamera() {
 function captureImage() {
   resultDiv.innerText = 'Analyzing... 🔍';
   captureBtn.disabled = true;
-  
-  // Match canvas size to video
+ 
   snapshotCanvas.width = video.videoWidth;
   snapshotCanvas.height = video.videoHeight;
   ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
