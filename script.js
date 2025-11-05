@@ -5,13 +5,6 @@ const CLASS_NAMES = [
   "Apple___Cedar_apple_rust",
   "Apple___healthy",
   "Blueberry___healthy",
-  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
-  "Corn_(maize)___Common_rust_",
-  "Corn_(maize)___Northern_Leaf_Blight", 
-  "Corn_(maize)___healthy",
-  "Grape___Black_rot",
-  "Grape___Esca_(Black_Measles)",
-  "Grape___healthy",
 ];
 
 const video = document.getElementById('camera');
