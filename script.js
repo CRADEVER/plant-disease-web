@@ -63,11 +63,12 @@ function captureImage() {
 async function predict() {
   try {
     const prediction = tf.tidy(() => {
-      const img = tf.browser.fromPixels(snapshotCanvas)
-        .resizeNearestNeighbor([224, 224])
-        .toFloat()
-        .div(tf.scalar(255))
-        .expandDims();
+const img = tf.browser.fromPixels(snapshotCanvas)
+  .resizeNearestNeighbor([224, 224])
+  .toFloat()
+  .sub(tf.scalar(127.5))
+  .div(tf.scalar(127.5)) 
+  .expandDims();
       
       return model.predict(img);
     });
@@ -94,3 +95,4 @@ captureBtn.addEventListener('click', captureImage);
 (async () => {
   await Promise.all([startCamera(), loadModel()]);
 })();
+
