@@ -5,24 +5,25 @@ const resultDiv = document.getElementById('result');
 const fileUploadInput = document.getElementById('file-upload');
 const cameraSection = document.getElementById('camera-section');
 
-// --- 0. KHAI BÁO BIẾN TOÀN CỤC CHO AI ---
+// --- 0. KHAI BÁO BIẾN TOÀN CỤC CHO AI VÀ KÍCH THƯỚC ---
 let model;
-const MODEL_URL = 'plant_model_js/model.json'; // Đường dẫn đến model.json
-// Tên các lớp (class names) được lấy từ output của plant_model_tfjs.ipynb
-const CLASS_NAMES = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', 'Blueberry___healthy']; //
+const MODEL_URL = './plant_model_js/model.json';
+// Kích thước cố định của ảnh đầu vào (Lấy từ Colab: IMG_SIZE = 256)
+const IMG_SIZE = 256; 
+// Tên các lớp (class names) theo thứ tự dự đoán của model
+const CLASS_NAMES = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', 'Blueberry___healthy']; 
+
 
 // 1. Khởi động Camera
 async function startCamera() {
     try {
-        // Yêu cầu quyền truy cập camera, chỉ lấy video
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
-        resultDiv.textContent = '✅ Camera đã sẵn sàng. Đang tải model AI...'; // Cập nhật thông báo
+        resultDiv.textContent = '✅ Camera đã sẵn sàng. Đang tải model AI...'; 
         await loadModel(); // Tải model ngay sau khi camera sẵn sàng
     } catch (err) {
         console.error("Lỗi khi truy cập camera:", err);
         resultDiv.textContent = '❌ Không thể truy cập camera. Vui lòng kiểm tra quyền. Đang tải model AI...';
-        // Ẩn video nếu không thể khởi động
         video.style.display = 'none'; 
         await loadModel(); // Vẫn tải model để có thể dùng tính năng tải ảnh lên
     }
@@ -32,10 +33,11 @@ async function startCamera() {
 async function loadModel() {
     try {
         model = await tf.loadLayersModel(MODEL_URL);
-        // Lấy kích thước đầu vào (ví dụ: 256) từ shape của model (shape: [null, 256, 256, 3])
-        const [_, size, __, ___] = model.inputs[0].shape; 
         
-        // Cập nhật canvas để khớp với kích thước input của model
+        // SỬ DỤNG KÍCH THƯỚC CỐ ĐỊNH để tránh lỗi đọc shape từ model.json
+        const size = IMG_SIZE;
+        
+        // Cập nhật canvas để khớp với kích thước input của model (256x256)
         snapshotCanvas.width = size;
         snapshotCanvas.height = size;
 
@@ -55,8 +57,7 @@ async function analyzeImage() {
     }
 
     try {
-        // Lấy kích thước chuẩn từ canvas đã được đặt theo kích thước model
-        const size = snapshotCanvas.width;
+        const size = IMG_SIZE;
         
         // Chuyển ảnh từ canvas sang Tensor
         let tensor = tf.browser.fromPixels(snapshotCanvas);
@@ -67,7 +68,7 @@ async function analyzeImage() {
             // Chuẩn hoá theo công thức MobileNetV2: (x / 127.5) - 1.0
             .div(127.5)
             .sub(1.0)
-            .expandDims(); // Thêm chiều Batch (shape: [1, size, size, 3])
+            .expandDims(); 
         
         // Thực hiện dự đoán
         const predictions = await model.predict(tensor).data();
@@ -80,12 +81,12 @@ async function analyzeImage() {
         // Format kết quả
         const confidence = (maxProbability * 100).toFixed(2);
         
-        // Hiển thị kết quả đơn giản: Cây khỏe mạnh hay bị bệnh gì
+        // Hiển thị kết quả đơn giản theo yêu cầu
         let simpleResult;
         if (className.endsWith('healthy')) {
             simpleResult = `💚 Cây **khỏe mạnh**!`;
         } else {
-            // Định dạng lại tên lớp (Ví dụ: Apple___Black_rot -> Apple: Black rot)
+            // Định dạng lại tên lớp
             const displayClassName = className.replace(/___/g, ': ').replace(/_/g, ' ');
             simpleResult = `💔 Cây bị bệnh **${displayClassName}**!`;
         }
@@ -104,15 +105,13 @@ async function analyzeImage() {
 
 // 2. Xử lý Chụp ảnh từ Camera
 captureButton.addEventListener('click', () => {
-    // Đảm bảo video đang hiển thị và có luồng dữ liệu
     if (video.srcObject) {
         
-        // Vẽ khung hình hiện tại của video lên canvas
         const context = snapshotCanvas.getContext('2d');
-        // Kích thước canvas đã được đặt trong loadModel(), ta chỉ cần vẽ lên
+        // Vẽ khung hình hiện tại của video lên canvas
         context.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
         
-        // Tạo một thẻ <img> để hiển thị ảnh chụp (giữ nguyên layout)
+        // Tạo/Cập nhật thẻ <img> để hiển thị ảnh chụp
         let previewImg = document.getElementById('uploaded-image-preview');
         if (!previewImg) {
             previewImg = document.createElement('img');
@@ -121,13 +120,11 @@ captureButton.addEventListener('click', () => {
         }
         previewImg.src = snapshotCanvas.toDataURL('image/jpeg');
         
-        // Tạm ẩn video và hiện ảnh xem trước
         video.style.display = 'none';
         previewImg.style.display = 'block';
 
         resultDiv.textContent = '📸 Ảnh đã chụp. Đang phân tích...';
         
-        // --- GỌI HÀM PHÂN TÍCH ---
         analyzeImage();
     } else {
         resultDiv.textContent = '⚠️ Camera chưa sẵn sàng hoặc đã bị tắt.';
@@ -158,12 +155,11 @@ fileUploadInput.addEventListener('change', (event) => {
             const img = new Image();
             img.onload = function() {
                 const context = snapshotCanvas.getContext('2d');
-                // Vẽ ảnh lên canvas, resize nó để khớp với kích thước input của model
+                // Vẽ ảnh lên canvas, resize nó để khớp với kích thước input của model (256x256)
                 context.drawImage(img, 0, 0, snapshotCanvas.width, snapshotCanvas.height); 
                 
                 resultDiv.textContent = `⬆️ Đã tải lên "${file.name}". Đang phân tích...`;
                 
-                // --- GỌI HÀM PHÂN TÍCH ---
                 analyzeImage();
             };
             img.src = e.target.result;
