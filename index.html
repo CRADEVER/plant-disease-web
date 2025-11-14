@@ -9,10 +9,24 @@
 </head>
 <body>
   <h1>🌱 Hệ thống nhận diện bệnh cây</h1>
-  <video id="camera" autoplay playsinline></video>
-  <button id="capture">📸 Chụp ảnh</button>
-  <canvas id="snapshot" style="display:none"></canvas>
-  <div id="result">👉 Hãy chụp ảnh để phân tích</div>
+  
+  <div id="camera-section">
+    <video id="camera" autoplay playsinline></video>
+    
+    <canvas id="snapshot" style="display:none"></canvas>
+  </div>
+  
+  <div id="controls">
+    <button id="capture">📸 Chụp ảnh</button>
+    
+    <label for="file-upload" class="custom-file-upload">
+      Tải ảnh lên
+    </label>
+    <input type="file" id="file-upload" accept="image/*" style="display: none;">
+  </div>
+  
+  <div id="result">👉 Hãy chụp hoặc tải ảnh để phân tích</div>
+  
   <script src="script.js"></script>
 </body>
 </html>
