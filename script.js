@@ -5,36 +5,36 @@ const snapshotCanvas = document.getElementById('snapshot');
 const resultDiv = document.getElementById('result');
 const fileUploadInput = document.getElementById('file-upload');
 const cameraSection = document.getElementById('camera-section'); 
-const previewImg = document.getElementById('uploaded-image-preview') || document.createElement('img');
-if (!document.getElementById('uploaded-image-preview')) {
-    previewImg.id = 'uploaded-image-preview';
-    cameraSection.appendChild(previewImg);
-    previewImg.style.display = 'none'; // Ẩn ban đầu
-}
+const previewImg = document.getElementById('uploaded-image-preview');
 
-// Đường dẫn đến mô hình đã chuyển đổi (Cần thay đổi nếu tên thư mục khác)
+// Đường dẫn đến mô hình đã chuyển đổi
 const MODEL_URL = 'plant_model_js/model.json'; 
+const IMAGE_SIZE = 256; // Kích thước input của MobileNetV2 (đã dùng trong Notebook)
+
 let model;
-let classNames = window.CLASS_NAMES || []; // Sẽ được load từ labels.js
+// classNames được load từ file labels.js
+let classNames = window.CLASS_NAMES || []; 
 
 /**
- * Tải mô hình TF.js và file nhãn (labels).
+ * Tải mô hình TF.js
  */
 async function loadModel() {
     resultDiv.textContent = '⏳ Đang tải mô hình AI...';
     try {
-        // Tải mô hình
+        // Sử dụng tf.loadLayersModel để tải mô hình Keras đã chuyển đổi
         model = await tf.loadLayersModel(MODEL_URL);
         
-        // Load nhãn từ file labels.js (được tạo ở bước 4)
-        if (typeof CLASS_NAMES !== 'undefined') {
-            classNames = CLASS_NAMES;
+        // Kiểm tra xem nhãn đã được load chưa
+        if (classNames.length === 0) {
+             resultDiv.textContent = '❌ Lỗi: Không tìm thấy nhãn CLASS_NAMES. Vui lòng kiểm tra file labels.js.';
+             return;
         }
 
         resultDiv.textContent = `✅ Mô hình đã sẵn sàng. (${classNames.length} loại bệnh)`;
     } catch (err) {
+        // Ghi lại lỗi chi tiết
         console.error("Lỗi khi tải mô hình:", err);
-        resultDiv.textContent = '❌ Không thể tải mô hình AI. Vui lòng kiểm tra đường dẫn.';
+        resultDiv.textContent = '❌ Lỗi khi tải mô hình AI. Vui lòng kiểm tra đường dẫn hoặc file model.json.';
     }
 }
 
@@ -50,15 +50,13 @@ async function runModelPrediction() {
     
     resultDiv.textContent = '🧠 Đang phân tích hình ảnh...';
     
-    // 1. Chuyển đổi Canvas thành Tensor
-    const IMAGE_SIZE = 256; // Kích thước ảnh đã train (xem plant_model_tfjs.ipynb)
-    
+    // 1. Chuyển đổi Canvas thành Tensor và Resize
     let tensor = tf.browser.fromPixels(snapshotCanvas)
-        .resizeNearestNeighbor([IMAGE_SIZE, IMAGE_SIZE]) // Resize về kích thước mong muốn
+        .resizeNearestNeighbor([IMAGE_SIZE, IMAGE_SIZE]) 
         .toFloat();
 
-    // 2. Tiền xử lý (chuẩn hóa MobileNetV2)
-    // MobileNetV2 cần giá trị pixel trong khoảng [-1, 1].
+    // 2. Tiền xử lý (chuẩn hóa MobileNetV2): [0, 255] -> [-1, 1]
+    // MobileNetV2 cần giá trị pixel trong khoảng [-1, 1]
     tensor = tf.sub(tf.div(tensor, 127.5), 1);
     
     // 3. Thêm chiều batch (1, 256, 256, 3)
@@ -72,26 +70,24 @@ async function runModelPrediction() {
     const predictedClass = classNames[predictedClassIndex] || 'Không xác định';
     const confidence = prediction[predictedClassIndex] * 100;
 
-    // 6. Hiển thị kết quả
+    // 6. Hiển thị kết quả đơn giản: "Cây khỏe mạnh" hoặc "Cây bị bệnh"
     let resultText = `Kết quả: **${predictedClass}**`;
     
-    // Thêm gợi ý đơn giản dựa trên kết quả
-    if (predictedClass.includes('healthy')) {
-        resultText += ' (Cây khỏe mạnh) 🎉';
+    if (predictedClass.toLowerCase().includes('healthy')) {
+        resultText = `**Phân loại:** Cây khỏe mạnh 🎉 (**${predictedClass}**)`;
     } else if (predictedClass !== 'Không xác định') {
-        resultText += ' (Cây bị bệnh!) 🚨';
+        resultText = `**Phân loại:** Cây bị bệnh! 🚨 (**${predictedClass}**)`;
     }
     
-    resultDiv.innerHTML = `**Độ tin cậy:** ${confidence.toFixed(2)}%<br>${resultText}`;
+    resultDiv.innerHTML = `${resultText}<br>**Độ tin cậy:** ${confidence.toFixed(2)}%`;
 
     // Giải phóng bộ nhớ Tensor
     tf.dispose([tensor, expandedTensor]);
 }
 
 
-/**
- * Khởi tạo camera và model khi trang load.
- */
+// --- Xử lý sự kiện Camera và File Upload ---
+
 async function startCamera() {
     // Luôn tải model trước
     await loadModel();
@@ -100,13 +96,6 @@ async function startCamera() {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
         
-        // Chỉ cập nhật trạng thái nếu model đã load thành công
-        if (model) {
-            resultDiv.textContent = `✅ Camera và mô hình đã sẵn sàng.`;
-        } else {
-             resultDiv.textContent = `❌ Lỗi mô hình. Camera đã sẵn sàng.`;
-        }
-
     } catch (err) {
         console.error("Lỗi khi truy cập camera:", err);
         resultDiv.textContent = '❌ Không thể truy cập camera. Vui lòng kiểm tra quyền.';
@@ -114,9 +103,6 @@ async function startCamera() {
     }
 }
 
-/**
- * Chụp ảnh và chuyển canvas
- */
 captureButton.addEventListener('click', () => {
     if (video.srcObject) {
         // 1. Vẽ lên Canvas
@@ -132,7 +118,7 @@ captureButton.addEventListener('click', () => {
         previewImg.style.display = 'block';
 
         // 3. Phân tích
-        resultDiv.textContent = '📸 Ảnh đã chụp. Sẵn sàng phân tích.';
+        resultDiv.textContent = '📸 Ảnh đã chụp. Đang phân tích...';
         runModelPrediction();
 
     } else {
@@ -140,9 +126,6 @@ captureButton.addEventListener('click', () => {
     }
 });
 
-/**
- * Tải file ảnh lên
- */
 fileUploadInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -166,7 +149,7 @@ fileUploadInput.addEventListener('change', (event) => {
             };
             img.src = e.target.result;
 
-            resultDiv.textContent = `⬆️ Đã tải lên "${file.name}". Sẵn sàng phân tích.`;
+            resultDiv.textContent = `⬆️ Đã tải lên "${file.name}". Đang phân tích...`;
         };
         
         reader.readAsDataURL(file);

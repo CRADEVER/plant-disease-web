@@ -6,6 +6,7 @@
   <title>Nhận diện bệnh cây 🌿</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="plant_model_js/labels.js"></script> 
 </head>
 <body>
   <h1>🌱 Hệ thống nhận diện bệnh cây</h1>
@@ -13,10 +14,10 @@
   <div id="camera-section">
     <video id="camera" autoplay playsinline></video>
     
-    <img id="uploaded-image-preview" style="display:none;" /> 
+    <img id="uploaded-image-preview" style="display:none;" />
     
     <canvas id="snapshot" style="display:none"></canvas>
-</div>
+  </div>
   
   <div id="controls">
     <button id="capture">📸 Chụp ảnh</button>
