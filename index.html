@@ -13,7 +13,7 @@
   <div id="camera-section">
     <video id="camera" autoplay playsinline></video>
     
-    <canvas id="snapshot"></canvas> 
+    <canvas id="snapshot" style="display:none"></canvas>
   </div>
   
   <div id="controls">
@@ -23,11 +23,9 @@
       Tải ảnh lên
     </label>
     <input type="file" id="file-upload" accept="image/*" style="display: none;">
-
-    <button id="reset-camera" style="display: none;">⬅️ Quay lại Camera</button> 
   </div>
   
-  <div id="result" class="initial">👉 Hãy chụp hoặc tải ảnh để phân tích</div>
+  <div id="result">👉 Hãy chụp hoặc tải ảnh để phân tích</div>
   
   <script src="script.js"></script>
 </body>
