@@ -30,8 +30,8 @@ async function startCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { 
         facingMode: 'environment',
-        width: { ideal: 224 },
-        height: { ideal: 224 }
+        width: { ideal: 256 },
+        height: { ideal: 256 }
       }
     });
     video.srcObject = stream;
@@ -60,7 +60,7 @@ async function predict() {
   try {
     const prediction = tf.tidy(() => {
       const img = tf.browser.fromPixels(snapshotCanvas)
-        .resizeNearestNeighbor([224, 224])
+        .resizeNearestNeighbor([256, 256])
         .toFloat()
         .sub(tf.scalar(127.5)) 
         .div(tf.scalar(127.5))
