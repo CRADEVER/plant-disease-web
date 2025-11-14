@@ -8,20 +8,19 @@ body {
 h1 {
   color: #2e7d32;
 }
-/* ... (Phần #camera-section giữ nguyên) */
-
 #camera-section {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
 }
 
-video, #snapshot { /* Đã thêm #snapshot vào đây */
+video, #uploaded-image-preview {
   width: 90%;
   max-width: 400px;
   margin: 10px 0;
   border-radius: 10px;
   border: 2px solid #4caf50;
+
   min-height: 250px; 
   background-color: #f0f0f0;
 }
@@ -32,7 +31,6 @@ video, #snapshot { /* Đã thêm #snapshot vào đây */
   gap: 15px;
   margin-bottom: 20px;
 }
-/* ... (Phần button, .custom-file-upload giữ nguyên) */
 
 button, .custom-file-upload {
   padding: 10px 20px;
@@ -51,36 +49,6 @@ button:hover, .custom-file-upload:hover {
 
 #result {
   margin-top: 15px;
-  padding: 15px;
-  font-size: 20px; /* Tăng cỡ chữ để nổi bật */
+  font-size: 18px;
   font-weight: bold;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-/* Định dạng cho trạng thái ban đầu */
-#result.initial {
-    background: #e0f7fa;
-    color: #00796b;
-}
-
-/* Định dạng cho kết quả KHỎE MẠNH (healthy) */
-#result.healthy {
-    background: #e8f5e9; /* Xanh lá nhạt */
-    color: #388e3c; /* Xanh lá đậm */
-    border: 3px solid #66bb6a;
-}
-
-/* Định dạng cho kết quả BỊ BỆNH (diseased) */
-#result.diseased {
-    background: #ffebee; /* Đỏ nhạt */
-    color: #d32f2f; /* Đỏ đậm */
-    border: 3px solid #e57373;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
 }
