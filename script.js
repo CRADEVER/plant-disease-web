@@ -7,7 +7,7 @@ const cameraSection = document.getElementById('camera-section');
 
 // --- 0. KHAI BÁO BIẾN TOÀN CỤC CHO AI VÀ KÍCH THƯỚC ---
 let model;
-const MODEL_URL = './plant_model_js/model.json';
+const MODEL_URL = 'plant_model_js/model.json';
 // Kích thước cố định của ảnh đầu vào (Lấy từ Colab: IMG_SIZE = 256)
 const IMG_SIZE = 256; 
 // Tên các lớp (class names) theo thứ tự dự đoán của model
