@@ -4,6 +4,8 @@ import numpy as np
 from PIL import Image
 import io
 from flask_cors import CORS
+import os
+
 app = Flask(__name__)
 CORS(app)
 
@@ -19,7 +21,6 @@ CLASS_NAMES = [
 ]
 
 def preprocess_image(image_bytes):
-    print("xử lí ảnh")
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     img = img.resize((256, 256))
     img = np.array(img) / 255.0
@@ -46,5 +47,7 @@ def predict():
     })
 
 
+# ======= QUAN TRỌNG CHO RENDER =======
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
