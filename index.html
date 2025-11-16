@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nhận diện bệnh cây 🌿</title>
   <link rel="stylesheet" href="style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="labels.js"></script>
+
 </head>
 <body>
 
   <h1>🌱 Hệ thống nhận diện bệnh cây</h1>
 
-  <!-- Camera -->
   <video id="camera" autoplay playsinline></video>
 
-  <!-- Ảnh đã chụp -->
   <canvas id="snapshot" style="display:none"></canvas>
 
   <button id="capture">📸 Chụp ảnh</button>
