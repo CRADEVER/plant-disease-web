@@ -4,27 +4,28 @@ const snapshotCanvas = document.getElementById('snapshot');
 const resultDiv = document.getElementById('result');
 const fileUploadInput = document.getElementById('file-upload');
 const cameraSection = document.getElementById('camera-section');
+const previewImg = document.getElementById('uploaded-image-preview'); // Thẻ <img> để preview
 
 let model = null;
-let CLASS_NAMES = [];
+let CLASS_NAMES = []; // Mảng chứa tên các lớp (labels)
 const IMG_SIZE = 256; 
 
-// ĐÃ SỬA: Đường dẫn tuyệt đối, sử dụng thư mục plant_model_js
-const MODEL_PATH = '/plant-disease-web/plant_model_js/model.json';
-// Đường dẫn tuyệt đối tới file tên lớp (class_indices.json)
-const CLASS_INDICES_PATH = '/plant-disease-web/class_indices.json'; 
+// ĐÃ SỬA: Đường dẫn tuyệt đối đến model và class_indices.json
+const MODEL_PATH = '/tên_repo/plant_model_js/model.json';
+const CLASS_INDICES_PATH = '/tên_repo/class_indices.json'; 
 
 // =========================
 // Khởi động Camera
 // =========================
 async function startCamera() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'environment' } // Ưu tiên camera sau
+        });
         video.srcObject = stream;
-        resultDiv.textContent = '✅ Camera đã sẵn sàng. Đang tải model...';
     } catch (err) {
         console.error("Lỗi khi truy cập camera:", err);
-        resultDiv.textContent = '❌ Không thể truy cập camera. Vui lòng kiểm tra quyền.';
+        // Ẩn video nếu không bật được camera
         video.style.display = 'none'; 
     }
 }
@@ -39,21 +40,23 @@ async function initialize() {
         const response = await fetch(CLASS_INDICES_PATH);
         const data = await response.json();
         
-        // Chuyển đổi JSON object thành mảng
+        // Chuyển đổi JSON object (0: 'Apple_scab') thành mảng ['Apple_scab', ...]
         CLASS_NAMES = Object.values(data);
         
-        // 2. Tải Model
-        model = await tf.loadLayersModel(MODEL_PATH); // Sử dụng loadLayersModel
+        // 2. Tải Model (Dùng loadGraphModel cho SavedModel/Keras Model)
+        // Nếu bạn gặp lỗi 'producer', thử đổi thành tf.loadLayersModel(MODEL_PATH)
+        model = await tf.loadGraphModel(MODEL_PATH);
         
-        resultDiv.innerHTML = '✅ Model và tên lớp đã tải thành công! Bắt đầu chụp ảnh hoặc tải ảnh lên.';
+        resultDiv.innerHTML = '✅ Model đã sẵn sàng! Chụp ảnh hoặc tải ảnh lên.';
     } catch (error) {
         console.error("Lỗi khi tải tài nguyên:", error);
-        resultDiv.innerHTML = `❌ Lỗi: Không thể tải model hoặc tên lớp. Vui lòng kiểm tra đường dẫn hoặc file model trên GitHub.`;
+        resultDiv.innerHTML = `❌ Lỗi: Không thể tải model hoặc tên lớp. Kiểm tra **Network Tab (F12)**.<br>
+            Lỗi phổ biến: **404 Not Found** cho file model.json hoặc các file .bin.`;
     }
 }
 
 // =========================
-// Tiền xử lý Tensor và Nhận diện
+// Nhận diện ảnh (Client-side)
 // =========================
 async function predictImage(canvas) {
     if (model === null) {
@@ -64,11 +67,12 @@ async function predictImage(canvas) {
     resultDiv.textContent = "⏳ Đang xử lý và phân tích ảnh...";
 
     try {
-        // 1. Tiền xử lý ảnh (Chuẩn hóa về [0, 1] cho Keras Layers Model)
+        // 1. Tiền xử lý ảnh (MobileNetV2 Preprocessing: [-1, 1])
         const tensor = tf.browser.fromPixels(canvas)
             .resizeBilinear([IMG_SIZE, IMG_SIZE])
             .toFloat()
-            .div(tf.scalar(255)) 
+            .div(tf.scalar(127.5)) 
+            .sub(tf.scalar(1.0))
             .expandDims(0); 
 
         // 2. Chạy model
@@ -110,15 +114,16 @@ async function predictImage(canvas) {
 // =========================
 captureButton.addEventListener('click', () => {
     if (video.srcObject) {
-        // (Logic chụp ảnh và ẩn/hiện đã được đơn giản hóa)
-        const previewImg = document.getElementById('uploaded-image-preview');
+        // Tắt hiển thị ảnh đã tải lên
         previewImg.style.display = 'none';
 
+        // Vẽ ảnh từ video vào canvas
         snapshotCanvas.width = video.videoWidth;
         snapshotCanvas.height = video.videoHeight;
         const context = snapshotCanvas.getContext('2d');
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         
+        // Ẩn camera, hiện canvas (ảnh chụp)
         video.style.display = 'none';
         snapshotCanvas.style.display = 'block';
 
@@ -137,18 +142,24 @@ fileUploadInput.addEventListener('change', (event) => {
         const reader = new FileReader();
         
         reader.onload = function(e) {
-            let previewImg = document.getElementById('uploaded-image-preview');
+            
+            // Hiển thị ảnh trong thẻ previewImg
             previewImg.src = e.target.result;
             previewImg.style.display = 'block';
+            snapshotCanvas.style.display = 'block'; // Vẫn cần hiện canvas để chạy predict
 
             const img = new Image();
             img.onload = function() {
+                // Vẽ ảnh vào Canvas để tiền xử lý
                 snapshotCanvas.width = img.width;
                 snapshotCanvas.height = img.height;
                 const context = snapshotCanvas.getContext('2d');
                 context.drawImage(img, 0, 0);
                 
+                // Ẩn video camera
                 video.style.display = 'none';
+                
+                // Chạy nhận diện
                 predictImage(snapshotCanvas);
             };
             img.src = e.target.result;
