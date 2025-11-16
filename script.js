@@ -1,105 +1,91 @@
 let model;
-let class_indices;
-let fileUpload = document.getElementById('uploadImage')
-let img = document.getElementById('image')
-let boxResult = document.querySelector('.box-result')
-let confidence = document.querySelector('.confidence')
-let pconf = document.querySelector('.box-result p')
+const CLASS_NAMES = [
+  "Apple___Apple_scab",
+  "Apple___Black_rot", 
+  "Apple___Cedar_apple_rust",
+  "Apple___healthy",
+  "Blueberry___healthy",
+];
 
-        
-        let progressBar = 
-            new ProgressBar.Circle('#progress', {
-            color: 'limegreen',
-            strokeWidth: 10,
-            duration: 2000, // milliseconds
-            easing: 'easeInOut'
-        });
+const video = document.getElementById('camera');
+const captureBtn = document.getElementById('capture');
+const snapshotCanvas = document.getElementById('snapshot');
+const resultDiv = document.getElementById('result');
+const ctx = snapshotCanvas.getContext('2d');
 
-        async function fetchData(){
-            let response = await fetch('./class_indices.json');
-            let data = await response.json();
-            data = JSON.stringify(data);
-            data = JSON.parse(data);
-            return data;
-        }
+captureBtn.disabled = true;
 
-         // here the data will be return.
-        
+async function loadModel() {
+  try {
+    console.log('Loading model from: plant_model_js/model.json');
+    model = await tf.loadLayersModel('plant_model_js/model.json');
+    captureBtn.disabled = false;
+  } catch (error) {
+    console.error('Error loading model:', error);
+  }
+}
 
-        // Initialize/Load model
-        async function initialize() {
-            let status = document.querySelector('.init_status')
-            status.innerHTML = 'Loading Model .... <span class="fa fa-spinner fa-spin"></span>'
-            model = await tf.loadLayersModel('./tensorflowjs-model/model.json');
-            status.innerHTML = 'Model Loaded Successfully  <span class="fa fa-check"></span>'
-        }
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { 
+        facingMode: 'environment',
+        width: { ideal: 224 },
+        height: { ideal: 224 }
+      }
+    });
+    video.srcObject = stream;
+    await video.play();
+  } catch (error) {
+    console.error('Error accessing camera:', error);
+  }
+}
 
-        async function predict() {
-            // Function for invoking prediction
-            let img = document.getElementById('image')
-            let offset = tf.scalar(255)
-            let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
-            let tensorImg_scaled = tensorImg.div(offset)
-            prediction = await model.predict(tensorImg_scaled).data();
-           
-            fetchData().then((data)=> 
-                {
-                    predicted_class = tf.argMax(prediction)
-                    
-                    class_idx = Array.from(predicted_class.dataSync())[0]
-                    document.querySelector('.pred_class').innerHTML = data[class_idx]
-                    document.querySelector('.inner').innerHTML = `${parseFloat(prediction[class_idx]*100).toFixed(2)}% SURE`
-                    console.log(data)
-                    console.log(data[class_idx])
-                    console.log(prediction)
-
-                    progressBar.animate(prediction[class_idx]-0.005); // percent
-
-                    pconf.style.display = 'block'
-
-                    confidence.innerHTML = Math.round(prediction[class_idx]*100)
+function captureImage() {
+  resultDiv.innerText = 'Analyzing... 🔍';
+  captureBtn.disabled = true;
+ 
+  snapshotCanvas.width = video.videoWidth;
+  snapshotCanvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
   
-                }
-            );
-            
-        }
+  if (model) {
+    predict();
+  } else {
+    captureBtn.disabled = false;
+  }
+}
 
-        
+async function predict() {
+  try {
+    const prediction = tf.tidy(() => {
+      const img = tf.browser.fromPixels(snapshotCanvas)
+        .resizeNearestNeighbor([224, 224])
+        .toFloat()
+        .div(tf.scalar(255))
+        .expandDims();
+      
+      return model.predict(img);
+    });
 
-        fileUpload.addEventListener('change', function(e){
-            
-            let uploadedImage = e.target.value
-            if (uploadedImage){
-                document.getElementById("blankFile-1").innerHTML = uploadedImage.replace("C:\\fakepath\\","")
-                document.getElementById("choose-text-1").innerText = "Change Selected Image"
-                document.querySelector(".success-1").style.display = "inline-block"
+    const values = await prediction.data();
+    const maxIndex = values.indexOf(Math.max(...values));
+    const predictedClass = CLASS_NAMES[maxIndex];
+    const confidence = (values[maxIndex] * 100).toFixed(2);
 
-                let extension = uploadedImage.split(".")[1]
-                if (!(["doc","docx","pdf"].includes(extension))){
-                    document.querySelector(".success-1 i").style.border = "1px solid limegreen"
-                    document.querySelector(".success-1 i").style.color = "limegreen"
-                }else{
-                    document.querySelector(".success-1 i").style.border = "1px solid rgb(25,110,180)"
-                    document.querySelector(".success-1 i").style.color = "rgb(25,110,180)"
-                }
-            }
-            let file = this.files[0]
-            if (file){
-                boxResult.style.display = 'block'
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.addEventListener("load", function(){
-                    
-                    img.style.display = "block"
-                    img.setAttribute('src', this.result);
-                });
-            }
+    resultDiv.innerHTML = `
+      🌳 <strong>Detected Disease:</strong> ${predictedClass}<br>
+      📊 <strong>Confidence:</strong> ${confidence}%
+    `;
+  } catch (error) {
+    console.error('Prediction error:', error);
+  } finally {
+    captureBtn.disabled = false;
+  }
+}
 
-            else{
-            img.setAttribute("src", "");
-            }
+captureBtn.addEventListener('click', captureImage);
 
-            initialize().then( () => { 
-                predict()
-            })
-        })
+(async () => {
+  await Promise.all([startCamera(), loadModel()]);
+})();
