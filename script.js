@@ -1,105 +1,162 @@
-let model;
-let class_indices;
-let fileUpload = document.getElementById('uploadImage')
-let img = document.getElementById('image')
-let boxResult = document.querySelector('.box-result')
-let confidence = document.querySelector('.confidence')
-let pconf = document.querySelector('.box-result p')
+const video = document.getElementById('camera');
+const captureButton = document.getElementById('capture');
+const snapshotCanvas = document.getElementById('snapshot');
+const resultDiv = document.getElementById('result');
+const fileUploadInput = document.getElementById('file-upload');
+const cameraSection = document.getElementById('camera-section');
 
+let model = null;
+let CLASS_NAMES = [];
+const IMG_SIZE = 256; 
+
+// ĐÃ SỬA: Đường dẫn tuyệt đối, sử dụng thư mục plant_model_js
+const MODEL_PATH = '/plant-disease-web/plant_model_js/model.json';
+// Đường dẫn tuyệt đối tới file tên lớp (class_indices.json)
+const CLASS_INDICES_PATH = '/plant-disease-web/class_indices.json'; 
+
+// =========================
+// Khởi động Camera
+// =========================
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        resultDiv.textContent = '✅ Camera đã sẵn sàng. Đang tải model...';
+    } catch (err) {
+        console.error("Lỗi khi truy cập camera:", err);
+        resultDiv.textContent = '❌ Không thể truy cập camera. Vui lòng kiểm tra quyền.';
+        video.style.display = 'none'; 
+    }
+}
+
+// =========================
+// Tải Model và Tên Lớp (Labels)
+// =========================
+async function initialize() {
+    resultDiv.textContent = '⏳ Đang tải model và tên lớp...';
+    try {
+        // 1. Tải tên lớp từ class_indices.json
+        const response = await fetch(CLASS_INDICES_PATH);
+        const data = await response.json();
         
-        let progressBar = 
-            new ProgressBar.Circle('#progress', {
-            color: 'limegreen',
-            strokeWidth: 10,
-            duration: 2000, // milliseconds
-            easing: 'easeInOut'
-        });
+        // Chuyển đổi JSON object thành mảng
+        CLASS_NAMES = Object.values(data);
+        
+        // 2. Tải Model
+        model = await tf.loadLayersModel(MODEL_PATH); // Sử dụng loadLayersModel
+        
+        resultDiv.innerHTML = '✅ Model và tên lớp đã tải thành công! Bắt đầu chụp ảnh hoặc tải ảnh lên.';
+    } catch (error) {
+        console.error("Lỗi khi tải tài nguyên:", error);
+        resultDiv.innerHTML = `❌ Lỗi: Không thể tải model hoặc tên lớp. Vui lòng kiểm tra đường dẫn hoặc file model trên GitHub.`;
+    }
+}
 
-        async function fetchData(){
-            let response = await fetch('./class_indices.json');
-            let data = await response.json();
-            data = JSON.stringify(data);
-            data = JSON.parse(data);
-            return data;
+// =========================
+// Tiền xử lý Tensor và Nhận diện
+// =========================
+async function predictImage(canvas) {
+    if (model === null) {
+        resultDiv.textContent = "Model chưa sẵn sàng. Vui lòng đợi.";
+        return;
+    }
+
+    resultDiv.textContent = "⏳ Đang xử lý và phân tích ảnh...";
+
+    try {
+        // 1. Tiền xử lý ảnh (Chuẩn hóa về [0, 1] cho Keras Layers Model)
+        const tensor = tf.browser.fromPixels(canvas)
+            .resizeBilinear([IMG_SIZE, IMG_SIZE])
+            .toFloat()
+            .div(tf.scalar(255)) 
+            .expandDims(0); 
+
+        // 2. Chạy model
+        const predictions = model.predict(tensor);
+        const values = await predictions.data();
+        tensor.dispose(); 
+        predictions.dispose();
+
+        // 3. Tìm kết quả tốt nhất
+        let maxProb = -1;
+        let maxIndex = -1;
+
+        for (let i = 0; i < values.length; i++) {
+            if (values[i] > maxProb) {
+                maxProb = values[i];
+                maxIndex = i;
+            }
         }
 
-         // here the data will be return.
-        
-
-        // Initialize/Load model
-        async function initialize() {
-            let status = document.querySelector('.init_status')
-            status.innerHTML = 'Loading Model .... <span class="fa fa-spinner fa-spin"></span>'
-            model = await tf.loadLayersModel('./tensorflowjs-model/model.json');
-            status.innerHTML = 'Model Loaded Successfully  <span class="fa fa-check"></span>'
+        // 4. Hiển thị kết quả
+        if (CLASS_NAMES.length > maxIndex) {
+            const predictedClass = CLASS_NAMES[maxIndex];
+            resultDiv.innerHTML = `
+              🌳 <strong>Bệnh phát hiện:</strong> ${predictedClass.replace(/_/g, ' ')}<br>
+              📊 <strong>Độ chính xác:</strong> ${(maxProb * 100).toFixed(2)}%
+            `;
+        } else {
+            resultDiv.innerText = "❌ Lỗi: Không tìm thấy tên lớp. Kiểm tra class_indices.json.";
         }
 
-        async function predict() {
-            // Function for invoking prediction
-            let img = document.getElementById('image')
-            let offset = tf.scalar(255)
-            let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
-            let tensorImg_scaled = tensorImg.div(offset)
-            prediction = await model.predict(tensorImg_scaled).data();
-           
-            fetchData().then((data)=> 
-                {
-                    predicted_class = tf.argMax(prediction)
-                    
-                    class_idx = Array.from(predicted_class.dataSync())[0]
-                    document.querySelector('.pred_class').innerHTML = data[class_idx]
-                    document.querySelector('.inner').innerHTML = `${parseFloat(prediction[class_idx]*100).toFixed(2)}% SURE`
-                    console.log(data)
-                    console.log(data[class_idx])
-                    console.log(prediction)
+    } catch (error) {
+        console.error("Lỗi khi nhận diện:", error);
+        resultDiv.innerText = "❌ Lỗi khi phân tích ảnh!";
+    }
+}
 
-                    progressBar.animate(prediction[class_idx]-0.005); // percent
+// =========================
+// Xử lý sự kiện CHỤP ẢNH
+// =========================
+captureButton.addEventListener('click', () => {
+    if (video.srcObject) {
+        // (Logic chụp ảnh và ẩn/hiện đã được đơn giản hóa)
+        const previewImg = document.getElementById('uploaded-image-preview');
+        previewImg.style.display = 'none';
 
-                    pconf.style.display = 'block'
-
-                    confidence.innerHTML = Math.round(prediction[class_idx]*100)
-  
-                }
-            );
-            
-        }
-
+        snapshotCanvas.width = video.videoWidth;
+        snapshotCanvas.height = video.videoHeight;
+        const context = snapshotCanvas.getContext('2d');
+        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         
+        video.style.display = 'none';
+        snapshotCanvas.style.display = 'block';
 
-        fileUpload.addEventListener('change', function(e){
-            
-            let uploadedImage = e.target.value
-            if (uploadedImage){
-                document.getElementById("blankFile-1").innerHTML = uploadedImage.replace("C:\\fakepath\\","")
-                document.getElementById("choose-text-1").innerText = "Change Selected Image"
-                document.querySelector(".success-1").style.display = "inline-block"
+        predictImage(snapshotCanvas);
+    } else {
+        resultDiv.textContent = '⚠️ Camera chưa sẵn sàng.';
+    }
+});
 
-                let extension = uploadedImage.split(".")[1]
-                if (!(["doc","docx","pdf"].includes(extension))){
-                    document.querySelector(".success-1 i").style.border = "1px solid limegreen"
-                    document.querySelector(".success-1 i").style.color = "limegreen"
-                }else{
-                    document.querySelector(".success-1 i").style.border = "1px solid rgb(25,110,180)"
-                    document.querySelector(".success-1 i").style.color = "rgb(25,110,180)"
-                }
-            }
-            let file = this.files[0]
-            if (file){
-                boxResult.style.display = 'block'
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.addEventListener("load", function(){
-                    
-                    img.style.display = "block"
-                    img.setAttribute('src', this.result);
-                });
-            }
+// =========================
+// Xử lý sự kiện TẢI ẢNH LÊN
+// =========================
+fileUploadInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            let previewImg = document.getElementById('uploaded-image-preview');
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
 
-            else{
-            img.setAttribute("src", "");
-            }
+            const img = new Image();
+            img.onload = function() {
+                snapshotCanvas.width = img.width;
+                snapshotCanvas.height = img.height;
+                const context = snapshotCanvas.getContext('2d');
+                context.drawImage(img, 0, 0);
+                
+                video.style.display = 'none';
+                predictImage(snapshotCanvas);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
-            initialize().then( () => { 
-                predict()
-            })
-        })
+// Khởi chạy khi trang tải xong
+startCamera();
+initialize();
