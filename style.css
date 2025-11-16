@@ -1,4 +1,3 @@
-
 *{
     box-sizing: border-box;
     padding: 0;
@@ -8,31 +7,36 @@
 html,body{
     width: 95%;
     margin: 50px auto;
-    background: rgb(158, 209, 179);
+    /* Thay đổi màu nền dịu nhẹ hơn */
+    background: #f0f4f7; /* Màu xám xanh rất nhạt */
+    font-family: 'Poppins', sans-serif; /* Thêm phông chữ hiện đại */
+    color: #333;
 }
 
 @media (min-width: 768px){
     html,body{
-        width: 80%;
+        width: 70%; /* Rộng hơn trên màn hình lớn */
         margin: 50px auto;
     }
 }
 h1 {
-    margin: 10px auto;
-    text-transform: uppercase;
+    margin: 10px auto 20px; /* Thêm khoảng cách dưới tiêu đề */
+    text-transform: none; /* Bỏ uppercase */
+    text-align: center;
+    color: #2c3e50; /* Màu đậm hơn cho tiêu đề */
 }
 
 h1 span{
-    color: limegreen;
+    /* Bỏ h1 span */
 }
 
 hr{
-    margin: 10px 0px;
+    margin: 20px 0px 30px; /* Tăng khoảng cách cho đường kẻ */
+    border: 0;
+    border-top: 1px solid #e0e0e0; /* Đường kẻ mỏng, tinh tế hơn */
 }
 
-.github-fork-ribbon:before{
-    background: limegreen !important;
-}
+/* Bỏ .github-fork-ribbon:before */
 
 
 .upload-btn-wrapper{
@@ -40,29 +44,29 @@ hr{
     overflow:hidden;
     display:inline-block;
     cursor:pointer;
-    font-family: 'Poppins',sans-serif;
     width: 100%;
     margin: 20px 0px;
 }
 .upload-file{
-    border:2px dashed #eee;
-    color:#9b9b9b;
+    border:2px dashed #a3e4a3; /* Đường viền đứt nét xanh lá mềm mại */
+    color:#666;
     background-color: white;
     width:100%;
-    height:250px;
-    border-radius: 8px;
+    height:180px; /* Giảm chiều cao một chút */
+    border-radius: 12px; /* Bo góc mềm mại hơn */
     font-size:15px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
+
+.upload-file:hover{
+    background-color: #f7fcf7;
+    border-color: limegreen;
+}
+
 .upload-btn-wrapper input[type=file]{
-    width:100%;
-    position: absolute;
-    left:0;
-    right:0;
-    top:0;
-    opacity: 0;
-    cursor: pointer;
-    min-height: 300px;
+    /* ... giữ nguyên ... */
+    min-height: 180px;
 }
 .success-1, .success-2{
     display:none;
@@ -72,62 +76,94 @@ hr{
     font-size: 18px !important;
     margin-left:6px;
     margin-top:4px;
-    color: limegreen;
+    color: white; /* Đổi màu icon thành trắng */
+    background: limegreen; /* Màu nền icon */
     border: 1px solid limegreen;
     padding: 5px;
     border-radius: 50%;
 }
 .font-50{
-    font-size:50px;
+    font-size:40px; /* Giảm kích thước icon */
 }
 .d-block{
     display:block;
 }
 .btn .upload-file{
-    font-size: 30px;
+    font-size: 20px;
 }
 .upload-btn{
     display:block;
-    font-size: 18px;
-    color: limegreen;
+    font-size: 16px;
+    color: #444; /* Màu chữ upload dịu hơn */
 }
 
 .upload-btn i{
-    font-size: 100px;
+    font-size: 80px; /* Giảm kích thước icon lớn */
+    color: limegreen;
 }
 
-img{
+img, #camera-stream{
     width: 100%;
-    height: 300px;
+    height: auto; /* Dùng auto để giữ tỷ lệ */
+    max-height: 350px;
     display: none;
+    object-fit: contain; /* Đảm bảo hình ảnh vừa vặn */
+    border-radius: 12px; /* Bo góc mềm mại */
+    background-color: #ecf0f1;
 }
 
 .row{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between; /* Đảm bảo không gian giữa 2 cột */
     flex-direction: row;
     flex-flow: wrap;
-    margin: 20px auto;
+    margin: 30px auto;
     }
     
 .box{
-    width: 45%;
+    width: 48%; /* Tăng khoảng cách giữa 2 box */
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Thêm bóng nhẹ */
 }
 
-.box img{
-    border-radius: 20px;
-    height: 350px;
+.box-result{
+    /* ... giữ nguyên ... */
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.box-result h2{
+    font-size: 1.2em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.box-result .pred_class{
+    font-weight: bold;
+    color: limegreen; /* Nổi bật kết quả */
+    display: block;
+    margin-top: 5px;
 }
 
 .box-result p{
-    background: limegreen;
-    color: #fff;
-    font-weight: bold;
+    background: #e6f7e6; /* Màu nền nhẹ nhàng cho độ chính xác */
+    color: #222;
+    font-weight: 500;
     padding: 10px;
     margin-top: 20px;
-    border-radius: 10px;
+    border-radius: 8px;
     display : none;
     text-align: center;
+}
+
+.box-result b{
+    color: limegreen;
+    font-weight: 700;
 }
 
 .box-result{
@@ -154,7 +190,8 @@ justify-content: center;
 .progress > .inner {
 position: absolute;
 color: limegreen; 
-border: 1px solid #9b9b9b;
+font-weight: bold;
+border: none; /* Bỏ viền xung quanh % */
 }
 
 .progress > svg {
@@ -163,29 +200,62 @@ display: block;
 }
 
 .init_status{
-    background: limegreen;
+    background: #4CAF50; /* Màu xanh lá đậm hơn một chút */
     color: white;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: ease-in-out .5s;
     text-align: center;
-    margin: 10px 0px;
-
+    margin: 10px 0px 20px;
+    font-weight: 500;
 }
 
 @media (max-width: 768px){
     .box{
         width: 100%;
+        margin-bottom: 20px;
     }
 }
 
-.tutorial{
-    text-align: center;
-    color: #222222;
-}
+/* Bỏ .tutorial */
 
 path {
     stroke: limegreen;
     stroke-width: 10;
     fill-opacity: 0.2;
+}
+
+/* CSS mới cho phần camera */
+.camera-controls {
+    display: flex;
+    flex-direction: row; /* Thay đổi thành ngang */
+    justify-content: space-between;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.camera-controls #activate-camera-btn, .camera-controls #capture-image-btn {
+    width: 49%; /* Để chúng nằm cạnh nhau */
+    max-width: none;
+    height: 120px;
+    border: 2px solid #a3e4a3;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.camera-controls .upload-btn i {
+    font-size: 50px;
+    color: limegreen;
+}
+
+.camera-controls .upload-btn p {
+    color: #444;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#camera-stream {
+    max-width: 100%; 
+    margin: 20px auto;
+    border-radius: 12px;
 }
