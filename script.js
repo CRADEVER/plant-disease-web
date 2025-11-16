@@ -7,7 +7,8 @@ const ctx = snapshotCanvas.getContext('2d');
 
 let isCaptured = false; // trạng thái: đã chụp hay chưa
 let model = null;
-const MODEL_PATH = './plant_model_js/model.json';
+// ĐÃ SỬA: Đường dẫn tuyệt đối đến model.json
+const MODEL_PATH = '/plant-disease-web/plant_model_js/model.json';
 const IMG_SIZE = 256; // Phải khớp với lúc train (Cell 4 trong Colab)
 
 // =========================
@@ -20,7 +21,7 @@ async function loadModel() {
     resultDiv.innerText = "👉 Hãy chụp ảnh để phân tích";
   } catch (error) {
     console.error("Lỗi khi tải model:", error);
-    resultDiv.innerText = "❌ Lỗi: Không thể tải model.";
+    resultDiv.innerText = "❌ Lỗi: Không thể tải model. Kiểm tra Console để biết chi tiết.";
   }
 }
 
@@ -59,14 +60,10 @@ async function captureAndPredict() {
     // ======= Chế độ CHỤP ẢNH =======
     resultDiv.innerText = "⏳ Đang xử lý ảnh...";
 
-    // Đảm bảo kích thước canvas khớp để vẽ
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
     snapshotCanvas.width = videoWidth;
     snapshotCanvas.height = videoHeight;
-    
-    // Vẽ ảnh từ video lên canvas
-    // ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
     
     // Căn ảnh vào giữa canvas (quan trọng)
     const shorterSide = Math.min(videoWidth, videoHeight);
@@ -82,7 +79,7 @@ async function captureAndPredict() {
     captureBtn.innerText = "🔄 Tiếp tục";
     isCaptured = true;
 
-    // Gửi ảnh đi nhận diện (NGAY TRONG TRÌNH DUYỆT)
+    // Gửi ảnh đi nhận diện (NGAY TRONG TRÌ DUYỆT)
     predictImage(snapshotCanvas);
 
   } else {
