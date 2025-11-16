@@ -5,31 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nhận diện bệnh cây 🌿</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-  <script src="plant_model_js/labels.js"></script> 
 </head>
 <body>
+
   <h1>🌱 Hệ thống nhận diện bệnh cây</h1>
-  
-  <div id="camera-section">
-    <video id="camera" autoplay playsinline></video>
-    
-    <img id="uploaded-image-preview" style="display:none;" />
-    
-    <canvas id="snapshot" style="display:none"></canvas>
-  </div>
-  
-  <div id="controls">
-    <button id="capture">📸 Chụp ảnh</button>
-    
-    <label for="file-upload" class="custom-file-upload">
-      Tải ảnh lên
-    </label>
-    <input type="file" id="file-upload" accept="image/*" style="display: none;">
-  </div>
-  
-  <div id="result">👉 Hãy chụp hoặc tải ảnh để phân tích</div>
-  
+
+  <!-- Camera -->
+  <video id="camera" autoplay playsinline></video>
+
+  <!-- Ảnh đã chụp -->
+  <canvas id="snapshot" style="display:none"></canvas>
+
+  <button id="capture">📸 Chụp ảnh</button>
+
+  <div id="result">👉 Hãy chụp ảnh để phân tích</div>
+
   <script src="script.js"></script>
 </body>
 </html>

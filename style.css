@@ -1,38 +1,23 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background: #f5fff5; 
+  background: #f5fff5;
   padding: 20px;
 }
 
 h1 {
   color: #2e7d32;
 }
-#camera-section {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
 
-video, #uploaded-image-preview {
+video, canvas {
   width: 90%;
   max-width: 400px;
   margin: 10px 0;
   border-radius: 10px;
   border: 2px solid #4caf50;
-
-  min-height: 250px; 
-  background-color: #f0f0f0;
 }
 
-#controls {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-button, .custom-file-upload {
+button {
   padding: 10px 20px;
   font-size: 16px;
   background: #4caf50;
@@ -40,10 +25,9 @@ button, .custom-file-upload {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  display: inline-block; 
 }
 
-button:hover, .custom-file-upload:hover {
+button:hover {
   background: #388e3c;
 }
 
