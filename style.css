@@ -3,7 +3,7 @@ body {
     text-align: center;
     background: #f5fff5; 
     padding: 20px;
-    margin: 0;
+    margin: 0; /* Loại bỏ margin mặc định */
   }
   
   h1 {
@@ -20,7 +20,7 @@ body {
   
   /* Style chung cho video, canvas và ảnh đã tải lên */
   video, 
-  #snapshot,
+  #snapshot, /* Cần thêm #snapshot (canvas) vào selector này */
   #uploaded-image-preview {
     width: 90%;
     max-width: 400px;
@@ -53,7 +53,8 @@ body {
     cursor: pointer;
     display: inline-block; /* Quan trọng để label hiển thị như button */
     text-align: center;
-    text-decoration: none; /* Bỏ gạch chân nếu là thẻ <a> hoặc label */
+    text-decoration: none;
+    transition: background 0.3s;
   }
   
   button:hover, 
@@ -61,15 +62,17 @@ body {
     background: #388e3c;
   }
   
+  /* Style cho phần kết quả */
   #result {
     margin-top: 15px;
     font-size: 18px;
     font-weight: bold;
-    padding: 10px;
+    padding: 15px;
     border-radius: 5px;
-    background: #e8f5e9; /* Màu nền nhẹ cho kết quả */
+    background: #e8f5e9; 
     max-width: 450px;
     margin: 15px auto;
+    line-height: 1.5;
   }
   
   /* Đảm bảo canvas không hiện khi không cần thiết */
