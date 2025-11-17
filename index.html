@@ -1,61 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLANT DISEASE CLASSIFIER</title>
+    <title>PHÂN LOẠI BỆNH CÂY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>🍀 Nhận biết cây bệnh</h1>
+<body class="light-mode">
+    <a class="github-fork-ribbon" href="https://url.to-your.repo" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+    <div class="header-container">
+        <h1>🌱 HỆ THỐNG NHẬN DIỆN BỆNH CÂY</h1>
+        <button class="mode-toggle" id="modeToggle">
+            <i class="material-icons">brightness_4</i> Chế độ Tối
+        </button>
+    </div>
     <hr>
 
-    <div class="camera-controls">
-        <button id="activate-camera-btn" class="btn upload-file font-weight-500">
-            <span class="upload-btn">
-                <i class="material-icons d-block font-50 pb-2">photo_camera</i>
-                <p>Kích hoạt Camera</p>
-            </span>
-        </button>
+
+    <div class="upload-btn-container">
+        <div class="upload-btn-wrapper upload-wrapper">
+            <button class="btn upload-file font-weight-500">
+                <span class="upload-btn">
+                    <i class="material-icons d-block font-50 pb-2">cloud_upload</i>
+                    <p id="choose-text-1">Chọn Ảnh Lá Cây</p>
+                </span>
+                <span class="upload-select-button" id="blankFile-1">
+                    *Hỗ trợ .png, .jpg, .jpeg, .jfif
+                </span>
+                <span class="success-1">
+                    <i class="material-icons text-success">check</i>
+                </span>
+            </button>
+            <input type="file" name="uploadImage" id="uploadImage" accept="image/*">
+        </div>
         
-        <button id="capture-image-btn" class="btn upload-file font-weight-500" style="display: none; margin-top: 10px;">
-            <span class="upload-btn">
-                <i class="material-icons d-block font-50 pb-2">camera</i>
-                <p>Chụp ảnh</p>
-            </span>
-        </button>
+        <div class="camera-btn-wrapper upload-wrapper">
+            <button class="btn camera-btn font-weight-500" id="cameraToggle">
+                <span class="camera-icon">
+                    <i class="material-icons d-block font-50 pb-2">camera_alt</i>
+                    <p>Chụp Ảnh Trực Tiếp</p>
+                </span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="camera-stream-container" id="cameraContainer">
+        <video id="videoStream" width="320" height="240" autoplay></video>
+        <button id="captureButton" class="capture-btn" disabled>Chụp</button>
+        <button id="stopButton" class="capture-btn stop-btn">Dừng Camera</button>
+        <p class="camera-status" id="cameraStatus"></p>
     </div>
 
-    <video id="camera-stream" autoplay playsinline></video>
-    <canvas id="camera-canvas" style="display: none;"></canvas>
-
-    <div class="upload-btn-wrapper">
-        <button class="btn upload-file font-weight-500">
-            <span class="upload-btn">
-                <i class="material-icons d-block font-50 pb-2">cloud_upload</i>
-                <p id="choose-text-1">Chọn ảnh lá cây</p>
-            </span>
-            <span class="upload-select-button" id="blankFile-1">
-                *Hỗ trợ .png, .jpg, .jpeg, .jfif
-            </span>
-            <span class="success-1">
-                <i class="material-icons text-success">check</i>
-            </span>
-        </button>
-        <input type="file" name="uploadImage" id="uploadImage">
-    </div>
+    <p class = "tutorial">😇 Tìm hiểu cách xây dựng ứng dụng <a href="https://medium.com/@rexsimiloluwa/building-a-plant-disease-classification-web-app-in-keras-and-tensorflow-js-d435829213fa" target="blank">TẠI ĐÂY</a> → Tải ảnh thử nghiệm <a href="https://github.com/rexsimiloluwah/PLANT-DISEASE-CLASSIFIER-WEB-APP-TENSORFLOWJS/tree/master/test-dataset" target="blank">TẠI ĐÂY</a> </p>
 
     <div class="row">
         <div class="box">
-            <img src="" alt="Ảnh lá cây" id="image" width="224" height="224">
+            <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
+            <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
 
         <div class="box box-result">
             <div class="init_status"></div>
             <div>
-                <h2>Bệnh của cây: <span class="pred_class"></span></h2>
+                <h2>Cây của bạn có thể bị nhiễm :- <span class="pred_class"></span></h2>
                 
             </div>
             <div class="accuracy">
@@ -66,7 +76,7 @@
                   </div>
 
             </div>
-            <p> ĐỘ CHÍNH XÁC: <b><span class="confidence"></span></b> %</p>
+            <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
         </div>
     </div>
 
