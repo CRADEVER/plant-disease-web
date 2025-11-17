@@ -36,6 +36,23 @@ html,body{
     border: 1px solid #ccc;
 }
 
+/* --- STYLE CẢI TIẾN LIGHT MODE --- */
+.light-mode .disease-details {
+    background-color: white;
+    border-color: #ddd;
+}
+.light-mode .details-title {
+    color: #4CAF50; 
+}
+.light-mode .disease-details h4 {
+    color: #2c3e50;
+}
+.light-mode .content-box {
+    background-color: #f7f7f7;
+    border: 1px solid #eee;
+}
+/* --- END CẢI TIẾN LIGHT MODE --- */
+
 
 .dark-mode {
     background: #121212; 
@@ -66,6 +83,26 @@ html,body{
 .dark-mode .init_status {
     background: #004d40;
 }
+
+/* --- STYLE CẢI TIẾN DARK MODE --- */
+.dark-mode .disease-details {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+.dark-mode .details-title {
+    color: #8cc63f; /* Màu xanh lá cây sáng hơn cho chế độ tối */
+}
+.dark-mode .disease-details hr {
+    background-color: #333;
+}
+.dark-mode .disease-details h4 {
+    color: #e0e0e0;
+}
+.dark-mode .content-box {
+    background-color: #222;
+    border: 1px solid #333;
+}
+/* --- END CẢI TIẾN DARK MODE --- */
 
 
 .github-fork-ribbon:before, 
@@ -307,139 +344,74 @@ display: block;
 }
 
 
-/* ================================================== */
-/* CSS CẢI TIẾN: KIỂU CHO TAB VÀ BẢNG THÔNG TIN        */
-/* ================================================== */
-
-.disease-info-container {
-    display: none; /* Ẩn mặc định, JS sẽ hiển thị */
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.tabs {
-    display: flex;
-    background: #f0f0f0;
-    flex-wrap: wrap; /* Cho phép tab xuống dòng trên di động */
-}
-
-.tab-link {
-    padding: 10px 15px;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    font-size: 14px;
-    font-weight: bold;
-    color: #555;
-    flex-grow: 1; /* Các tab bằng nhau */
-    text-align: center;
-    border-bottom: 2px solid transparent;
-}
-
-.tab-link:hover {
-    background: #e0e0e0;
-}
-
-.tab-link.active {
-    background: white;
-    color: #4caf50;
-    border-bottom: 2px solid #4caf50;
-}
-
-.tab-content {
-    padding: 15px;
-    display: none; /* Ẩn mặc định */
-    border-top: 1px solid #ccc;
-    background: white;
-}
-
-.tab-content h3 {
-    color: #4caf50;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-.tab-content p, .tab-content div {
-    line-height: 1.6;
-    margin-bottom: 10px;
-}
-
-.tab-content ul {
-    padding-left: 20px;
-    line-height: 1.6;
-    margin-bottom: 10px;
-}
-
-#info-chem-plan {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    table-layout: auto;
-    word-break: break-word;
-}
-
-#info-chem-plan th, #info-chem-plan td {
+/* ----------------------------------------------------------------- */
+/* STYLE CẢI TIẾN: KHU VỰC HIỂN THỊ CHI TIẾT BỆNH (DISEASE DETAILS) */
+/* ----------------------------------------------------------------- */
+.disease-details {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 12px;
     border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+    text-align: left; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
-#info-chem-plan th {
-    background: #f2f2f2;
-    font-size: 14px;
+.details-title {
+    font-size: 1.6em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid;
+    padding-bottom: 5px;
 }
 
-#info-chem-plan td {
-    font-size: 13px;
-    vertical-align: top;
+.disease-details hr {
+    border: 0;
+    height: 1px;
+    margin: 15px 0;
 }
 
-/* --- Dark Mode Additions --- */
-.dark-mode .disease-info-container {
-    border-color: #444;
+.disease-details h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    padding-left: 10px;
+    border-left: 5px solid #4CAF50;
 }
 
-.dark-mode .tabs {
-    background: #2a2a2a;
+.content-box {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-.dark-mode .tab-link {
-    color: #bbb;
+.disease-details ul {
+    list-style-type: none; /* Bỏ list-style-type mặc định */
+    padding-left: 0;
+    margin-top: 10px;
 }
 
-.dark-mode .tab-link:hover {
-    background: #333;
+.disease-details li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    padding-left: 20px; /* Tạo khoảng lề */
+    position: relative;
+}
+.disease-details li::before {
+    content: "•"; /* Dùng ký tự đặc biệt làm dấu chấm */
+    color: #4CAF50;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
 }
 
-.dark-mode .tab-link.active {
-    background: #1e1e1e;
-    color: #66bb6a;
-    border-bottom: 2px solid #66bb6a;
+.disease-details .note {
+    display: block;
+    font-size: 0.9em;
+    color: orange;
+    margin-top: 3px;
+    font-style: italic;
 }
-
-.dark-mode .tab-content {
-    border-top-color: #444;
-    background: #1e1e1e;
-}
-
-.dark-mode .tab-content h3 {
-    color: #66bb6a; /* Lighter green for dark mode */
-}
-
-.dark-mode #info-chem-plan th, .dark-mode #info-chem-plan td {
-    border: 1px solid #555;
-}
-
-.dark-mode #info-chem-plan th {
-    background: #333;
-}
-
-
-/* ================================================== */
-/* KẾT THÚC CSS CẢI TIẾN                              */
-/* ================================================== */
+/* ----------------------------------------------------------------- */
 
 
 @media (min-width: 768px){
@@ -471,22 +443,6 @@ display: block;
     .mode-toggle {
         width: 100%;
         justify-content: center;
-    }
-    /* CSS cho tab trên di động */
-    .tabs {
-        flex-direction: column;
-    }
-    .tab-link {
-        border-bottom: 1px solid #ccc;
-    }
-    .dark-mode .tab-link {
-        border-bottom: 1px solid #444;
-    }
-    .tab-link.active {
-        border-bottom-color: #4caf50;
-    }
-    .dark-mode .tab-link.active {
-        border-bottom-color: #66bb6a;
     }
 }
 
