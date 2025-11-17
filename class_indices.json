@@ -59,9 +59,24 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Cần kết hợp thuốc phổ rộng (M) và thuốc hệ thống (C3, G1) để kiểm soát cả ba dạng bệnh (ghẻ lá, thối quả, loét cành).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Ngủ Đông (Dormancy)", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper)", "Nhóm_FRAC_IRAC": "M1", "Lưu_ý_Ứng_dụng": "Phun nồng độ cao để diệt bào tử và làm sạch vết loét trên cành."},
-                    {"Giai_đoạn": "Rụng Cánh Hoa (Petal Fall)", "Hoạt_chất_Đề_xuất": "Captan hoặc Mancozeb", "Nhóm_FRAC_IRAC": "M4 hoặc M3", "Lưu_ý_Ứng_dụng": "Duy trì lớp bảo vệ cho lá và quả non."},
-                    {"Giai_đoạn": "Bảo vệ Quả (Mùa hè)", "Hoạt_chất_Đề_xuất": "Pyraclostrobin (Strobilurin) hoặc Fluopyram/Trifloxystrobin", "Nhóm_FRAC_IRAC": "C3", "Lưu_ý_Ứng_dụng": "Phun 3-4 lần định kỳ trong suốt mùa hè, đặc biệt quan trọng 4-6 tuần trước thu hoạch để ngăn ngừa thối quả."}
+                    {
+                        "Giai_đoạn": "Ngủ Đông (Dormancy)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper)",
+                        "Nhóm_FRAC_IRAC": "M1",
+                        "Lưu_ý_Ứng_dụng": "Phun nồng độ cao để diệt bào tử và làm sạch vết loét trên cành."
+                    },
+                    {
+                        "Giai_đoạn": "Rụng Cánh Hoa (Petal Fall)",
+                        "Hoạt_chất_Đề_xuất": "Captan hoặc Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M4 hoặc M3",
+                        "Lưu_ý_Ứng_dụng": "Duy trì lớp bảo vệ cho lá và quả non."
+                    },
+                    {
+                        "Giai_đoạn": "Bảo vệ Quả (Mùa hè)",
+                        "Hoạt_chất_Đề_xuất": "Pyraclostrobin (Strobilurin) hoặc Fluopyram/Trifloxystrobin",
+                        "Nhóm_FRAC_IRAC": "C3",
+                        "Lưu_ý_Ứng_dụng": "Phun 3-4 lần định kỳ trong suốt mùa hè, đặc biệt quan trọng 4-6 tuần trước thu hoạch để ngăn ngừa thối quả."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI (Triazole) có thể cung cấp khả năng trị bệnh ban đầu, nhưng việc cắt bỏ tàn dư là biện pháp tận gốc quan trọng hơn."
             },
@@ -90,8 +105,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung bảo vệ lá non trong giai đoạn nhạy cảm nhất, từ **Nụ Hồng (Pink Tip) đến khoảng 3-4 tuần sau Rụng Cánh Hoa (Petal Fall)**.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Nụ hồng - Rụng cánh hoa", "Hoạt_chất_Đề_xuất": "Myclobutanil (DMI) hoặc Propiconazole", "Nhóm_FRAC_IRAC": "G1", "Lưu_ý_Ứng_dụng": "DMI là thuốc hệ thống hiệu quả cao nhất để ngăn chặn sự xâm nhập của bào tử gỉ sắt. Cần phun ngay trước sự kiện bào tử Tuyết Tùng phóng thích."},
-                    {"Giai_đoạn": "Sau rụng cánh hoa", "Hoạt_chất_Đề_xuất": "Trifloxystrobin (Strobilurin) hoặc các hỗn hợp DMI+C3", "Nhóm_FRAC_IRAC": "C3", "Lưu_ý_Ứng_dụng": "Tiếp tục bảo vệ tán lá mới. Luân phiên nhóm để tránh tình trạng kháng thuốc và kiểm soát các bệnh nấm khác (như Ghẻ Táo) đồng thời."}
+                    {
+                        "Giai_đoạn": "Nụ hồng - Rụng cánh hoa",
+                        "Hoạt_chất_Đề_xuất": "Myclobutanil (DMI) hoặc Propiconazole",
+                        "Nhóm_FRAC_IRAC": "G1",
+                        "Lưu_ý_Ứng_dụng": "DMI là thuốc hệ thống hiệu quả cao nhất để ngăn chặn sự xâm nhập của bào tử gỉ sắt. Cần phun ngay trước sự kiện bào tử Tuyết Tùng phóng thích."
+                    },
+                    {
+                        "Giai_đoạn": "Sau rụng cánh hoa",
+                        "Hoạt_chất_Đề_xuất": "Trifloxystrobin (Strobilurin) hoặc các hỗn hợp DMI+C3",
+                        "Nhóm_FRAC_IRAC": "C3",
+                        "Lưu_ý_Ứng_dụng": "Tiếp tục bảo vệ tán lá mới. Luân phiên nhóm để tránh tình trạng kháng thuốc và kiểm soát các bệnh nấm khác (như Ghẻ Táo) đồng thời."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI có khả năng trị bệnh nhất định nếu phun trong vòng 72 giờ sau khi lây nhiễm."
             },
@@ -120,8 +145,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Hạn chế phun hóa chất trừ sâu/nấm đại trà; chỉ áp dụng khi theo dõi và dự báo dịch bệnh vượt ngưỡng kinh tế (Action Threshold).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Ngủ đông", "Hoạt_chất_Đề_xuất": "Dầu khoáng (Dầu mùa hè)", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Phun nồng độ cao để diệt trứng rệp và bọ sáp trú đông. Đây là bước kiểm soát sâu hại mùa đông quan trọng."},
-                    {"Giai_đoạn": "Rụng cánh hoa", "Hoạt_chất_Đề_xuất": "Chất điều hòa sinh trưởng (ví dụ: NAA, Carbaryl) - nếu cần", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Sử dụng để tỉa quả hóa học nhằm tối ưu hóa kích thước và chất lượng quả, giảm áp lực lên cây."}
+                    {
+                        "Giai_đoạn": "Ngủ đông",
+                        "Hoạt_chất_Đề_xuất": "Dầu khoáng (Dầu mùa hè)",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Phun nồng độ cao để diệt trứng rệp và bọ sáp trú đông. Đây là bước kiểm soát sâu hại mùa đông quan trọng."
+                    },
+                    {
+                        "Giai_đoạn": "Rụng cánh hoa",
+                        "Hoạt_chất_Đề_xuất": "Chất điều hòa sinh trưởng (ví dụ: NAA, Carbaryl) - nếu cần",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng để tỉa quả hóa học nhằm tối ưu hóa kích thước và chất lượng quả, giảm áp lực lên cây."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -150,8 +185,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Chủ yếu tập trung vào phòng ngừa các bệnh nấm nghiêm trọng như Bệnh Thối Quả (Mummy Berry, *Monilinia vaccinii-corymbosi*) và Thán Thư (Anthracnose, *Colletotrichum acutatum*).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Nụ hở (Bud Break)", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Chlorothalonil", "Nhóm_FRAC_IRAC": "M1 hoặc M5", "Lưu_ý_Ứng_dụng": "Phòng trừ vi khuẩn và nấm bề mặt, đặc biệt là Bệnh Thối Mầm (Mummy Berry)."},
-                    {"Giai_đoạn": "Ra hoa (Bloom) và Sau ra hoa", "Hoạt_chất_Đề_xuất": "Fenbuconazole (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Phun luân phiên để bảo vệ hoa và quả non khỏi Thối Quả và Thán Thư. Chỉ sử dụng hóa chất không độc hại cho ong khi đang nở hoa."}
+                    {
+                        "Giai_đoạn": "Nụ hở (Bud Break)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Chlorothalonil",
+                        "Nhóm_FRAC_IRAC": "M1 hoặc M5",
+                        "Lưu_ý_Ứng_dụng": "Phòng trừ vi khuẩn và nấm bề mặt, đặc biệt là Bệnh Thối Mầm (Mummy Berry)."
+                    },
+                    {
+                        "Giai_đoạn": "Ra hoa (Bloom) và Sau ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Fenbuconazole (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Phun luân phiên để bảo vệ hoa và quả non khỏi Thối Quả và Thán Thư. Chỉ sử dụng hóa chất không độc hại cho ong khi đang nở hoa."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Phun Urê vào mùa thu để tiêu hủy bào tử Mummy Berry trong đất."
             },
@@ -180,8 +225,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Sử dụng DMI (G1) và Lưu huỳnh (M2). Cần phun thuốc trừ nấm phòng ngừa từ giai đoạn nụ cho đến khi chồi non trưởng thành.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Nụ xanh - Nụ trắng (Green Tip - White Bud)", "Hoạt_chất_Đề_xuất": "Lưu huỳnh (Sulfur) hoặc Dầu Neem", "Nhóm_FRAC_IRAC": "M2", "Lưu_ý_Ứng_dụng": "Phòng ngừa cho lá non. **Không phun Lưu huỳnh khi nhiệt độ > 30°C** để tránh gây cháy lá."},
-                    {"Giai_đoạn": "Sau ra hoa (Post-Bloom)", "Hoạt_chất_Đề_xuất": "Myclobutanil hoặc Tebuconazole (DMI)", "Nhóm_FRAC_IRAC": "G1", "Lưu_ý_Ứng_dụng": "Luân phiên với Lưu huỳnh. Phun lặp lại 7-10 ngày để bảo vệ sự phát triển của lá và quả non, là giai đoạn cây nhạy cảm nhất."}
+                    {
+                        "Giai_đoạn": "Nụ xanh - Nụ trắng (Green Tip - White Bud)",
+                        "Hoạt_chất_Đề_xuất": "Lưu huỳnh (Sulfur) hoặc Dầu Neem",
+                        "Nhóm_FRAC_IRAC": "M2",
+                        "Lưu_ý_Ứng_dụng": "Phòng ngừa cho lá non. **Không phun Lưu huỳnh khi nhiệt độ > 30°C** để tránh gây cháy lá."
+                    },
+                    {
+                        "Giai_đoạn": "Sau ra hoa (Post-Bloom)",
+                        "Hoạt_chất_Đề_xuất": "Myclobutanil hoặc Tebuconazole (DMI)",
+                        "Nhóm_FRAC_IRAC": "G1",
+                        "Lưu_ý_Ứng_dụng": "Luân phiên với Lưu huỳnh. Phun lặp lại 7-10 ngày để bảo vệ sự phát triển của lá và quả non, là giai đoạn cây nhạy cảm nhất."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI, Bicarbonate kali hoặc dầu làm vườn (Horticultural oil) có thể 'đốt cháy' các vết nhiễm nấm hiện có."
             },
@@ -210,8 +265,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa chủ yếu bệnh Thối Nâu Quả (Brown Rot) và Ghẻ Lá (Cherry Leaf Spot).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Nở hoa (Bloom)", "Hoạt_chất_Đề_xuất": "Iprodione (Dicarboximide) hoặc Propiconazole (DMI)", "Nhóm_FRAC_IRAC": "2 hoặc G1", "Lưu_ý_Ứng_dụng": "Phòng trừ Thối Nâu Quả, là giai đoạn nhạy cảm nhất. Phải sử dụng thuốc an toàn cho ong."},
-                    {"Giai_đoạn": "Trước thu hoạch (Pre-Harvest)", "Hoạt_chất_Đề_xuất": "Boscalid (SDHI) hoặc các thuốc bảo vệ (Captan)", "Nhóm_FRAC_IRAC": "7 hoặc M4", "Lưu_ý_Ứng_dụng": "Bảo vệ quả khỏi Thối Nâu. **Tuân thủ nghiêm ngặt thời gian cách ly (PHI)** của thuốc trước khi thu hoạch."}
+                    {
+                        "Giai_đoạn": "Nở hoa (Bloom)",
+                        "Hoạt_chất_Đề_xuất": "Iprodione (Dicarboximide) hoặc Propiconazole (DMI)",
+                        "Nhóm_FRAC_IRAC": "2 hoặc G1",
+                        "Lưu_ý_Ứng_dụng": "Phòng trừ Thối Nâu Quả, là giai đoạn nhạy cảm nhất. Phải sử dụng thuốc an toàn cho ong."
+                    },
+                    {
+                        "Giai_đoạn": "Trước thu hoạch (Pre-Harvest)",
+                        "Hoạt_chất_Đề_xuất": "Boscalid (SDHI) hoặc các thuốc bảo vệ (Captan)",
+                        "Nhóm_FRAC_IRAC": "7 hoặc M4",
+                        "Lưu_ý_Ứng_dụng": "Bảo vệ quả khỏi Thối Nâu. **Tuân thủ nghiêm ngặt thời gian cách ly (PHI)** của thuốc trước khi thu hoạch."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Phun Đồng trong giai đoạn ngủ đông để kiểm soát loét do vi khuẩn và nấm."
             },
@@ -240,7 +305,12 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Chỉ sử dụng thuốc trừ nấm (fungicide) khi dự báo dịch bệnh vượt ngưỡng kinh tế. Các nhóm C3 và G1 có hiệu quả cao. Yêu cầu phun thuốc phải đạt tới lá bắp (Ear leaf) và các lá phía trên.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "VT-R1 (Trổ cờ - Phun râu)", "Hoạt_chất_Đề_xuất": "Azoxystrobin + Propiconazole (Hỗn hợp C3 + G1) hoặc Benzovindiflupyr (SDHI)", "Nhóm_FRAC_IRAC": "C3 + G1 hoặc 7", "Lưu_ý_Ứng_dụng": "Thời điểm phun tối ưu để bảo vệ lá cờ và lá bắp, là hai lá quan trọng nhất cho sự hình thành năng suất."}
+                    {
+                        "Giai_đoạn": "VT-R1 (Trổ cờ - Phun râu)",
+                        "Hoạt_chất_Đề_xuất": "Azoxystrobin + Propiconazole (Hỗn hợp C3 + G1) hoặc Benzovindiflupyr (SDHI)",
+                        "Nhóm_FRAC_IRAC": "C3 + G1 hoặc 7",
+                        "Lưu_ý_Ứng_dụng": "Thời điểm phun tối ưu để bảo vệ lá cờ và lá bắp, là hai lá quan trọng nhất cho sự hình thành năng suất."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI (Triazole) có khả năng trị bệnh (curative) nếu phun sớm sau khi nhiễm bệnh."
             },
@@ -269,7 +339,12 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Nếu bệnh xuất hiện sớm (trước trổ cờ) hoặc dự báo nặng, cần phun thuốc. Các nhóm Strobilurin (C3) và Triazole (G1) có hiệu quả rất cao.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "V6 (Sáu lá) đến VT-R1 (Trổ cờ - Phun râu)", "Hoạt_chất_Đề_xuất": "Pyraclostrobin (Strobilurin) hoặc Epoxiconazole (DMI)", "Nhóm_FRAC_IRAC": "C3 hoặc G1", "Lưu_ý_Ứng_dụng": "Chỉ phun nếu bệnh đe dọa lá bắp và lá trên. Thường chỉ cần một lần phun nếu bệnh nhẹ."}
+                    {
+                        "Giai_đoạn": "V6 (Sáu lá) đến VT-R1 (Trổ cờ - Phun râu)",
+                        "Hoạt_chất_Đề_xuất": "Pyraclostrobin (Strobilurin) hoặc Epoxiconazole (DMI)",
+                        "Nhóm_FRAC_IRAC": "C3 hoặc G1",
+                        "Lưu_ý_Ứng_dụng": "Chỉ phun nếu bệnh đe dọa lá bắp và lá trên. Thường chỉ cần một lần phun nếu bệnh nhẹ."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -298,7 +373,12 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Nếu sử dụng giống không kháng bệnh và dự báo dịch bệnh sớm, cần phun thuốc. Các hỗn hợp thuốc trừ nấm (Strobilurin + Triazole) được khuyến nghị.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "V10 (Mười lá) đến VT-R1 (Trổ cờ - Phun râu)", "Hoạt_chất_Đề_xuất": "Picoxystrobin (Strobilurin) hoặc Tebucocazole (DMI)", "Nhóm_FRAC_IRAC": "C3 hoặc G1", "Lưu_ý_Ứng_dụng": "Phun khi phát hiện bệnh ở lá dưới và tỷ lệ lây nhiễm dự kiến cao. Bảo vệ lá bắp trong giai đoạn này là quan trọng nhất."}
+                    {
+                        "Giai_đoạn": "V10 (Mười lá) đến VT-R1 (Trổ cờ - Phun râu)",
+                        "Hoạt_chất_Đề_xuất": "Picoxystrobin (Strobilurin) hoặc Tebucocazole (DMI)",
+                        "Nhóm_FRAC_IRAC": "C3 hoặc G1",
+                        "Lưu_ý_Ứng_dụng": "Phun khi phát hiện bệnh ở lá dưới và tỷ lệ lây nhiễm dự kiến cao. Bảo vệ lá bắp trong giai đoạn này là quan trọng nhất."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -327,8 +407,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Chỉ sử dụng thuốc trừ nấm (fungicide) khi cần thiết. Nhiều nông dân phun phòng ngừa ở giai đoạn VT-R1 để tối đa hóa năng suất.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Trước trổ cờ (V10-V15)", "Hoạt_chất_Đề_xuất": "Không cần thiết, trừ khi áp lực sâu bệnh cao.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Theo dõi cẩn thận. Việc phun thuốc ở giai đoạn này chủ yếu là bảo vệ lá bắp (Ear Leaf) và các lá phía trên."},
-                    {"Giai_đoạn": "R2 (Hạt sữa)", "Hoạt_chất_Đề_xuất": "Không cần thiết.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Năng suất đã được xác định chủ yếu ở giai đoạn R1; phun thuốc muộn không mang lại hiệu quả kinh tế cao."}
+                    {
+                        "Giai_đoạn": "Trước trổ cờ (V10-V15)",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết, trừ khi áp lực sâu bệnh cao.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Theo dõi cẩn thận. Việc phun thuốc ở giai đoạn này chủ yếu là bảo vệ lá bắp (Ear Leaf) và các lá phía trên."
+                    },
+                    {
+                        "Giai_đoạn": "R2 (Hạt sữa)",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Năng suất đã được xác định chủ yếu ở giai đoạn R1; phun thuốc muộn không mang lại hiệu quả kinh tế cao."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -357,8 +447,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa là bắt buộc. Phun thuốc trừ nấm định kỳ bắt đầu từ khi chồi dài 5-8 cm cho đến khi quả nhạy cảm với bệnh (4-5 tuần sau ra hoa).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Chồi dài 5-8 cm", "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Captan (M3 hoặc M4)", "Nhóm_FRAC_IRAC": "M3 hoặc M4", "Lưu_ý_Ứng_dụng": "Bắt đầu chương trình phun thuốc phòng ngừa cho lá non."},
-                    {"Giai_đoạn": "Trước và sau ra hoa", "Hoạt_chất_Đề_xuất": "Myclobutanil (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Giai đoạn quan trọng nhất. Sử dụng thuốc hệ thống (Systemic) để bảo vệ chùm hoa và quả non."}
+                    {
+                        "Giai_đoạn": "Chồi dài 5-8 cm",
+                        "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Captan (M3 hoặc M4)",
+                        "Nhóm_FRAC_IRAC": "M3 hoặc M4",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu chương trình phun thuốc phòng ngừa cho lá non."
+                    },
+                    {
+                        "Giai_đoạn": "Trước và sau ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Myclobutanil (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Giai đoạn quan trọng nhất. Sử dụng thuốc hệ thống (Systemic) để bảo vệ chùm hoa và quả non."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI có thể trị bệnh nếu phun trong vòng 72 giờ sau khi lây nhiễm."
             },
@@ -387,8 +487,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Không có thuốc trị bệnh Esca đã nhiễm trong thân gỗ. Việc kiểm soát tập trung vào phòng ngừa vết thương hở.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cắt tỉa (Pruning)", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc các loại thuốc bảo vệ vết cắt chuyên dụng (ví dụ: Thiophanate-methyl, Flusilazole)", "Nhóm_FRAC_IRAC": "M1, 1, hoặc G1", "Lưu_ý_Ứng_dụng": "Phun hoặc bôi lên vết cắt lớn ngay lập tức sau khi cắt để ngăn chặn sự xâm nhập của bào tử nấm."},
-                    {"Giai_đoạn": "Mùa hè", "Hoạt_chất_Đề_xuất": "Không có", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Nếu cây đã có triệu chứng, việc cắt bỏ cành/thân bị nhiễm bệnh là biện pháp cuối cùng."}
+                    {
+                        "Giai_đoạn": "Cắt tỉa (Pruning)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc các loại thuốc bảo vệ vết cắt chuyên dụng (ví dụ: Thiophanate-methyl, Flusilazole)",
+                        "Nhóm_FRAC_IRAC": "M1, 1, hoặc G1",
+                        "Lưu_ý_Ứng_dụng": "Phun hoặc bôi lên vết cắt lớn ngay lập tức sau khi cắt để ngăn chặn sự xâm nhập của bào tử nấm."
+                    },
+                    {
+                        "Giai_đoạn": "Mùa hè",
+                        "Hoạt_chất_Đề_xuất": "Không có",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Nếu cây đã có triệu chứng, việc cắt bỏ cành/thân bị nhiễm bệnh là biện pháp cuối cùng."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không có."
             },
@@ -417,8 +527,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Sử dụng thuốc bảo vệ (M) và thuốc hệ thống (G1, C3). Việc phòng bệnh cần được thực hiện trong giai đoạn sinh trưởng của lá.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Chồi dài 5-8 cm (Shoot Growth)", "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Captan", "Nhóm_FRAC_IRAC": "M3 hoặc M4", "Lưu_ý_Ứng_dụng": "Bắt đầu chương trình phun phòng ngừa định kỳ, luân phiên 10-14 ngày."},
-                    {"Giai_đoạn": "Quả lớn (Berry Sizing)", "Hoạt_chất_Đề_xuất": "Triazole (DMI) hoặc Strobilurin (C3)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Tiếp tục bảo vệ lá và chùm quả. Đảm bảo luân phiên để chống kháng thuốc và tuân thủ PHI."}
+                    {
+                        "Giai_đoạn": "Chồi dài 5-8 cm (Shoot Growth)",
+                        "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Captan",
+                        "Nhóm_FRAC_IRAC": "M3 hoặc M4",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu chương trình phun phòng ngừa định kỳ, luân phiên 10-14 ngày."
+                    },
+                    {
+                        "Giai_đoạn": "Quả lớn (Berry Sizing)",
+                        "Hoạt_chất_Đề_xuất": "Triazole (DMI) hoặc Strobilurin (C3)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Tiếp tục bảo vệ lá và chùm quả. Đảm bảo luân phiên để chống kháng thuốc và tuân thủ PHI."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -447,8 +567,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phun Đồng và Lưu huỳnh ở giai đoạn đầu mùa để kiểm soát Nấm Mốc Sương (Downy Mildew) và Phấn Trắng (Powdery Mildew).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Ngủ đông", "Hoạt_chất_Đề_xuất": "Không cần thiết.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Chỉ phun Đồng nồng độ cao nếu áp lực bệnh gỗ hoặc Thối Đen trong mùa trước cao."},
-                    {"Giai_đoạn": "Nở hoa - Đậu quả", "Hoạt_chất_Đề_xuất": "Không cần thiết, trừ khi điều kiện môi trường thuận lợi cho nấm.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Duy trì việc theo dõi bệnh hại và côn trùng. Tránh các loại hóa chất có thể gây cháy hoặc ảnh hưởng đến sự thụ phấn."}
+                    {
+                        "Giai_đoạn": "Ngủ đông",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Chỉ phun Đồng nồng độ cao nếu áp lực bệnh gỗ hoặc Thối Đen trong mùa trước cao."
+                    },
+                    {
+                        "Giai_đoạn": "Nở hoa - Đậu quả",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết, trừ khi điều kiện môi trường thuận lợi cho nấm.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Duy trì việc theo dõi bệnh hại và côn trùng. Tránh các loại hóa chất có thể gây cháy hoặc ảnh hưởng đến sự thụ phấn."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -477,8 +607,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung kiểm soát vector truyền bệnh: **Rầy Chổng Cánh (ACP)**.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Ra chồi non (Flush)", "Hoạt_chất_Đề_xuất": "Imidacloprid (Neonicotinoid) - áp dụng cho đất/rễ hoặc lá. Spirotetramat", "Nhóm_FRAC_IRAC": "4A và 23", "Lưu_ý_Ứng_dụng": "Đây là giai đoạn ACP tập trung chích hút và lây lan vi khuẩn. Cần bảo vệ chồi non một cách nghiêm ngặt."},
-                    {"Giai_đoạn": "Ngủ đông/Ít chồi non", "Hoạt_chất_Đề_xuất": "Dầu Khoáng (Horticultural Oil)", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Phun dầu khoáng để diệt trứng và rầy non, đây là biện pháp kiểm soát sinh học/hóa học hiệu quả với ACP."}
+                    {
+                        "Giai_đoạn": "Ra chồi non (Flush)",
+                        "Hoạt_chất_Đề_xuất": "Imidacloprid (Neonicotinoid) - áp dụng cho đất/rễ hoặc lá. Spirotetramat",
+                        "Nhóm_FRAC_IRAC": "4A và 23",
+                        "Lưu_ý_Ứng_dụng": "Đây là giai đoạn ACP tập trung chích hút và lây lan vi khuẩn. Cần bảo vệ chồi non một cách nghiêm ngặt."
+                    },
+                    {
+                        "Giai_đoạn": "Ngủ đông/Ít chồi non",
+                        "Hoạt_chất_Đề_xuất": "Dầu Khoáng (Horticultural Oil)",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Phun dầu khoáng để diệt trứng và rầy non, đây là biện pháp kiểm soát sinh học/hóa học hiệu quả với ACP."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không có thuốc diệt khuẩn hiệu quả cho HLB."
             },
@@ -507,8 +647,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Kiểm soát vi khuẩn chủ yếu dựa vào thuốc Đồng (Copper) để bảo vệ lá và quả.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Ngủ Đông - Nụ Xanh", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Bordeaux Mixture, Copper Hydroxide)", "Nhóm_FRAC_IRAC": "M1", "Lưu_ý_Ứng_dụng": "Phun nồng độ cao trong giai đoạn ngủ đông để tiêu diệt vi khuẩn trú đông trong vết loét. **Cẩn thận tránh cháy lá** nếu phun vào giai đoạn xanh (Green Tip)."},
-                    {"Giai_đoạn": "Sau Rụng Cánh Hoa", "Hoạt_chất_Đề_xuất": "Thuốc Đồng nồng độ thấp hoặc hỗn hợp Đồng + Kẽm (Zn)", "Nhóm_FRAC_IRAC": "M1", "Lưu_ý_Ứng_dụng": "Phun bảo vệ định kỳ 7-10 ngày, đặc biệt trong thời kỳ có mưa kéo dài, để tạo lớp màng bảo vệ vi khuẩn khỏi xâm nhập."}
+                    {
+                        "Giai_đoạn": "Ngủ Đông - Nụ Xanh",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Bordeaux Mixture, Copper Hydroxide)",
+                        "Nhóm_FRAC_IRAC": "M1",
+                        "Lưu_ý_Ứng_dụng": "Phun nồng độ cao trong giai đoạn ngủ đông để tiêu diệt vi khuẩn trú đông trong vết loét. **Cẩn thận tránh cháy lá** nếu phun vào giai đoạn xanh (Green Tip)."
+                    },
+                    {
+                        "Giai_đoạn": "Sau Rụng Cánh Hoa",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng nồng độ thấp hoặc hỗn hợp Đồng + Kẽm (Zn)",
+                        "Nhóm_FRAC_IRAC": "M1",
+                        "Lưu_ý_Ứng_dụng": "Phun bảo vệ định kỳ 7-10 ngày, đặc biệt trong thời kỳ có mưa kéo dài, để tạo lớp màng bảo vệ vi khuẩn khỏi xâm nhập."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Phun kháng sinh Oxytetracycline (chỉ sử dụng trong trường hợp khẩn cấp, cần tuân thủ luật pháp)."
             },
@@ -537,8 +687,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa chủ yếu bệnh Thối Nâu Quả (Brown Rot) và Xoăn Lá (Leaf Curl).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Ngủ đông/Sưng chồi (Dormancy/Bud Swell)", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Chlorothalonil", "Nhóm_FRAC_IRAC": "M1 hoặc M5", "Lưu_ý_Ứng_dụng": "Phun một lần để kiểm soát Xoăn Lá (Leaf Curl) và các bệnh nấm, vi khuẩn khác. Đây là lần phun quan trọng nhất trong năm."},
-                    {"Giai_đoạn": "Trước thu hoạch (Pre-Harvest)", "Hoạt_chất_Đề_xuất": "Propiconazole (DMI) hoặc Boscalid (SDHI) hoặc Captan", "Nhóm_FRAC_IRAC": "G1, 7, hoặc M4", "Lưu_ý_Ứng_dụng": "Bảo vệ quả khỏi Thối Nâu trong vòng 3 tuần trước thu hoạch, tuân thủ nghiêm ngặt PHI."}
+                    {
+                        "Giai_đoạn": "Ngủ đông/Sưng chồi (Dormancy/Bud Swell)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Chlorothalonil",
+                        "Nhóm_FRAC_IRAC": "M1 hoặc M5",
+                        "Lưu_ý_Ứng_dụng": "Phun một lần để kiểm soát Xoăn Lá (Leaf Curl) và các bệnh nấm, vi khuẩn khác. Đây là lần phun quan trọng nhất trong năm."
+                    },
+                    {
+                        "Giai_đoạn": "Trước thu hoạch (Pre-Harvest)",
+                        "Hoạt_chất_Đề_xuất": "Propiconazole (DMI) hoặc Boscalid (SDHI) hoặc Captan",
+                        "Nhóm_FRAC_IRAC": "G1, 7, hoặc M4",
+                        "Lưu_ý_Ứng_dụng": "Bảo vệ quả khỏi Thối Nâu trong vòng 3 tuần trước thu hoạch, tuân thủ nghiêm ngặt PHI."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI có thể trị bệnh Thối Nâu đã nhiễm."
             },
@@ -567,8 +727,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung vào thuốc Đồng (Copper) để ngăn ngừa vi khuẩn xâm nhập.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Vườn ươm - Cấy ghép", "Hoạt_chất_Đề_xuất": "Streptomycin (nếu luật pháp cho phép) hoặc Thuốc Đồng", "Nhóm_FRAC_IRAC": "25 hoặc M1", "Lưu_ý_Ứng_dụng": "Phun phòng ngừa trên cây con. Streptomycin thường chỉ được dùng trong vườn ươm để tránh kháng thuốc."},
-                    {"Giai_đoạn": "Sinh trưởng - Ra quả", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper Hydroxide) kết hợp với Mancozeb", "Nhóm_FRAC_IRAC": "M1 + M3", "Lưu_ý_Ứng_dụng": "Sử dụng Mancozeb để tăng cường hiệu quả của Đồng và cung cấp kẽm/mangan. Phun 7-10 ngày một lần, đặc biệt trong thời tiết ẩm ướt."}
+                    {
+                        "Giai_đoạn": "Vườn ươm - Cấy ghép",
+                        "Hoạt_chất_Đề_xuất": "Streptomycin (nếu luật pháp cho phép) hoặc Thuốc Đồng",
+                        "Nhóm_FRAC_IRAC": "25 hoặc M1",
+                        "Lưu_ý_Ứng_dụng": "Phun phòng ngừa trên cây con. Streptomycin thường chỉ được dùng trong vườn ươm để tránh kháng thuốc."
+                    },
+                    {
+                        "Giai_đoạn": "Sinh trưởng - Ra quả",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper Hydroxide) kết hợp với Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M1 + M3",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng Mancozeb để tăng cường hiệu quả của Đồng và cung cấp kẽm/mangan. Phun 7-10 ngày một lần, đặc biệt trong thời tiết ẩm ướt."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không có."
             },
@@ -597,8 +767,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa tập trung vào các bệnh truyền qua đất và bệnh nấm phổ biến (ví dụ: *Phytophthora blight*).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cấy ghép", "Hoạt_chất_Đề_xuất": "Phosphorous Acid (Phos-acid) hoặc Mefenoxam (nếu *Phytophthora* là mối lo ngại)", "Nhóm_FRAC_IRAC": "33 hoặc 4", "Lưu_ý_Ứng_dụng": "Xử lý đất hoặc nhúng rễ để phòng trừ nấm mốc nước (*oomycetes*) gây thối rễ/thối thân."},
-                    {"Giai_đoạn": "Ra hoa - Ra quả", "Hoạt_chất_Đề_xuất": "Không cần thiết, trừ khi có áp lực bệnh hại (ví dụ: Đốm Khuẩn) hoặc côn trùng cao.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc trừ sâu an toàn cho ong nếu cần kiểm soát côn trùng trong thời kỳ ra hoa."}
+                    {
+                        "Giai_đoạn": "Cấy ghép",
+                        "Hoạt_chất_Đề_xuất": "Phosphorous Acid (Phos-acid) hoặc Mefenoxam (nếu *Phytophthora* là mối lo ngại)",
+                        "Nhóm_FRAC_IRAC": "33 hoặc 4",
+                        "Lưu_ý_Ứng_dụng": "Xử lý đất hoặc nhúng rễ để phòng trừ nấm mốc nước (*oomycetes*) gây thối rễ/thối thân."
+                    },
+                    {
+                        "Giai_đoạn": "Ra hoa - Ra quả",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết, trừ khi có áp lực bệnh hại (ví dụ: Đốm Khuẩn) hoặc côn trùng cao.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc trừ sâu an toàn cho ong nếu cần kiểm soát côn trùng trong thời kỳ ra hoa."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -627,8 +807,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa là chìa khóa. Bắt đầu phun thuốc bảo vệ (M) trước khi bệnh xuất hiện.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Trước khi đóng luống (Before row closure)", "Hoạt_chất_Đề_xuất": "Chlorothalonil (Bravo) hoặc Mancozeb", "Nhóm_FRAC_IRAC": "M5 hoặc M3", "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa định kỳ, bảo vệ lá dưới (nơi bệnh thường bắt đầu)."},
-                    {"Giai_đoạn": "Giữa mùa - Ra củ", "Hoạt_chất_Đề_xuất": "Difenoconazole (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) khi bệnh bắt đầu biểu hiện để vừa trị bệnh vừa bảo vệ, luân phiên với nhóm M."}
+                    {
+                        "Giai_đoạn": "Trước khi đóng luống (Before row closure)",
+                        "Hoạt_chất_Đề_xuất": "Chlorothalonil (Bravo) hoặc Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M5 hoặc M3",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa định kỳ, bảo vệ lá dưới (nơi bệnh thường bắt đầu)."
+                    },
+                    {
+                        "Giai_đoạn": "Giữa mùa - Ra củ",
+                        "Hoạt_chất_Đề_xuất": "Difenoconazole (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) khi bệnh bắt đầu biểu hiện để vừa trị bệnh vừa bảo vệ, luân phiên với nhóm M."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -657,8 +847,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Yêu cầu chương trình phun thuốc phòng ngừa tích cực, kết hợp thuốc bảo vệ (M) và thuốc hệ thống chuyên dụng cho Oomycetes.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Phủ luống (Early Canopy)", "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Chlorothalonil", "Nhóm_FRAC_IRAC": "M3 hoặc M5", "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa 7-10 ngày/lần. Đây là lớp bảo vệ cơ bản."},
-                    {"Giai_đoạn": "Phát triển nhanh - Giữa mùa", "Hoạt_chất_Đề_xuất": "Mefenoxam + Mancozeb (ví dụ: Ridomil Gold) hoặc Fluopicolide (Fosetyl-Al)", "Nhóm_FRAC_IRAC": "4 + M3 hoặc 43", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống/trị bệnh mạnh khi điều kiện thuận lợi cho bệnh. Cần luân phiên để tránh kháng thuốc."}
+                    {
+                        "Giai_đoạn": "Phủ luống (Early Canopy)",
+                        "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Chlorothalonil",
+                        "Nhóm_FRAC_IRAC": "M3 hoặc M5",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa 7-10 ngày/lần. Đây là lớp bảo vệ cơ bản."
+                    },
+                    {
+                        "Giai_đoạn": "Phát triển nhanh - Giữa mùa",
+                        "Hoạt_chất_Đề_xuất": "Mefenoxam + Mancozeb (ví dụ: Ridomil Gold) hoặc Fluopicolide (Fosetyl-Al)",
+                        "Nhóm_FRAC_IRAC": "4 + M3 hoặc 43",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống/trị bệnh mạnh khi điều kiện thuận lợi cho bệnh. Cần luân phiên để tránh kháng thuốc."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Phun Diquat trước thu hoạch để làm khô và diệt thân lá (vine killing), ngăn bào tử lây nhiễm xuống củ."
             },
@@ -687,8 +887,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung kiểm soát nấm và vi khuẩn truyền qua củ giống và đất.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Trước khi trồng (Pre-Planting)", "Hoạt_chất_Đề_xuất": "Fludioxonil + Azoxystrobin (Thuốc xử lý hạt giống)", "Nhóm_FRAC_IRAC": "12 + C3", "Lưu_ý_Ứng_dụng": "Xử lý củ giống để phòng ngừa thối củ và bệnh cây con do *Rhizoctonia* và *Fusarium*."},
-                    {"Giai_đoạn": "Trước thu hoạch", "Hoạt_chất_Đề_xuất": "Không cần thiết.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Nếu cần, phun Diquat để làm khô thân lá 10-14 ngày trước thu hoạch để củ chín vỏ và giảm nguy cơ lây nhiễm từ lá."}
+                    {
+                        "Giai_đoạn": "Trước khi trồng (Pre-Planting)",
+                        "Hoạt_chất_Đề_xuất": "Fludioxonil + Azoxystrobin (Thuốc xử lý hạt giống)",
+                        "Nhóm_FRAC_IRAC": "12 + C3",
+                        "Lưu_ý_Ứng_dụng": "Xử lý củ giống để phòng ngừa thối củ và bệnh cây con do *Rhizoctonia* và *Fusarium*."
+                    },
+                    {
+                        "Giai_đoạn": "Trước thu hoạch",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Nếu cần, phun Diquat để làm khô thân lá 10-14 ngày trước thu hoạch để củ chín vỏ và giảm nguy cơ lây nhiễm từ lá."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -717,8 +927,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung phòng ngừa Thối Xám Quả (*Botrytis*) và các bệnh nấm thân.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Chồi non 15-20 cm (Early Shoot Growth)", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Captan", "Nhóm_FRAC_IRAC": "M1 hoặc M4", "Lưu_ý_Ứng_dụng": "Phun phòng ngừa các bệnh thân và lá (ví dụ: *Spur Blight*)."},
-                    {"Giai_đoạn": "Ra hoa - Đầu quả", "Hoạt_chất_Đề_xuất": "Fenhexamid (Botrytis Control) hoặc Pyraclostrobin", "Nhóm_FRAC_IRAC": "17 hoặc C3", "Lưu_ý_Ứng_dụng": "Phòng trừ Thối Xám Quả (*Botrytis*). Phun an toàn cho ong. Phun lặp lại, đặc biệt trong thời tiết ẩm ướt."}
+                    {
+                        "Giai_đoạn": "Chồi non 15-20 cm (Early Shoot Growth)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Captan",
+                        "Nhóm_FRAC_IRAC": "M1 hoặc M4",
+                        "Lưu_ý_Ứng_dụng": "Phun phòng ngừa các bệnh thân và lá (ví dụ: *Spur Blight*)."
+                    },
+                    {
+                        "Giai_đoạn": "Ra hoa - Đầu quả",
+                        "Hoạt_chất_Đề_xuất": "Fenhexamid (Botrytis Control) hoặc Pyraclostrobin",
+                        "Nhóm_FRAC_IRAC": "17 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Phòng trừ Thối Xám Quả (*Botrytis*). Phun an toàn cho ong. Phun lặp lại, đặc biệt trong thời tiết ẩm ướt."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -747,8 +967,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung kiểm soát cỏ dại (thuốc diệt cỏ) và côn trùng gây hại hạt/quả (Rệp, Bọ Trĩ).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Trước khi gieo - Cây con", "Hoạt_chất_Đề_xuất": "Thuốc xử lý hạt giống (ví dụ: Imidacloprid + Metalaxyl)", "Nhóm_FRAC_IRAC": "4A + 4", "Lưu_ý_Ứng_dụng": "Phòng trừ sâu hại ban đầu và bệnh cây con do nấm mốc nước (*oomycetes*) và *Rhizoctonia*."},
-                    {"Giai_đoạn": "V2 (Hai lá) - R3 (Hình thành quả)", "Hoạt_chất_Đề_xuất": "Thuốc diệt cỏ (tùy theo hệ thống kháng thuốc - ví dụ: Glyphosate nếu là giống kháng thuốc)", "Nhóm_FRAC_IRAC": "9", "Lưu_ý_Ứng_dụng": "Kiểm soát cỏ dại sớm là quan trọng nhất để giảm cạnh tranh."}
+                    {
+                        "Giai_đoạn": "Trước khi gieo - Cây con",
+                        "Hoạt_chất_Đề_xuất": "Thuốc xử lý hạt giống (ví dụ: Imidacloprid + Metalaxyl)",
+                        "Nhóm_FRAC_IRAC": "4A + 4",
+                        "Lưu_ý_Ứng_dụng": "Phòng trừ sâu hại ban đầu và bệnh cây con do nấm mốc nước (*oomycetes*) và *Rhizoctonia*."
+                    },
+                    {
+                        "Giai_đoạn": "V2 (Hai lá) - R3 (Hình thành quả)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc diệt cỏ (tùy theo hệ thống kháng thuốc - ví dụ: Glyphosate nếu là giống kháng thuốc)",
+                        "Nhóm_FRAC_IRAC": "9",
+                        "Lưu_ý_Ứng_dụng": "Kiểm soát cỏ dại sớm là quan trọng nhất để giảm cạnh tranh."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -777,8 +1007,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Sử dụng các loại thuốc trừ nấm chuyên biệt cho Phấn Trắng, bao gồm lưu huỳnh, dầu thực vật và thuốc hệ thống.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Bắt đầu ra dây (Vining)", "Hoạt_chất_Đề_xuất": "Lưu Huỳnh (Sulfur) hoặc Dầu Neem (Horticultural Oil)", "Nhóm_FRAC_IRAC": "M2 hoặc N/A", "Lưu_ý_Ứng_dụng": "Phun phòng ngừa. Lưu huỳnh và dầu có hiệu quả diệt trừ bào tử nấm trên bề mặt. Cẩn thận không phun dầu khi trời quá nóng (> 32°C)."},
-                    {"Giai_đoạn": "Ra hoa - Đậu quả", "Hoạt_chất_Đề_xuất": "Myclobutanil (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để bảo vệ lá non và lá mới. Luân phiên để chống kháng thuốc."}
+                    {
+                        "Giai_đoạn": "Bắt đầu ra dây (Vining)",
+                        "Hoạt_chất_Đề_xuất": "Lưu Huỳnh (Sulfur) hoặc Dầu Neem (Horticultural Oil)",
+                        "Nhóm_FRAC_IRAC": "M2 hoặc N/A",
+                        "Lưu_ý_Ứng_dụng": "Phun phòng ngừa. Lưu huỳnh và dầu có hiệu quả diệt trừ bào tử nấm trên bề mặt. Cẩn thận không phun dầu khi trời quá nóng (> 32°C)."
+                    },
+                    {
+                        "Giai_đoạn": "Ra hoa - Đậu quả",
+                        "Hoạt_chất_Đề_xuất": "Myclobutanil (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để bảo vệ lá non và lá mới. Luân phiên để chống kháng thuốc."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Dầu Thực Vật/Dầu Neem có khả năng đốt cháy bào tử nấm hiện có."
             },
@@ -807,8 +1047,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa bằng thuốc bảo vệ (M) và thuốc hệ thống (G1).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Đầu mùa xuân (Khi lá mới ra)", "Hoạt_chất_Đề_xuất": "Captan hoặc Thuốc Đồng (Copper)", "Nhóm_FRAC_IRAC": "M4 hoặc M1", "Lưu_ý_Ứng_dụng": "Phun phòng ngừa để bảo vệ lá non khỏi bào tử nấm trú đông."},
-                    {"Giai_đoạn": "Ra hoa - Đầu quả", "Hoạt_chất_Đề_xuất": "Fenhexamid hoặc Cyprodinil + Fludioxonil (Switch)", "Nhóm_FRAC_IRAC": "17 hoặc 9 + 12", "Lưu_ý_Ứng_dụng": "Các thuốc này cũng kiểm soát Thối Xám Quả (*Botrytis*), là mục tiêu quan trọng ở giai đoạn này."}
+                    {
+                        "Giai_đoạn": "Đầu mùa xuân (Khi lá mới ra)",
+                        "Hoạt_chất_Đề_xuất": "Captan hoặc Thuốc Đồng (Copper)",
+                        "Nhóm_FRAC_IRAC": "M4 hoặc M1",
+                        "Lưu_ý_Ứng_dụng": "Phun phòng ngừa để bảo vệ lá non khỏi bào tử nấm trú đông."
+                    },
+                    {
+                        "Giai_đoạn": "Ra hoa - Đầu quả",
+                        "Hoạt_chất_Đề_xuất": "Fenhexamid hoặc Cyprodinil + Fludioxonil (Switch)",
+                        "Nhóm_FRAC_IRAC": "17 hoặc 9 + 12",
+                        "Lưu_ý_Ứng_dụng": "Các thuốc này cũng kiểm soát Thối Xám Quả (*Botrytis*), là mục tiêu quan trọng ở giai đoạn này."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI có khả năng trị bệnh đã nhiễm."
             },
@@ -837,8 +1087,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung kiểm soát Thối Xám Quả (*Botrytis*) trong giai đoạn ra hoa, là giai đoạn nhiễm bệnh tiềm ẩn quan trọng nhất.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Chuẩn bị ra hoa (Bud Stage)", "Hoạt_chất_Đề_xuất": "Fluopyram + Trifloxystrobin", "Nhóm_FRAC_IRAC": "7 + 11", "Lưu_ý_Ứng_dụng": "Phòng ngừa Thối Xám. Phun thuốc trước khi hoa mở, vì nấm xâm nhập vào mô hoa."},
-                    {"Giai_đoạn": "Thu hoạch", "Hoạt_chất_Đề_xuất": "Captan hoặc Thuốc Đồng", "Nhóm_FRAC_IRAC": "M4 hoặc M1", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc bảo vệ có thời gian cách ly (PHI) ngắn, nếu cần."}
+                    {
+                        "Giai_đoạn": "Chuẩn bị ra hoa (Bud Stage)",
+                        "Hoạt_chất_Đề_xuất": "Fluopyram + Trifloxystrobin",
+                        "Nhóm_FRAC_IRAC": "7 + 11",
+                        "Lưu_ý_Ứng_dụng": "Phòng ngừa Thối Xám. Phun thuốc trước khi hoa mở, vì nấm xâm nhập vào mô hoa."
+                    },
+                    {
+                        "Giai_đoạn": "Thu hoạch",
+                        "Hoạt_chất_Đề_xuất": "Captan hoặc Thuốc Đồng",
+                        "Nhóm_FRAC_IRAC": "M4 hoặc M1",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc bảo vệ có thời gian cách ly (PHI) ngắn, nếu cần."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -867,8 +1127,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa là biện pháp hóa học duy nhất hiệu quả. Dùng thuốc Đồng (Copper) để ngăn chặn xâm nhập.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Vườn ươm - Cấy ghép", "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper Hydroxide) hoặc Streptomycin", "Nhóm_FRAC_IRAC": "M1 hoặc 25", "Lưu_ý_Ứng_dụng": "Phun phòng ngừa trên cây con. Streptomycin thường chỉ giới hạn ở vườn ươm để tránh kháng thuốc."},
-                    {"Giai_đoạn": "Sinh trưởng - Ra quả", "Hoạt_chất_Đề_xuất": "Thuốc Đồng kết hợp với Mancozeb", "Nhóm_FRAC_IRAC": "M1 + M3", "Lưu_ý_Ứng_dụng": "Phun bảo vệ định kỳ 5-7 ngày/lần, đặc biệt trong thời tiết mưa ẩm. Mancozeb tăng hiệu quả của Đồng."}
+                    {
+                        "Giai_đoạn": "Vườn ươm - Cấy ghép",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper Hydroxide) hoặc Streptomycin",
+                        "Nhóm_FRAC_IRAC": "M1 hoặc 25",
+                        "Lưu_ý_Ứng_dụng": "Phun phòng ngừa trên cây con. Streptomycin thường chỉ giới hạn ở vườn ươm để tránh kháng thuốc."
+                    },
+                    {
+                        "Giai_đoạn": "Sinh trưởng - Ra quả",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng kết hợp với Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M1 + M3",
+                        "Lưu_ý_Ứng_dụng": "Phun bảo vệ định kỳ 5-7 ngày/lần, đặc biệt trong thời tiết mưa ẩm. Mancozeb tăng hiệu quả của Đồng."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không có."
             },
@@ -897,8 +1167,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Phòng ngừa là chìa khóa. Bắt đầu phun thuốc bảo vệ (M) khi lá dưới bắt đầu hình thành.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cây con - Ra hoa", "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Chlorothalonil (Bravo)", "Nhóm_FRAC_IRAC": "M3 hoặc M5", "Lưu_ý_Ứng_dụng": "Bắt đầu chương trình phun phòng ngừa định kỳ 7-10 ngày một lần."},
-                    {"Giai_đoạn": "Ra quả - Thu hoạch", "Hoạt_chất_Đề_xuất": "Difenoconazole (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để bảo vệ lá và quả mới. Luân phiên nhóm thuốc để chống kháng."}
+                    {
+                        "Giai_đoạn": "Cây con - Ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Chlorothalonil (Bravo)",
+                        "Nhóm_FRAC_IRAC": "M3 hoặc M5",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu chương trình phun phòng ngừa định kỳ 7-10 ngày một lần."
+                    },
+                    {
+                        "Giai_đoạn": "Ra quả - Thu hoạch",
+                        "Hoạt_chất_Đề_xuất": "Difenoconazole (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để bảo vệ lá và quả mới. Luân phiên nhóm thuốc để chống kháng."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -927,8 +1207,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tương tự Đốm Sớm, sử dụng thuốc bảo vệ (M) để phòng ngừa.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cây con - Ra hoa", "Hoạt_chất_Đề_xuất": "Chlorothalonil (Bravo) hoặc Mancozeb", "Nhóm_FRAC_IRAC": "M5 hoặc M3", "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa ngay khi lá dưới bắt đầu hình thành, trước khi bệnh xuất hiện."},
-                    {"Giai_đoạn": "Ra quả", "Hoạt_chất_Đề_xuất": "Propiconazole (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Luân phiên với nhóm M để đảm bảo bảo vệ liên tục, nhất là trong mùa mưa."}
+                    {
+                        "Giai_đoạn": "Cây con - Ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Chlorothalonil (Bravo) hoặc Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M5 hoặc M3",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa ngay khi lá dưới bắt đầu hình thành, trước khi bệnh xuất hiện."
+                    },
+                    {
+                        "Giai_đoạn": "Ra quả",
+                        "Hoạt_chất_Đề_xuất": "Propiconazole (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Luân phiên với nhóm M để đảm bảo bảo vệ liên tục, nhất là trong mùa mưa."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -957,8 +1247,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung vào thuốc trừ nấm có tính phòng ngừa và trị bệnh.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Bắt đầu ra hoa", "Hoạt_chất_Đề_xuất": "Chlorothalonil hoặc Mancozeb", "Nhóm_FRAC_IRAC": "M5 hoặc M3", "Lưu_ý_Ứng_dụng": "Phòng ngừa định kỳ. Cần đảm bảo thuốc phun bao phủ mặt dưới lá."},
-                    {"Giai_đoạn": "Ra quả", "Hoạt_chất_Đề_xuất": "DMI (ví dụ: Propiconazole) hoặc Boscalid (SDHI)", "Nhóm_FRAC_IRAC": "G1 hoặc 7", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để kiểm soát bệnh đã nhiễm. Luân phiên nghiêm ngặt."}
+                    {
+                        "Giai_đoạn": "Bắt đầu ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Chlorothalonil hoặc Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M5 hoặc M3",
+                        "Lưu_ý_Ứng_dụng": "Phòng ngừa định kỳ. Cần đảm bảo thuốc phun bao phủ mặt dưới lá."
+                    },
+                    {
+                        "Giai_đoạn": "Ra quả",
+                        "Hoạt_chất_Đề_xuất": "DMI (ví dụ: Propiconazole) hoặc Boscalid (SDHI)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc 7",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để kiểm soát bệnh đã nhiễm. Luân phiên nghiêm ngặt."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -987,8 +1287,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Sử dụng thuốc bảo vệ (M) để phòng ngừa.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cây con - Ra hoa", "Hoạt_chất_Đề_xuất": "Chlorothalonil (Bravo) hoặc Mancozeb", "Nhóm_FRAC_IRAC": "M5 hoặc M3", "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa ngay khi lá dưới bắt đầu hình thành, trước khi bệnh xuất hiện."},
-                    {"Giai_đoạn": "Ra quả", "Hoạt_chất_Đề_xuất": "Propiconazole (DMI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "G1 hoặc C3", "Lưu_ý_Ứng_dụng": "Luân phiên với nhóm M để đảm bảo bảo vệ liên tục, nhất là trong mùa mưa."}
+                    {
+                        "Giai_đoạn": "Cây con - Ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Chlorothalonil (Bravo) hoặc Mancozeb",
+                        "Nhóm_FRAC_IRAC": "M5 hoặc M3",
+                        "Lưu_ý_Ứng_dụng": "Bắt đầu phun phòng ngừa ngay khi lá dưới bắt đầu hình thành, trước khi bệnh xuất hiện."
+                    },
+                    {
+                        "Giai_đoạn": "Ra quả",
+                        "Hoạt_chất_Đề_xuất": "Propiconazole (DMI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "G1 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Luân phiên với nhóm M để đảm bảo bảo vệ liên tục, nhất là trong mùa mưa."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI."
             },
@@ -1017,8 +1327,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Sử dụng thuốc trừ nhện (Acaricide) chuyên dụng. **Tuyệt đối không sử dụng thuốc trừ sâu phổ rộng** vì chúng tiêu diệt thiên địch.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Phát hiện sớm", "Hoạt_chất_Đề_xuất": "Dầu Neem (Neem Oil) hoặc Dầu làm vườn (Horticultural Oil)", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Hiệu quả trong việc tiêu diệt trứng và nhện non. Cần phun phủ khắp mặt dưới lá."},
-                    {"Giai_đoạn": "Áp lực cao", "Hoạt_chất_Đề_xuất": "Spiromesifen (Tetronic acid) hoặc Abamectin (Macrocyclic lactone)", "Nhóm_FRAC_IRAC": "23 hoặc 6", "Lưu_ý_Ứng_dụng": "Cần luân phiên nhóm thuốc Acaricide (IRAC Group) thường xuyên vì nhện đỏ kháng thuốc rất nhanh. Abamectin có thể dùng để trị tận gốc nếu cần, nhưng chỉ nên dùng giới hạn."}
+                    {
+                        "Giai_đoạn": "Phát hiện sớm",
+                        "Hoạt_chất_Đề_xuất": "Dầu Neem (Neem Oil) hoặc Dầu làm vườn (Horticultural Oil)",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Hiệu quả trong việc tiêu diệt trứng và nhện non. Cần phun phủ khắp mặt dưới lá."
+                    },
+                    {
+                        "Giai_đoạn": "Áp lực cao",
+                        "Hoạt_chất_Đề_xuất": "Spiromesifen (Tetronic acid) hoặc Abamectin (Macrocyclic lactone)",
+                        "Nhóm_FRAC_IRAC": "23 hoặc 6",
+                        "Lưu_ý_Ứng_dụng": "Cần luân phiên nhóm thuốc Acaricide (IRAC Group) thường xuyên vì nhện đỏ kháng thuốc rất nhanh. Abamectin có thể dùng để trị tận gốc nếu cần, nhưng chỉ nên dùng giới hạn."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Abamectin (tùy thuộc vào luật pháp)."
             },
@@ -1047,8 +1367,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Sử dụng kết hợp thuốc bảo vệ (M) và thuốc hệ thống (G1, C3, 7).",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cây con - Ra hoa", "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Chlorothalonil", "Nhóm_FRAC_IRAC": "M3 hoặc M5", "Lưu_ý_Ứng_dụng": "Phòng ngừa định kỳ 7-10 ngày, bảo vệ lá dưới."},
-                    {"Giai_đoạn": "Ra quả - Thu hoạch", "Hoạt_chất_Đề_xuất": "Benzovindiflupyr (SDHI) hoặc Azoxystrobin (Strobilurin)", "Nhóm_FRAC_IRAC": "7 hoặc C3", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống. Luân phiên nhóm thuốc để quản lý kháng thuốc, vì bệnh này đang phát triển kháng thuốc mạnh mẽ."}
+                    {
+                        "Giai_đoạn": "Cây con - Ra hoa",
+                        "Hoạt_chất_Đề_xuất": "Mancozeb hoặc Chlorothalonil",
+                        "Nhóm_FRAC_IRAC": "M3 hoặc M5",
+                        "Lưu_ý_Ứng_dụng": "Phòng ngừa định kỳ 7-10 ngày, bảo vệ lá dưới."
+                    },
+                    {
+                        "Giai_đoạn": "Ra quả - Thu hoạch",
+                        "Hoạt_chất_Đề_xuất": "Benzovindiflupyr (SDHI) hoặc Azoxystrobin (Strobilurin)",
+                        "Nhóm_FRAC_IRAC": "7 hoặc C3",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống. Luân phiên nhóm thuốc để quản lý kháng thuốc, vì bệnh này đang phát triển kháng thuốc mạnh mẽ."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "DMI và một số SDHI."
             },
@@ -1077,8 +1407,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung kiểm soát Ruồi Trắng Vector. Không có hóa chất trị virus.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Vườn ươm - Cấy ghép", "Hoạt_chất_Đề_xuất": "Imidacloprid hoặc Dinotefuran (Neonicotinoids)", "Nhóm_FRAC_IRAC": "4A", "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để bảo vệ cây con trong 4-6 tuần đầu, khi chúng mẫn cảm nhất."},
-                    {"Giai_đoạn": "Sinh trưởng - Ra quả", "Hoạt_chất_Đề_xuất": "Pyriproxyfen (IGR) hoặc Spiromesifen", "Nhóm_FRAC_IRAC": "7C (Juvenile Hormone Mimic) hoặc 23", "Lưu_ý_Ứng_dụng": "Luân phiên nhóm thuốc thường xuyên để quản lý Ruồi Trắng kháng thuốc. IGR làm gián đoạn chu kỳ sinh sản của Ruồi Trắng."}
+                    {
+                        "Giai_đoạn": "Vườn ươm - Cấy ghép",
+                        "Hoạt_chất_Đề_xuất": "Imidacloprid hoặc Dinotefuran (Neonicotinoids)",
+                        "Nhóm_FRAC_IRAC": "4A",
+                        "Lưu_ý_Ứng_dụng": "Sử dụng thuốc hệ thống (Systemic) để bảo vệ cây con trong 4-6 tuần đầu, khi chúng mẫn cảm nhất."
+                    },
+                    {
+                        "Giai_đoạn": "Sinh trưởng - Ra quả",
+                        "Hoạt_chất_Đề_xuất": "Pyriproxyfen (IGR) hoặc Spiromesifen",
+                        "Nhóm_FRAC_IRAC": "7C (Juvenile Hormone Mimic) hoặc 23",
+                        "Lưu_ý_Ứng_dụng": "Luân phiên nhóm thuốc thường xuyên để quản lý Ruồi Trắng kháng thuốc. IGR làm gián đoạn chu kỳ sinh sản của Ruồi Trắng."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không có."
             },
@@ -1107,8 +1447,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Không có hóa chất trị virus.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Trước khi trồng", "Hoạt_chất_Đề_xuất": "Không có.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Chỉ sử dụng hạt giống đã được xử lý nhiệt hoặc axit để khử trùng bề mặt."},
-                    {"Giai_đoạn": "Trong mùa vụ", "Hoạt_chất_Đề_xuất": "Không có.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Biện pháp kiểm soát chỉ là vệ sinh và loại bỏ cây bệnh."}
+                    {
+                        "Giai_đoạn": "Trước khi trồng",
+                        "Hoạt_chất_Đề_xuất": "Không có.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Chỉ sử dụng hạt giống đã được xử lý nhiệt hoặc axit để khử trùng bề mặt."
+                    },
+                    {
+                        "Giai_đoạn": "Trong mùa vụ",
+                        "Hoạt_chất_Đề_xuất": "Không có.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Biện pháp kiểm soát chỉ là vệ sinh và loại bỏ cây bệnh."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không có."
             },
@@ -1137,8 +1487,18 @@
             "III_Chiến_lược_Kiểm_soát_Hóa_học": {
                 "Nguyên_tắc_FRAC_IRAC": "Tập trung vào phòng ngừa bệnh truyền qua đất và côn trùng vector.",
                 "Phác_đồ_Giai_đoạn_Cây": [
-                    {"Giai_đoạn": "Cấy ghép", "Hoạt_chất_Đề_xuất": "Phosphorous Acid (Phos-acid)", "Nhóm_FRAC_IRAC": "33", "Lưu_ý_Ứng_dụng": "Xử lý đất hoặc nhúng rễ để phòng trừ thối rễ/thân (*Phytophthora*)."},
-                    {"Giai_đoạn": "Ra hoa - Đầu quả", "Hoạt_chất_Đề_xuất": "Không cần thiết, duy trì quản lý dinh dưỡng và độ ẩm.", "Nhóm_FRAC_IRAC": "N/A", "Lưu_ý_Ứng_dụng": "Theo dõi mật độ côn trùng chích hút."}
+                    {
+                        "Giai_đoạn": "Cấy ghép",
+                        "Hoạt_chất_Đề_xuất": "Phosphorous Acid (Phos-acid)",
+                        "Nhóm_FRAC_IRAC": "33",
+                        "Lưu_ý_Ứng_dụng": "Xử lý đất hoặc nhúng rễ để phòng trừ thối rễ/thân (*Phytophthora*)."
+                    },
+                    {
+                        "Giai_đoạn": "Ra hoa - Đầu quả",
+                        "Hoạt_chất_Đề_xuất": "Không cần thiết, duy trì quản lý dinh dưỡng và độ ẩm.",
+                        "Nhóm_FRAC_IRAC": "N/A",
+                        "Lưu_ý_Ứng_dụng": "Theo dõi mật độ côn trùng chích hút."
+                    }
                 ],
                 "Thuốc_Trừ_Tận_gốc_Eradicant": "Không sử dụng."
             },
@@ -1150,4 +1510,3 @@
         }
     ]
 }
-
