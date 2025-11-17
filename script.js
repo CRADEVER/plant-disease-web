@@ -8,7 +8,7 @@ let pconf = document.querySelector('.box-result p');
 let modeToggle = document.getElementById('modeToggle');
 let body = document.body;
 
-
+// Camera elements
 let cameraToggle = document.getElementById('cameraToggle');
 let cameraContainer = document.getElementById('cameraContainer');
 let videoStream = document.getElementById('videoStream');
@@ -24,22 +24,20 @@ let progressBar =
     new ProgressBar.Circle('#progress', {
     color: 'limegreen',
     strokeWidth: 10,
-    duration: 2000,
+    duration: 2000, // milliseconds
     easing: 'easeInOut'
 });
 
 async function fetchData(){
-    let response = await fetch('./class_indices.json');
+    // Thêm tham số truy vấn (cache-buster) để đảm bảo luôn tải tệp JSON mới nhất (đã Việt hóa)
+    let response = await fetch('./class_indices.json?v=' + new Date().getTime());
     let data = await response.json();
-   
-    let indices = {};
-    for (const key in data) {
-        indices[data[key]] = key;
-    }
+    
+    // Phần này không cần thiết để trả về, chỉ cần trả về data trực tiếp
     return data;
 }
 
-
+// Initialize/Load model
 async function initialize() {
     let status = document.querySelector('.init_status')
     status.innerHTML = 'Đang tải mô hình .... <span class="fa fa-spinner fa-spin"></span>'
@@ -49,11 +47,11 @@ async function initialize() {
 }
 
 async function predict() {
-
-    await initialize(); 
+    // Function for invoking prediction
+    await initialize(); // Đảm bảo mô hình đã tải trước khi dự đoán
     let offset = tf.scalar(255)
     
-
+    // Sử dụng img để lấy ảnh đã tải/chụp
     let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
     let tensorImg_scaled = tensorImg.div(offset)
     
@@ -64,25 +62,29 @@ async function predict() {
             predicted_class = tf.argMax(prediction)
             
             class_idx = Array.from(predicted_class.dataSync())[0]
+            
+            // Hiển thị tên bệnh đã Việt hóa
             document.querySelector('.pred_class').innerHTML = data[class_idx]
             document.querySelector('.inner').innerHTML = `${parseFloat(prediction[class_idx]*100).toFixed(2)}%`
 
-          
-            progressBar.set(0);
-            progressBar.animate(prediction[class_idx]-0.005); 
+            // Cập nhật progress bar
+            progressBar.set(0); // Reset progress bar
+            progressBar.animate(prediction[class_idx]-0.005); // percent
 
             pconf.style.display = 'block'
 
             confidence.innerHTML = Math.round(prediction[class_idx]*100)
-        
+            
+            // Xóa trạng thái tải
             document.querySelector('.init_status').innerHTML = '';
         }
     );
     
 }
 
+// --- Xử lý tải ảnh lên ---
 fileUpload.addEventListener('change', function(e){
-
+    // Ẩn camera nếu đang mở
     stopCamera();
     cameraContainer.style.display = 'none';
 
@@ -92,7 +94,7 @@ fileUpload.addEventListener('change', function(e){
         document.getElementById("choose-text-1").innerText = "Đổi Ảnh Đã Chọn"
         document.querySelector(".success-1").style.display = "inline-block"
 
-    
+        // Cập nhật màu sắc cho biểu tượng check
         document.querySelector(".success-1 i").style.border = "1px solid limegreen"
         document.querySelector(".success-1 i").style.color = "limegreen"
         
@@ -104,9 +106,9 @@ fileUpload.addEventListener('change', function(e){
         reader.addEventListener("load", function(){
             img.style.display = "block"
             img.setAttribute('src', this.result);
-            img.style.width = "100%";
+            img.style.width = "100%"; // Đảm bảo ảnh hiển thị đầy đủ
             img.style.height = "350px"; 
-            predict(); 
+            predict(); // Bắt đầu dự đoán sau khi ảnh được tải
         });
     }
 
@@ -117,7 +119,7 @@ fileUpload.addEventListener('change', function(e){
 })
 
 
-
+// --- Xử lý Camera ---
 cameraToggle.addEventListener('click', function() {
     if (cameraContainer.style.display === 'flex') {
         stopCamera();
@@ -135,22 +137,22 @@ stopButton.addEventListener('click', function() {
 
 captureButton.addEventListener('click', function() {
     if (currentStream) {
-
+        // Vẽ frame hiện tại của video lên canvas
         canvas.width = videoStream.videoWidth;
         canvas.height = videoStream.videoHeight;
         context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
         
-     
+        // Chuyển canvas thành ảnh và gán vào thẻ <img>
         img.setAttribute('src', canvas.toDataURL('image/jpeg'));
         img.style.display = "block";
         img.style.width = "100%";
         img.style.height = "350px";
 
-   
+        // Tắt camera sau khi chụp
         stopCamera();
         cameraContainer.style.display = 'none';
         
-  
+        // Bắt đầu dự đoán
         predict();
     }
 });
@@ -158,12 +160,12 @@ captureButton.addEventListener('click', function() {
 async function startCamera() {
     try {
         cameraStatus.textContent = 'Đang yêu cầu truy cập camera...';
-       
+        
+        // Thử camera sau trên điện thoại nếu có, hoặc camera trước trên laptop
         const constraints = {
             video: {
                 width: { ideal: 640 },
                 height: { ideal: 480 },
-               
                 facingMode: 'environment' 
             }
         };
@@ -176,10 +178,10 @@ async function startCamera() {
         videoStream.style.display = 'block';
         captureButton.style.display = 'block';
         stopButton.style.display = 'block';
-        img.style.display = 'none'; 
-        boxResult.style.display = 'none'; 
+        img.style.display = 'none'; // Ẩn ảnh đã chọn trước đó
+        boxResult.style.display = 'none'; // Ẩn kết quả cũ
     } catch (err) {
-      
+        // Thử lại với facingMode: 'user' nếu 'environment' thất bại
         try {
              const constraints = {
                 video: {
@@ -219,7 +221,7 @@ function stopCamera() {
 }
 
 
-
+// --- Xử lý Chế độ Sáng/Tối ---
 modeToggle.addEventListener('click', () => {
     if (body.classList.contains('light-mode')) {
         body.classList.replace('light-mode', 'dark-mode');
