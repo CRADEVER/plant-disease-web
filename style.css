@@ -1,4 +1,4 @@
-
+/* --- CÁC STYLE CŨ GIỮ NGUYÊN (Từ đầu file đến .init_status) --- */
 *{
     box-sizing: border-box;
     padding: 0;
@@ -20,15 +20,15 @@ html,body{
 .light-mode h1, .light-mode h2 {
     color: #1a1a1a;
 }
+/* Thẻ p CHUNG cho độ chính xác */
+.light-mode .box-result > p {
+    background: #4caf50; 
+    color: white;
+}
 
 .light-mode .upload-file, .light-mode .camera-btn, .light-mode .capture-btn, .light-mode .stop-btn {
     background-color: white;
     color: #9b9b9b;
-}
-
-.light-mode .box-result p {
-    background: #4caf50; 
-    color: white;
 }
 
 .light-mode .mode-toggle {
@@ -46,16 +46,16 @@ html,body{
 .dark-mode h1, .dark-mode h2 {
     color: #e0e0e0;
 }
+/* Thẻ p CHUNG cho độ chính xác */
+.dark-mode .box-result > p {
+    background: #004d40; 
+    color: #e0e0e0;
+}
 
 .dark-mode .upload-file, .dark-mode .camera-btn, .dark-mode .capture-btn, .dark-mode .stop-btn {
     background-color: #1e1e1e;
     color: #b0b0b0;
     border: 2px dashed #444;
-}
-
-.dark-mode .box-result p {
-    background: #004d40; 
-    color: #e0e0e0;
 }
 
 .dark-mode .mode-toggle {
@@ -67,7 +67,6 @@ html,body{
 .dark-mode .init_status {
     background: #004d40;
 }
-
 
 .github-fork-ribbon:before, 
 .upload-btn, 
@@ -81,7 +80,6 @@ path {
 .github-fork-ribbon:before{
     background: #4caf50 !important;
 }
-
 
 .header-container {
     display: flex;
@@ -112,8 +110,6 @@ h1 {
 hr{
     margin: 10px 0px;
 }
-
-
 
 .upload-btn-container {
     display: flex;
@@ -228,7 +224,6 @@ hr{
     color: orange;
 }
 
-
 img{
     width: 100%;
     height: 300px;
@@ -255,7 +250,16 @@ img{
     display: none;
 }
 
-.box-result p{
+/* --- BẮT ĐẦU CSS MỚI & SỬA ĐỔI --- */
+
+.box-result{
+    display: none;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/* CSS cho thanh % Độ chính xác (p là con trực tiếp của .box-result) */
+.box-result > p {
     font-weight: bold;
     padding: 10px;
     margin-top: 20px;
@@ -264,11 +268,80 @@ img{
     text-align: center;
 }
 
-.box-result{
-    display: none;
-    padding: 20px;
-    border-radius: 20px;
+/* CSS MỚI: Phân loại bệnh (dưới h2) */
+.pred_classification {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 5px;
 }
+.dark-mode .pred_classification {
+    color: #bbb;
+}
+
+/* CSS MỚI: Container cho các giải pháp */
+.info-container {
+    margin-top: 20px;
+    text-align: left;
+    display: none; /* Ẩn ban đầu, chỉ hiện khi có kết quả */
+}
+
+.info-section {
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+}
+
+.info-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.info-section h4 i {
+    font-size: 20px;
+    color: #4caf50; /* Green icon */
+}
+
+/* CSS MỚI: Ghi đè các thẻ p bên trong phần giải pháp */
+.info-section p {
+    display: block !important; /* Ghi đè .box-result p { display: none; } */
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+    margin-top: 5px;
+    background: none;
+    color: inherit;
+    text-align: left;
+    line-height: 1.6;
+}
+.info-section p strong {
+    color: #2e7d32; /* Darker green */
+}
+.info-section p em {
+    font-style: italic;
+    color: #555;
+}
+
+
+/* CSS MỚI: Chế độ tối cho các phần giải pháp */
+.dark-mode .info-section {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+.dark-mode .info-section p strong {
+    color: #81C784; /* Lighter green */
+}
+.dark-mode .info-section p em {
+    color: #aaa;
+}
+
+
+/* --- KẾT THÚC CSS MỚI --- */
 
 .accuracy{
     display: flex;
@@ -283,7 +356,6 @@ position: relative;
 display: flex;
 align-items: center;
 justify-content: center;
-
 }
 
 .progress > .inner {
@@ -302,11 +374,9 @@ display: block;
     transition: ease-in-out .5s;
     text-align: center;
     margin: 10px 0px;
-
     background: #4caf50;
     color: white;
 }
-
 
 
 @media (min-width: 768px){
