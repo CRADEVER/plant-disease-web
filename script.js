@@ -8,7 +8,7 @@ let pconf = document.querySelector('.box-result p');
 let modeToggle = document.getElementById('modeToggle');
 let body = document.body;
 
-// Camera elements
+
 let cameraToggle = document.getElementById('cameraToggle');
 let cameraContainer = document.getElementById('cameraContainer');
 let videoStream = document.getElementById('videoStream');
@@ -24,14 +24,14 @@ let progressBar =
     new ProgressBar.Circle('#progress', {
     color: 'limegreen',
     strokeWidth: 10,
-    duration: 2000, // milliseconds
+    duration: 2000,
     easing: 'easeInOut'
 });
 
 async function fetchData(){
     let response = await fetch('./class_indices.json');
     let data = await response.json();
-    // Chuyển đổi từ key/value index -> classname sang classname -> index để dễ dàng truy cập
+   
     let indices = {};
     for (const key in data) {
         indices[data[key]] = key;
@@ -39,7 +39,7 @@ async function fetchData(){
     return data;
 }
 
-// Initialize/Load model
+
 async function initialize() {
     let status = document.querySelector('.init_status')
     status.innerHTML = 'Đang tải mô hình .... <span class="fa fa-spinner fa-spin"></span>'
@@ -49,11 +49,11 @@ async function initialize() {
 }
 
 async function predict() {
-    // Function for invoking prediction
-    await initialize(); // Đảm bảo mô hình đã tải trước khi dự đoán
+
+    await initialize(); 
     let offset = tf.scalar(255)
     
-    // Sử dụng img để lấy ảnh đã tải/chụp
+
     let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
     let tensorImg_scaled = tensorImg.div(offset)
     
@@ -67,24 +67,22 @@ async function predict() {
             document.querySelector('.pred_class').innerHTML = data[class_idx]
             document.querySelector('.inner').innerHTML = `${parseFloat(prediction[class_idx]*100).toFixed(2)}%`
 
-            // Cập nhật progress bar
-            progressBar.set(0); // Reset progress bar
-            progressBar.animate(prediction[class_idx]-0.005); // percent
+          
+            progressBar.set(0);
+            progressBar.animate(prediction[class_idx]-0.005); 
 
             pconf.style.display = 'block'
 
             confidence.innerHTML = Math.round(prediction[class_idx]*100)
-            
-            // Xóa trạng thái tải
+        
             document.querySelector('.init_status').innerHTML = '';
         }
     );
     
 }
 
-// --- Xử lý tải ảnh lên ---
 fileUpload.addEventListener('change', function(e){
-    // Ẩn camera nếu đang mở
+
     stopCamera();
     cameraContainer.style.display = 'none';
 
@@ -94,7 +92,7 @@ fileUpload.addEventListener('change', function(e){
         document.getElementById("choose-text-1").innerText = "Đổi Ảnh Đã Chọn"
         document.querySelector(".success-1").style.display = "inline-block"
 
-        // Cập nhật màu sắc cho biểu tượng check
+    
         document.querySelector(".success-1 i").style.border = "1px solid limegreen"
         document.querySelector(".success-1 i").style.color = "limegreen"
         
@@ -106,9 +104,9 @@ fileUpload.addEventListener('change', function(e){
         reader.addEventListener("load", function(){
             img.style.display = "block"
             img.setAttribute('src', this.result);
-            img.style.width = "100%"; // Đảm bảo ảnh hiển thị đầy đủ
+            img.style.width = "100%";
             img.style.height = "350px"; 
-            predict(); // Bắt đầu dự đoán sau khi ảnh được tải
+            predict(); 
         });
     }
 
@@ -119,7 +117,7 @@ fileUpload.addEventListener('change', function(e){
 })
 
 
-// --- Xử lý Camera ---
+
 cameraToggle.addEventListener('click', function() {
     if (cameraContainer.style.display === 'flex') {
         stopCamera();
@@ -137,22 +135,22 @@ stopButton.addEventListener('click', function() {
 
 captureButton.addEventListener('click', function() {
     if (currentStream) {
-        // Vẽ frame hiện tại của video lên canvas
+
         canvas.width = videoStream.videoWidth;
         canvas.height = videoStream.videoHeight;
         context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
         
-        // Chuyển canvas thành ảnh và gán vào thẻ <img>
+     
         img.setAttribute('src', canvas.toDataURL('image/jpeg'));
         img.style.display = "block";
         img.style.width = "100%";
         img.style.height = "350px";
 
-        // Tắt camera sau khi chụp
+   
         stopCamera();
         cameraContainer.style.display = 'none';
         
-        // Bắt đầu dự đoán
+  
         predict();
     }
 });
@@ -160,13 +158,12 @@ captureButton.addEventListener('click', function() {
 async function startCamera() {
     try {
         cameraStatus.textContent = 'Đang yêu cầu truy cập camera...';
-        // Sử dụng facingMode: { exact: "environment" } cho camera sau trên mobile
-        // Hoặc không chỉ định để dùng camera mặc định (trước trên laptop)
+       
         const constraints = {
             video: {
                 width: { ideal: 640 },
                 height: { ideal: 480 },
-                // Thử camera sau trên điện thoại nếu có
+               
                 facingMode: 'environment' 
             }
         };
@@ -179,10 +176,10 @@ async function startCamera() {
         videoStream.style.display = 'block';
         captureButton.style.display = 'block';
         stopButton.style.display = 'block';
-        img.style.display = 'none'; // Ẩn ảnh đã chọn trước đó
-        boxResult.style.display = 'none'; // Ẩn kết quả cũ
+        img.style.display = 'none'; 
+        boxResult.style.display = 'none'; 
     } catch (err) {
-        // Thử lại với facingMode: 'user' nếu 'environment' thất bại
+      
         try {
              const constraints = {
                 video: {
@@ -222,7 +219,7 @@ function stopCamera() {
 }
 
 
-// --- Xử lý Chế độ Sáng/Tối ---
+
 modeToggle.addEventListener('click', () => {
     if (body.classList.contains('light-mode')) {
         body.classList.replace('light-mode', 'dark-mode');

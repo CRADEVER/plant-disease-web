@@ -1,4 +1,4 @@
-/* --- Global Reset and Base Styles --- */
+
 *{
     box-sizing: border-box;
     padding: 0;
@@ -11,9 +11,9 @@ html,body{
     transition: background-color 0.5s, color 0.5s;
 }
 
-/* --- Chế độ Sáng (Mặc định) --- */
+
 .light-mode {
-    background: #eafaea; /* Xanh lá cây nhạt */
+    background: #eafaea;
     color: #222222;
 }
 
@@ -27,7 +27,7 @@ html,body{
 }
 
 .light-mode .box-result p {
-    background: #4caf50; /* Xanh lá cây đậm hơn cho kết quả */
+    background: #4caf50; 
     color: white;
 }
 
@@ -37,9 +37,9 @@ html,body{
     border: 1px solid #ccc;
 }
 
-/* --- Chế độ Tối --- */
+
 .dark-mode {
-    background: #121212; /* Nền tối */
+    background: #121212; 
     color: #e0e0e0;
 }
 
@@ -54,7 +54,7 @@ html,body{
 }
 
 .dark-mode .box-result p {
-    background: #004d40; /* Xanh lá cây đậm hơn cho kết quả */
+    background: #004d40; 
     color: #e0e0e0;
 }
 
@@ -68,13 +68,13 @@ html,body{
     background: #004d40;
 }
 
-/* Màu sắc chung (không thay đổi) */
+
 .github-fork-ribbon:before, 
 .upload-btn, 
 .success-1 i, 
 .progress > .inner, 
 path {
-    color: #4caf50 !important; /* Xanh lá cây non */
+    color: #4caf50 !important;
     stroke: #4caf50;
 }
 
@@ -82,7 +82,7 @@ path {
     background: #4caf50 !important;
 }
 
-/* --- Header and Mode Toggle --- */
+
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -114,7 +114,7 @@ hr{
 }
 
 
-/* --- Upload and Camera Buttons --- */
+
 .upload-btn-container {
     display: flex;
     gap: 20px;
@@ -124,7 +124,7 @@ hr{
 
 .upload-wrapper {
     flex: 1;
-    min-width: 280px; /* Đảm bảo kích thước tối thiểu */
+    min-width: 280px;
 }
 
 .upload-btn-wrapper, .camera-btn-wrapper{
@@ -184,9 +184,8 @@ hr{
     font-size: 100px;
 }
 
-/* --- Camera Stream Container --- */
 .camera-stream-container {
-    display: none; /* Ẩn mặc định */
+    display: none;
     flex-direction: column;
     align-items: center;
     gap: 15px;
@@ -229,7 +228,7 @@ hr{
     color: orange;
 }
 
-/* --- Image and Result Boxes --- */
+
 img{
     width: 100%;
     height: 300px;
@@ -246,7 +245,7 @@ img{
     }
     
 .box{
-    width: 48%; /* Tăng nhẹ để có khoảng trống giữa 2 cột */
+    width: 48%;
     margin-bottom: 20px;
 }
 
@@ -303,13 +302,13 @@ display: block;
     transition: ease-in-out .5s;
     text-align: center;
     margin: 10px 0px;
-    /* Màu nền được điều chỉnh theo mode */
+
     background: #4caf50;
     color: white;
 }
 
 
-/* --- Responsive Design (Cải tiến) --- */
+
 @media (min-width: 768px){
     html,body{
         width: 80%;
@@ -319,7 +318,7 @@ display: block;
 
 @media (max-width: 900px) {
     .box {
-        width: 100%; /* Chuyển sang 1 cột trên màn hình nhỏ hơn 900px */
+        width: 100%; 
     }
     .row {
         flex-direction: column;
