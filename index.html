@@ -62,17 +62,35 @@
 
         <div class="box box-result">
             <div class="init_status"></div>
+            
             <div>
                 <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
-                
+                <h4 class="pred_classification" id="pred_classification"></h4>
+            </div>
+            
+            <div class="info-container" id="infoContainer">
+                <div class="info-section">
+                    <h4><i class="material-icons">visibility</i> Dấu hiệu & Tác nhân</h4>
+                    <p id="pred_signs"></p>
+                </div>
+                <div class="info-section">
+                    <h4><i class="material-icons">eco</i> Biện pháp Canh tác</h4>
+                    <p id="pred_farming"></p>
+                </div>
+                <div class="info-section">
+                    <h4><i class="material-icons">science</i> Chiến lược Hóa học</h4>
+                    <p id="pred_chemical"></p>
+                </div>
+                <div class="info-section">
+                    <h4><i class="material-icons">bug_report</i> Giải pháp Sinh học & Thay thế</h4>
+                    <p id="pred_biological"></p>
+                </div>
             </div>
             <div class="accuracy">
                 <div class="progress" id="progress">
                     <div class="inner">
-                      
                     </div>
                   </div>
-
             </div>
             <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
         </div>
@@ -80,7 +98,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/2.0.1/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
