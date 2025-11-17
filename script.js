@@ -39,66 +39,62 @@ async function fetchData(){
     let data = await response.json();
    
     let indices = {};
-    // Đảm bảo disease_lookup_map được reset
-    disease_lookup_map = {};
-
-    // Giả sử data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet là mảng chứa các đối tượng bệnh
+    disease_lookup_map = {}; // Reset map
+    
+    // Xử lý cấu trúc JSON có Phac_do_Quan_Ly_Tong_Hop_Chi_tiet là mảng
     if (data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet && Array.isArray(data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet)) {
         data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet.forEach(item => {
-            // Sử dụng Mã_ID làm khóa tra cứu (giả sử trùng với index của model)
             const id = item.Mã_ID; 
             if (id !== undefined) {
-                // Bản đồ tra cứu Tên_Bệnh (dùng cho pred_class)
                 indices[id] = item.Tên_Bệnh; 
-                // Bản đồ tra cứu chi tiết bệnh (dùng cho diseaseDetailsContainer)
                 disease_lookup_map[id] = item; 
             }
         });
     } else {
-        // Xử lý trường hợp JSON có cấu trúc cũ (chỉ chứa Tên Bệnh) hoặc cấu trúc Object tối ưu
+        // Xử lý các cấu trúc JSON khác (ví dụ: JSON cũ hoặc Object tối ưu)
         for (const key in data) {
-            // Trường hợp JSON Object tối ưu: data[key] là Object chi tiết bệnh, key là ID
             if (typeof data[key] === 'object' && data[key] !== null && data[key].Tên_Bệnh) {
                  indices[key] = data[key].Tên_Bệnh;
                  disease_lookup_map[key] = data[key];
-            } 
-            // Trường hợp JSON cũ (chỉ có index -> name): data[key] là index, key là Tên Bệnh
-            else if (typeof data[key] === 'string' && /^\d+$/.test(data[key])) { 
+            } else if (typeof data[key] === 'string' && /^\d+$/.test(data[key])) { 
                  indices[data[key]] = key;
-                 // Không có chi tiết bệnh để tra cứu trong trường hợp này
             }
         }
     }
     
-    // Lưu bản đồ tra cứu Tên_Bệnh vào biến global
     class_indices = indices;
     return indices; 
 }
 
 
+// CHỈ CHẠY MỘT LẦN KHI ỨNG DỤNG KHỞI ĐỘNG
 async function initialize() {
     let status = document.querySelector('.init_status')
-    status.innerHTML = 'Đang tải mô hình .... <span class="fa fa-spinner fa-spin"></span>'
+    status.innerHTML = 'Đang tải mô hình và dữ liệu IPM.... <span class="fa fa-spinner fa-spin"></span>'
+    
+    // Tải model
     model = await tf.loadLayersModel('./tensorflowjs-model/model.json');
+    
+    // Tải và chuẩn hóa dữ liệu JSON
+    await fetchData();
+    
     status.innerHTML = 'Tải mô hình thành công <span class="fa fa-check"></span>'
     boxResult.style.display = 'block'
-    // Tải dữ liệu JSON ngay sau khi model được tải
-    await fetchData();
 }
 
+// KHÔNG GỌI initialize() TRONG HÀM NÀY
 async function predict() {
-
-    // Khởi tạo model và tải dữ liệu JSON nếu chưa có
+    // Đảm bảo model đã tải. Nếu chưa, tải ngay (chỉ xảy ra lần đầu)
     if (!model) {
         await initialize();
     }
     
     // Ẩn chi tiết bệnh cũ
     diseaseDetailsContainer.innerHTML = '';
-
+    document.querySelector('.init_status').innerHTML = 'Đang dự đoán...';
+    
     let offset = tf.scalar(255)
     
-
     let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
     let tensorImg_scaled = tensorImg.div(offset)
     
@@ -136,9 +132,9 @@ function onPredict(pred) {
     }
 }
 
-// Hàm mới để định dạng và hiển thị thông tin chi tiết từ JSON
+// Hàm mới để định dạng và hiển thị thông tin chi tiết từ JSON (ĐÃ SỬA LỖI TRUY CẬP THUỘC TÍNH)
 function displayDiseaseDetails(details) {
-    // Hàm hỗ trợ render danh sách phác đồ con (ví dụ: III_Chiến_lược_Kiểm_soát_Hóa_học.Phác_đồ_Giai_đoạn_Cây)
+    // Hàm hỗ trợ render danh sách phác đồ con an toàn hơn
     const renderPhacDoGiaiDoan = (steps) => {
         if (!Array.isArray(steps) || steps.length === 0) {
             return '<li>Thông tin phác đồ cụ thể đang được cập nhật.</li>';
@@ -149,6 +145,7 @@ function displayDiseaseDetails(details) {
         ).join('');
     };
 
+    // Sử dụng Optional Chaining (?.) để truy cập thuộc tính lồng sâu an toàn
     let html = `
         <div class="details-section">
             <h3 class="details-title">🌿 PHÁC ĐỒ QUẢN LÝ TỔNG HỢP (IPM)</h3>
@@ -159,27 +156,27 @@ function displayDiseaseDetails(details) {
             
             <h4>1. Tác nhân, Chu kỳ và Điều kiện</h4>
             <div class="content-box">
-                <p><strong>Tác nhân Sinh học:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Tác_nhân_Sinh_học || 'N/A'}</p>
-                <p><strong>Cơ chế Lây lan:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Cơ_chế_Lây_lan || 'N/A'}</p>
-                <p><strong>Nhiệt độ/Thời điểm tối ưu:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Nhiệt_độ_Thời_điểm_tối_ưu || 'N/A'}</p>
+                <p><strong>Tác nhân Sinh học:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Tác_nhân_Sinh_học || 'N/A'}</p>
+                <p><strong>Cơ chế Lây lan:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Cơ_chế_Lây_lan || 'N/A'}</p>
+                <p><strong>Nhiệt độ/Thời điểm tối ưu:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Nhiệt_độ_Thời_điểm_tối_ưu || 'N/A'}</p>
             </div>
             
             <h4>2. Chiến lược Kiểm soát Văn hóa và Vật lý</h4>
             <div class="content-box">
-                <p>${details.II_Chiến_lược_Kiểm_soát_Văn_hóa_và_Vật_lý.Nguyên_tắc_Cơ_bản || 'Chưa có dữ liệu chi tiết.'}</p>
+                <p>${details.II_Chiến_lược_Kiểm_soát_Văn_hóa_và_Vật_lý?.Nguyên_tắc_Cơ_bản || 'Chưa có dữ liệu chi tiết.'}</p>
             </div>
             
             <h4>3. Chiến lược Kiểm soát Hóa học (Ưu tiên luân phiên nhóm thuốc)</h4>
             <div class="content-box">
-                <p><strong>Nguyên tắc FRAC/IRAC:</strong> ${details.III_Chiến_lược_Kiểm_soát_Hóa_học.Nguyên_tắc_FRAC_IRAC || 'N/A'}</p>
+                <p><strong>Nguyên tắc FRAC/IRAC:</strong> ${details.III_Chiến_lược_Kiểm_soát_Hóa_học?.Nguyên_tắc_FRAC_IRAC || 'N/A'}</p>
                 <ul>
-                    ${renderPhacDoGiaiDoan(details.III_Chiến_lược_Kiểm_soát_Hóa_học.Phác_đồ_Giai_đoạn_Cây)}
+                    ${renderPhacDoGiaiDoan(details.III_Chiến_lược_Kiểm_soát_Hóa_học?.Phác_đồ_Giai_đoạn_Cây)}
                 </ul>
             </div>
 
             <h4>4. Giải pháp Sinh học và Thân thiện Môi trường</h4>
             <div class="content-box">
-                <p>${details.IV_Giải_pháp_Sinh_học_và_Thân_thiện_Môi_trường.Các_Hoạt_chất_Sinh_học_Đề_xuất || 'Chưa có dữ liệu chi tiết.'}</p>
+                <p>${details.IV_Giải_pháp_Sinh_học_và_Thân_thiện_Môi_trường?.Các_Hoạt_chất_Sinh_học_Đề_xuất || 'Chưa có dữ liệu chi tiết.'}</p>
             </div>
 
         </div>
@@ -339,6 +336,5 @@ modeToggle.addEventListener('click', () => {
     }
 });
 
-// Gọi initialize() để tải model và JSON khi trang được tải lần đầu
-// initialize(); 
-// Đặt initialize trong predict để đảm bảo model được tải khi cần thiết lần đầu
+// LỆNH GỌI KHỞI TẠO DUY NHẤT: Tải model và JSON ngay khi trang load xong
+document.addEventListener('DOMContentLoaded', initialize);
