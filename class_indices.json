@@ -1,6 +1,46 @@
 {
     "Phac_do_Quan_Ly_Tong_Hop_Chi_tiet": [
         {
+            "Tên_Bệnh": "Táo - Ghẻ Táo (Apple Scab)",
+            "Mã_ID": "0",
+            "Phân_loại": "Nấm (Venturia inaequalis) - Bệnh lá và quả",
+            "I_Tác_nhân_Chu_kỳ_và_Điều_kiện": {
+                "Tác_nhân_Sinh_học": "Venturia inaequalis",
+                "Cơ_chế_Lây_lan": "Nấm trú đông chủ yếu dưới dạng thể quả có chứa bào tử túi (ascospores) trong **lá rụng** dưới đất. Các bào tử túi này được giải phóng vào không khí vào mùa xuân, phát tán qua gió và nước mưa, bắt đầu lây nhiễm sơ cấp khi lá/chồi non vừa bung ra. Lây nhiễm thứ cấp xảy ra do bào tử trần (conidia) được tạo ra trên các vết bệnh mới, phát tán qua nước mưa, lây lan trong suốt mùa hè.",
+                "Nhiệt_độ_Thời_điểm_tối_ưu": "Mát mẻ và ẩm ướt. Sự giải phóng bào tử túi (lây nhiễm sơ cấp) xảy ra khi có **mưa và nhiệt độ trên 6°C**. Thời gian lá ẩm (Leaf Wetness) càng dài, khả năng lây nhiễm càng cao. Nhiệt độ tối ưu để lây nhiễm là **18-24°C**.",
+                "Dấu_hiệu_Chẩn_đoán_Chuyên_sâu": "1. **Trên Lá:** Xuất hiện các đốm nhỏ, hơi tròn, màu vàng xanh chuyển dần sang màu **xanh ô-liu sẫm** hoặc đen, có kết cấu nhung. Các đốm bệnh hợp nhất, làm lá biến dạng, nhăn nheo và rụng sớm. 2. **Trên Quả:** Ban đầu là các đốm nhỏ, đen, lan rộng thành các vết loét có **vỏ khô, sần sùi** màu nâu/đen (vết ghẻ). Các vết ghẻ trên quả non có thể làm quả bị biến dạng, nứt nẻ, tạo điều kiện cho các bệnh thối khác xâm nhập. 3. **Trên Cành:** Hiếm gặp, nhưng có thể tạo các vết loét nhỏ, có vảy trên cành non."
+            },
+            "II_Biện_pháp_Canh_tác_Chuyên_sâu": {
+                "Quản_lý_Tàn_dư_Đất": "Biện pháp quan trọng nhất là **Quản lý lá rụng** vào cuối mùa thu/đầu đông. Có thể nghiền nát lá rụng bằng máy cắt, hoặc phun Urê (Urea) lên lá rụng (5% khối lượng) để thúc đẩy sự phân hủy nhanh chóng và giảm đáng kể lượng bào tử trú đông.",
+                "Quản_lý_Nước_Tưới": "Tưới nhỏ giọt hoặc tưới gốc. **Tuyệt đối tránh** tưới phun vào tán lá, đặc biệt vào buổi chiều tối, để giảm thời gian lá ẩm.",
+                "Mật_độ_Thông_thoáng": "Cắt tỉa tạo tán mở, loại bỏ cành bị che khuất để **tăng cường thông gió và ánh sáng**, giúp lá khô nhanh sau mưa hoặc sương.",
+                "Quản_lý_Dinh_dưỡng_Vi_lượng": "Duy trì dinh dưỡng cân bằng. Việc bón thừa Đạm (Nitrogen) làm cây ra lá non liên tục, làm tăng số lượng mô nhạy cảm với bệnh."
+            },
+            "III_Chiến_lược_Kiểm_soát_Hóa_học": {
+                "Nguyên_tắc_FRAC_IRAC": "Chiến lược kiểm soát tập trung vào việc **ngăn chặn lây nhiễm sơ cấp** bằng thuốc bảo vệ (M) và dập dịch bằng thuốc nội hấp/hệ thống (C3, C2).",
+                "Phác_đồ_Giai_đoạn_Cây": [
+                    {
+                        "Giai_đoạn": "Bung Chồi Xanh (Green Tip) đến Nụ Hoa Hồng (Pink Bud)",
+                        "Hoạt_chất_Đề_xuất": "Thuốc Đồng (Copper) hoặc Mancozeb/Captan",
+                        "Nhóm_FRAC_IRAC": "M1, M3, hoặc M4",
+                        "Lưu_ý_Ứng_dụng": "**Giai đoạn then chốt** để ngăn chặn lây nhiễm sơ cấp. Cần phun định kỳ 7-10 ngày, đảm bảo che phủ toàn bộ mô non đang phát triển."
+                    },
+                    {
+                        "Giai_đoạn": "Rụng Cánh Hoa (Petal Fall) đến Phát Triển Quả (Cover Sprays)",
+                        "Hoạt_chất_Đề_xuất": "Captan/Mancozeb **Xen kẽ** DMI (Triazole) hoặc Strobilurin (C3)",
+                        "Nhóm_FRAC_IRAC": "M4/M3 xen kẽ C3 hoặc C2",
+                        "Lưu_ý_Ứng_dụng": "Duy trì lớp bảo vệ. Sử dụng thuốc nội hấp (DMI/Strobilurin) sau mưa lớn nếu không thể phun thuốc bảo vệ kịp thời để dập các đốm bệnh mới (trị bệnh sau lây nhiễm)."
+                    }
+                ],
+                "Thuốc_Trừ_Tận_gốc_Eradicant": "Các hoạt chất nhóm **DMI (Triazole)** như Myclobutanil hoặc Difennoconazole có khả năng 'trị' (kickback activity) Ghẻ Táo nếu phun trong vòng 72-96 giờ sau khi lây nhiễm."
+            },
+            "IV_Giải_pháp_Sinh_học_và_Thay_thế": {
+                "Chất_Đối_kháng_VSV": "Các sản phẩm chứa **Bacillus subtilis** hoặc **Dầu Khoáng (Mineral Oil)** có thể được sử dụng trong các chương trình hữu cơ để giảm lây nhiễm, nhưng hiệu quả thấp hơn hóa chất.",
+                "Cảm_ứng_Kháng_Bệnh_SAR": "Không có giải pháp SAR thương mại được chứng minh hiệu quả độc lập.",
+                "Kiểm_soát_Côn_trùng_Vector": "Không có côn trùng vector trực tiếp, nhưng việc kiểm soát côn trùng cắn phá lá (như bọ cánh cứng, sâu ăn lá) sẽ **giảm thiểu vết thương** tạo cửa ngõ lây nhiễm thứ cấp."
+            }
+        },
+        {
             "Tên_Bệnh": "Táo - Thối Đen (Black Rot)",
             "Mã_ID": "1",
             "Phân_loại": "Nấm (Botryosphaeria obtusa) - Bệnh đa triệu chứng (Canker, Leaf Spot, Fruit Rot)",
