@@ -1,3 +1,4 @@
+/* --- Global Reset and Base Styles --- */
 *{
     box-sizing: border-box;
     padding: 0;
@@ -7,167 +8,267 @@
 html,body{
     width: 95%;
     margin: 50px auto;
-    /* Thay đổi màu nền dịu nhẹ hơn */
-    background: #f0f4f7; /* Màu xám xanh rất nhạt */
-    font-family: 'Poppins', sans-serif; /* Thêm phông chữ hiện đại */
-    color: #333;
+    transition: background-color 0.5s, color 0.5s;
 }
 
-@media (min-width: 768px){
-    html,body{
-        width: 70%; /* Rộng hơn trên màn hình lớn */
-        margin: 50px auto;
-    }
+/* --- Chế độ Sáng (Mặc định) --- */
+.light-mode {
+    background: #eafaea; /* Xanh lá cây nhạt */
+    color: #222222;
 }
+
+.light-mode h1, .light-mode h2 {
+    color: #1a1a1a;
+}
+
+.light-mode .upload-file, .light-mode .camera-btn, .light-mode .capture-btn, .light-mode .stop-btn {
+    background-color: white;
+    color: #9b9b9b;
+}
+
+.light-mode .box-result p {
+    background: #4caf50; /* Xanh lá cây đậm hơn cho kết quả */
+    color: white;
+}
+
+.light-mode .mode-toggle {
+    background: #f0f0f0;
+    color: #444;
+    border: 1px solid #ccc;
+}
+
+/* --- Chế độ Tối --- */
+.dark-mode {
+    background: #121212; /* Nền tối */
+    color: #e0e0e0;
+}
+
+.dark-mode h1, .dark-mode h2 {
+    color: #e0e0e0;
+}
+
+.dark-mode .upload-file, .dark-mode .camera-btn, .dark-mode .capture-btn, .dark-mode .stop-btn {
+    background-color: #1e1e1e;
+    color: #b0b0b0;
+    border: 2px dashed #444;
+}
+
+.dark-mode .box-result p {
+    background: #004d40; /* Xanh lá cây đậm hơn cho kết quả */
+    color: #e0e0e0;
+}
+
+.dark-mode .mode-toggle {
+    background: #333;
+    color: #ccc;
+    border: 1px solid #555;
+}
+
+.dark-mode .init_status {
+    background: #004d40;
+}
+
+/* Màu sắc chung (không thay đổi) */
+.github-fork-ribbon:before, 
+.upload-btn, 
+.success-1 i, 
+.progress > .inner, 
+path {
+    color: #4caf50 !important; /* Xanh lá cây non */
+    stroke: #4caf50;
+}
+
+.github-fork-ribbon:before{
+    background: #4caf50 !important;
+}
+
+/* --- Header and Mode Toggle --- */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 h1 {
-    margin: 10px auto 20px; /* Thêm khoảng cách dưới tiêu đề */
-    text-transform: none; /* Bỏ uppercase */
-    text-align: center;
-    color: #2c3e50; /* Màu đậm hơn cho tiêu đề */
+    margin: 10px 0;
+    text-transform: uppercase;
 }
 
-h1 span{
-    /* Bỏ h1 span */
+.mode-toggle {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mode-toggle i {
+    font-size: 20px;
 }
 
 hr{
-    margin: 20px 0px 30px; /* Tăng khoảng cách cho đường kẻ */
-    border: 0;
-    border-top: 1px solid #e0e0e0; /* Đường kẻ mỏng, tinh tế hơn */
+    margin: 10px 0px;
 }
 
-/* Bỏ .github-fork-ribbon:before */
 
+/* --- Upload and Camera Buttons --- */
+.upload-btn-container {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0px;
+    flex-wrap: wrap;
+}
 
-.upload-btn-wrapper{
+.upload-wrapper {
+    flex: 1;
+    min-width: 280px; /* Đảm bảo kích thước tối thiểu */
+}
+
+.upload-btn-wrapper, .camera-btn-wrapper{
     position: relative;
     overflow:hidden;
     display:inline-block;
     cursor:pointer;
+    font-family: sans-serif;
     width: 100%;
-    margin: 20px 0px;
 }
-.upload-file{
-    border:2px dashed #a3e4a3; /* Đường viền đứt nét xanh lá mềm mại */
-    color:#666;
-    background-color: white;
+.upload-file, .camera-btn {
+    border:2px dashed #eee;
     width:100%;
-    height:180px; /* Giảm chiều cao một chút */
-    border-radius: 12px; /* Bo góc mềm mại hơn */
+    height:250px;
+    border-radius: 8px;
     font-size:15px;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.upload-file:hover{
-    background-color: #f7fcf7;
-    border-color: limegreen;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .upload-btn-wrapper input[type=file]{
-    /* ... giữ nguyên ... */
-    min-height: 180px;
+    width:100%;
+    position: absolute;
+    left:0;
+    right:0;
+    top:0;
+    opacity: 0;
+    cursor: pointer;
+    min-height: 300px;
 }
-.success-1, .success-2{
+.success-1{
     display:none;
-    color: limegreen;
 }
-.success-1 i, .success-2 i{
+.success-1 i{
     font-size: 18px !important;
     margin-left:6px;
     margin-top:4px;
-    color: white; /* Đổi màu icon thành trắng */
-    background: limegreen; /* Màu nền icon */
-    border: 1px solid limegreen;
+    border: 1px solid;
     padding: 5px;
     border-radius: 50%;
 }
 .font-50{
-    font-size:40px; /* Giảm kích thước icon */
+    font-size:50px;
 }
 .d-block{
     display:block;
 }
 .btn .upload-file{
-    font-size: 20px;
+    font-size: 30px;
 }
-.upload-btn{
+.upload-btn, .camera-icon{
     display:block;
-    font-size: 16px;
-    color: #444; /* Màu chữ upload dịu hơn */
+    font-size: 18px;
 }
 
-.upload-btn i{
-    font-size: 80px; /* Giảm kích thước icon lớn */
-    color: limegreen;
+.upload-btn i, .camera-icon i{
+    font-size: 100px;
 }
 
-img, #camera-stream{
+/* --- Camera Stream Container --- */
+.camera-stream-container {
+    display: none; /* Ẩn mặc định */
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border: 2px dashed #4caf50;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#videoStream {
     width: 100%;
-    height: auto; /* Dùng auto để giữ tỷ lệ */
-    max-height: 350px;
+    max-width: 640px;
+    height: auto;
+    border-radius: 8px;
+    background: #000;
+}
+
+.capture-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #4caf50;
+    color: white;
+    transition: opacity 0.3s;
+}
+
+.capture-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.stop-btn {
+    background-color: #f44336;
+}
+
+.camera-status {
+    font-style: italic;
+    color: orange;
+}
+
+/* --- Image and Result Boxes --- */
+img{
+    width: 100%;
+    height: 300px;
     display: none;
-    object-fit: contain; /* Đảm bảo hình ảnh vừa vặn */
-    border-radius: 12px; /* Bo góc mềm mại */
-    background-color: #ecf0f1;
+    object-fit: cover;
 }
 
 .row{
     display: flex;
-    justify-content: space-between; /* Đảm bảo không gian giữa 2 cột */
+    justify-content: space-around;
     flex-direction: row;
     flex-flow: wrap;
-    margin: 30px auto;
+    margin: 20px auto;
     }
     
 .box{
-    width: 48%; /* Tăng khoảng cách giữa 2 box */
-    padding: 15px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Thêm bóng nhẹ */
+    width: 48%; /* Tăng nhẹ để có khoảng trống giữa 2 cột */
+    margin-bottom: 20px;
 }
 
-.box-result{
-    /* ... giữ nguyên ... */
-    padding: 15px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.box-result h2{
-    font-size: 1.2em;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.box-result .pred_class{
-    font-weight: bold;
-    color: limegreen; /* Nổi bật kết quả */
-    display: block;
-    margin-top: 5px;
+.box img{
+    border-radius: 20px;
+    height: 350px;
+    display: none;
 }
 
 .box-result p{
-    background: #e6f7e6; /* Màu nền nhẹ nhàng cho độ chính xác */
-    color: #222;
-    font-weight: 500;
+    font-weight: bold;
     padding: 10px;
     margin-top: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     display : none;
     text-align: center;
 }
 
-.box-result b{
-    color: limegreen;
-    font-weight: 700;
-}
-
 .box-result{
     display: none;
+    padding: 20px;
+    border-radius: 20px;
 }
 
 .accuracy{
@@ -175,7 +276,6 @@ img, #camera-stream{
     justify-content: center;
     margin-top: 25px;
 }
-
 
 .progress {
 width: 130px;
@@ -189,9 +289,7 @@ justify-content: center;
 
 .progress > .inner {
 position: absolute;
-color: limegreen; 
-font-weight: bold;
-border: none; /* Bỏ viền xung quanh % */
+border: 1px solid;
 }
 
 .progress > svg {
@@ -200,62 +298,56 @@ display: block;
 }
 
 .init_status{
-    background: #4CAF50; /* Màu xanh lá đậm hơn một chút */
-    color: white;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
     transition: ease-in-out .5s;
     text-align: center;
-    margin: 10px 0px 20px;
-    font-weight: 500;
+    margin: 10px 0px;
+    /* Màu nền được điều chỉnh theo mode */
+    background: #4caf50;
+    color: white;
 }
 
-@media (max-width: 768px){
-    .box{
-        width: 100%;
-        margin-bottom: 20px;
+
+/* --- Responsive Design (Cải tiến) --- */
+@media (min-width: 768px){
+    html,body{
+        width: 80%;
+        margin: 50px auto;
     }
 }
 
-/* Bỏ .tutorial */
-
-path {
-    stroke: limegreen;
-    stroke-width: 10;
-    fill-opacity: 0.2;
+@media (max-width: 900px) {
+    .box {
+        width: 100%; /* Chuyển sang 1 cột trên màn hình nhỏ hơn 900px */
+    }
+    .row {
+        flex-direction: column;
+    }
+    .upload-btn-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .upload-wrapper {
+        min-width: 100%;
+    }
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .mode-toggle {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
-/* CSS mới cho phần camera */
-.camera-controls {
-    display: flex;
-    flex-direction: row; /* Thay đổi thành ngang */
-    justify-content: space-between;
-    gap: 10px;
+.tutorial{
+    text-align: center;
     margin: 20px 0;
 }
 
-.camera-controls #activate-camera-btn, .camera-controls #capture-image-btn {
-    width: 49%; /* Để chúng nằm cạnh nhau */
-    max-width: none;
-    height: 120px;
-    border: 2px solid #a3e4a3;
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.camera-controls .upload-btn i {
-    font-size: 50px;
-    color: limegreen;
-}
-
-.camera-controls .upload-btn p {
-    color: #444;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-#camera-stream {
-    max-width: 100%; 
-    margin: 20px auto;
-    border-radius: 12px;
+path {
+    stroke-width: 10;
+    fill-opacity: 0.2;
 }
