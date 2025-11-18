@@ -21,19 +21,17 @@
 
     <div class="upload-btn-container">
         <div class="upload-btn-wrapper upload-wrapper">
-            <button class="btn upload-file font-weight-500">
+            <input type="file" name="uploadImage" id="uploadImage" accept="image/*" style="display: none;">
+            <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
                 <span class="upload-btn">
-                    <i class="material-icons d-block font-30">cloud_upload</i>
-                    TẢI ẢNH TỪ MÁY
+                    <i class="material-icons d-block font-size-18">file_upload</i> Tải Ảnh Lên
                 </span>
             </button>
-            <input type="file" name="uploadImage" id="uploadImage" accept="image/*">
         </div>
-        <div class="camera-btn-wrapper">
+        <div class="upload-btn-wrapper">
             <button class="btn camera-btn font-weight-500" id="cameraToggle">
-                <span class="camera-icon">
-                    <i class="material-icons d-block font-30">camera_alt</i>
-                    MỞ CAMERA
+                <span class="camera-btn-text">
+                    <i class="material-icons d-block font-size-18">camera_alt</i> Bật Camera
                 </span>
             </button>
         </div>
@@ -52,33 +50,27 @@
             <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
             <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
-    </div>
 
-    <div class="prediction-summary-container">
         <div class="box box-result">
             <div class="init_status"></div>
             <div>
                 <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
-                
             </div>
             <div class="accuracy">
                 <div class="progress" id="progress">
                     <div class="inner">
-                      
                     </div>
                   </div>
-
             </div>
-            <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
+            <p class="confidence-text" style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
         </div>
     </div>
-    
-    <div class="detailed-result-container" id="detailedResultContainer" style="display: none;">
+
+    <div class="box-result-details" id="resultDetails">
         </div>
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.13.0/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.1/progressbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
