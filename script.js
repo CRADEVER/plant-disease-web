@@ -55,9 +55,9 @@ async function initialize() {
     boxResult.style.display = 'block';
 
     try {
-        // Goal 1: Tải model và dữ liệu JSON song song để tối ưu tốc độ
+        // ĐIỀU CHỈNH ĐƯỜNG DẪN TẠI ĐÂY: Thêm thư mục tensorflowjs-model/
         const [modelLoad, indicesLoad] = await Promise.all([
-            tf.loadGraphModel('./model.json'), // Giả sử model nằm ở đây
+            tf.loadGraphModel('./tensorflowjs-model/model.json'), 
             fetchData() 
         ]);
         
