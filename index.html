@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -56,31 +56,29 @@
 
 
     <div class="row">
-        <div class="box">
+        <div class="box box-image">
             <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
             <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
-
-        <div class="box box-result">
-            <div class="init_status"></div>
-            <div>
-                <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
-                
-            </div>
-            <div class="accuracy">
-                <div class="progress" id="progress">
-                    <div class="inner">
-                      
-                    </div>
-                  </div>
-
-            </div>
-            <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
-        </div>
     </div>
     
-    <div class="disease-details" id="diseaseDetails">
+    <div class="analysis-card" id="analysisCard">
+        <div class="init_status"></div>
+        
+        <div class="prediction-summary-container">
+            <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
+            <div class="accuracy">
+                <div class="progress" id="progress">
+                    <div class="inner"></div>
+                </div>
+            </div>
+            <p class="confidence-text"> ĐỘ CHÍNH XÁC: <b><span class="confidence"></span></b> %</p>
         </div>
+
+        <div class="disease-details" id="diseaseDetails">
+            </div>
+
+    </div>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
