@@ -4,8 +4,8 @@ let fileUpload = document.getElementById('uploadImage');
 let img = document.getElementById('image');
 let boxResult = document.querySelector('.box-result');
 let confidence = document.querySelector('.confidence');
-let pconf = document.querySelector('.confidence-text'); // Tên class mới trong HTML
-let predClassSpan = document.querySelector('.pred_class'); // Tên class mới
+let pconf = document.querySelector('.confidence-text'); 
+let predClassSpan = document.querySelector('.pred_class'); 
 let modeToggle = document.getElementById('modeToggle');
 let body = document.body;
 let resultDetails = document.getElementById('resultDetails'); // Biến mới cho kết quả chi tiết
@@ -36,8 +36,10 @@ async function fetchData(){
    
     // Map dữ liệu theo Mã_ID để tra cứu nhanh và chính xác
     let indicesMap = {};
-    for (const item of data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet) {
-        indicesMap[item.Mã_ID] = item;
+    if (data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet) {
+        for (const item of data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet) {
+            indicesMap[item.Mã_ID] = item;
+        }
     }
     class_indices = indicesMap; 
     return class_indices;
@@ -52,9 +54,9 @@ async function initialize() {
         // 1. Fetch JSON data
         class_indices = await fetchData();
 
-        status.innerHTML = 'Đang tải mô hình học máy (Tối ưu hóa: Quantization được đề xuất)...';
-        // 2. Load the model. (Cần đảm bảo file model.json nằm trong thư mục model/)
-        const modelURL = 'model/model.json'; // Cần thay đổi theo đường dẫn thực tế
+        status.innerHTML = 'Đang tải mô hình học máy (ĐỀ XUẤT: Sử dụng mô hình đã được tối ưu hóa như MobileNetV2 để tải nhanh hơn)...';
+        // 2. Load the model. (Cần thay đổi modelURL theo đường dẫn thực tế của bạn)
+        const modelURL = 'model/model.json'; 
         model = await tf.loadLayersModel(modelURL); 
         
         status.innerHTML = 'Hệ thống sẵn sàng! Hãy tải ảnh lên hoặc bật camera.';
@@ -70,11 +72,12 @@ async function initialize() {
 }
 
 
-// HÀM MỚI: Render nội dung phân tích chi tiết (Đã giải quyết yêu cầu hiển thị một khối)
+// HÀM MỚI: Render nội dung phân tích chi tiết
 function renderDetailedAnalysis(predictedId) {
     resultDetails.innerHTML = ''; // Xóa nội dung cũ
     resultDetails.style.display = 'block';
 
+    // Đảm bảo Mã_ID tồn tại trong dữ liệu
     if (!predictedId || !class_indices[predictedId]) {
         resultDetails.innerHTML = '<h3 style="color: #e74c3c;">Không tìm thấy thông tin chi tiết cho mã bệnh này.</h3>';
         return;
@@ -146,24 +149,46 @@ function renderDetailedAnalysis(predictedId) {
 }
 
 
-// HÀM DỰ ĐOÁN: Cập nhật để gọi renderDetailedAnalysis
 async function predictImage(imageElement, fromCamera = false) {
-    // ... [Bỏ qua logic tiền xử lý hình ảnh thực tế cho mục đích điều chỉnh code] ...
+    // --- BƯỚC 1: TIỀN XỬ LÝ HÌNH ẢNH ---
+    const tensor = tf.browser.fromPixels(imageElement)
+        .resizeNearestNeighbor([224, 224]) // Thay đổi kích thước tùy theo mô hình của bạn
+        .toFloat()
+        .div(tf.scalar(255.0)) // Chuẩn hóa từ 0-255 về 0-1
+        .expandDims(); // Thêm batch dimension
 
     const status = document.querySelector('.init_status');
     status.innerHTML = 'Đang phân tích hình ảnh...';
     
-    // --- BƯỚC MÔ PHỎNG DỰ ĐOÁN (Cần thay thế bằng logic model.predict thực tế) ---
-    // Giả lập kết quả thành công, ví dụ: 'Táo - Ghẻ Táo (Apple Scab)'
-    const simulatedPrediction = {
-        classId: '0', 
-        confidence: 0.9531 
-    };
     
-    const { classId, confidence: rawConfidence } = simulatedPrediction;
+    // --- BƯỚC 2: DỰ ĐOÁN VỚI MÔ HÌNH ---
+    let predictions;
+    try {
+        if (model) {
+            predictions = model.predict(tensor);
+        } else {
+            throw new Error("Mô hình chưa được tải.");
+        }
+    } catch (e) {
+        status.innerHTML = `LỖI DỰ ĐOÁN: ${e.message}`;
+        status.style.backgroundColor = '#e74c3c';
+        return;
+    }
+
+    // Lấy chỉ số và giá trị độ tin cậy cao nhất
+    const values = predictions.dataSync();
+    const predictedIndex = values.indexOf(Math.max(...values));
+    const rawConfidence = values[predictedIndex];
+
+    // GIẢ LẬP MÃ ID VÀ KẾT QUẢ TỪ JSON: 
+    // Nếu bạn có một mảng ánh xạ class_id (dạng số) sang Mã_ID (dạng chuỗi)
+    // Giả sử class 0 tương ứng với Mã_ID '0' trong JSON
+    const classIdMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']; // Cần khớp với output classes của mô hình
+    const classId = classIdMap[predictedIndex] || predictedIndex.toString(); // Lấy Mã_ID tương ứng
+
+    // --- BƯỚC 3: HIỂN THỊ KẾT QUẢ CHÍNH XÁC ---
     const confidencePercent = (rawConfidence * 100).toFixed(2);
     const resultData = class_indices[classId];
-    // --------------------------------------------------------------------------
     
     if (resultData) {
         const resultName = resultData.Tên_Bệnh;
@@ -177,17 +202,17 @@ async function predictImage(imageElement, fromCamera = false) {
         // Progress bar animation
         progressBar.animate(rawConfidence);
         
-        // Gọi hàm hiển thị chi tiết nội dung phân tích (Đã giải quyết yêu cầu)
+        // Gọi hàm hiển thị chi tiết nội dung phân tích
         renderDetailedAnalysis(classId);
 
         status.innerHTML = `Phân tích hoàn tất: ${resultName}`;
         status.style.backgroundColor = '#2ecc71';
 
     } else {
-        // Xử lý khi phân loại thất bại
-        predClassSpan.textContent = 'Lỗi Phân Loại';
-        confidence.textContent = 'N/A';
-        progressBar.animate(0);
+        // Xử lý khi phân loại thất bại (Không tìm thấy Mã_ID hoặc độ tin cậy thấp)
+        predClassSpan.textContent = 'Không xác định được';
+        confidence.textContent = confidencePercent;
+        progressBar.animate(rawConfidence);
         boxResult.style.display = 'block';
         pconf.style.display = 'block';
         resultDetails.style.display = 'none';
@@ -198,14 +223,85 @@ async function predictImage(imageElement, fromCamera = false) {
 }
 
 
+// --- CAMERA FUNCTIONS ---
+
+function toggleCamera() {
+    if (currentStream) {
+        stopCamera();
+        cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-18">camera_alt</i> Bật Camera</span>';
+        cameraContainer.style.display = 'none';
+    } else {
+        startCamera();
+        cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-18">camera_alt</i> Tắt Camera</span>';
+        cameraContainer.style.display = 'block';
+    }
+}
+
+async function startCamera() {
+    try {
+        currentStream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 }, audio: false });
+        videoStream.srcObject = currentStream;
+        videoStream.play();
+        cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh.';
+        captureButton.disabled = false;
+        videoStream.style.display = 'block';
+        captureButton.style.display = 'block';
+        stopButton.style.display = 'block';
+        img.style.display = 'none';
+        boxResult.style.display = 'none';
+        resultDetails.style.display = 'none'; 
+    } catch (error) {
+        cameraStatus.textContent = `Lỗi truy cập camera: ${error.name}. Vui lòng đảm bảo camera được phép sử dụng.`;
+        captureButton.disabled = true;
+        videoStream.style.display = 'none';
+        captureButton.style.display = 'none';
+        stopButton.style.display = 'none';
+    }
+}
+
+function stopCamera() {
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+    }
+    videoStream.srcObject = null;
+    captureButton.disabled = true;
+    cameraStatus.textContent = 'Camera đã dừng.';
+    videoStream.style.display = 'none';
+    captureButton.style.display = 'none';
+    stopButton.style.display = 'none';
+}
+
+function captureImage() {
+    // Chụp ảnh từ video stream và vẽ lên canvas
+    context.drawImage(videoStream, 0, 0, 224, 224);
+    const dataUrl = canvas.toDataURL('image/jpeg');
+    
+    // Hiển thị ảnh đã chụp trong thẻ <img>
+    img.src = dataUrl;
+    img.style.display = 'block';
+    
+    // Chạy dự đoán
+    predictImage(canvas, true); 
+    
+    // Tắt camera sau khi chụp
+    stopCamera();
+    cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-18">camera_alt</i> Bật Camera</span>';
+    cameraContainer.style.display = 'none';
+}
+
+
+// --- EVENT LISTENERS ---
+
 fileUpload.addEventListener('change', (e) => {
     if (e.target.files[0]) {
         let reader = new FileReader();
         reader.onload = (event) => {
             img.src = event.target.result;
             img.style.display = 'block';
-            boxResult.style.display = 'block';
-            resultDetails.style.display = 'none';
+            boxResult.style.display = 'none'; // Ẩn kết quả cũ
+            resultDetails.style.display = 'none'; // Ẩn phân tích chi tiết cũ
+            
             // Gọi predictImage sau khi ảnh được tải hoàn toàn
             img.onload = () => {
                 predictImage(img);
@@ -215,12 +311,20 @@ fileUpload.addEventListener('change', (e) => {
     }
 });
 
+cameraToggle.addEventListener('click', toggleCamera);
+captureButton.addEventListener('click', captureImage);
+stopButton.addEventListener('click', stopCamera);
 
-// ... Các hàm và event listener khác (camera, mode toggle) vẫn giữ nguyên logic ban đầu.
+modeToggle.addEventListener('click', () => {
+    if (body.classList.contains('light-mode')) {
+        body.classList.replace('light-mode', 'dark-mode');
+        modeToggle.innerHTML = '<i class="material-icons">wb_sunny</i> Chế độ Sáng';
+    } else {
+        body.classList.replace('dark-mode', 'light-mode');
+        modeToggle.innerHTML = '<i class="material-icons">brightness_4</i> Chế độ Tối';
+    }
+});
 
-// cameraToggle.addEventListener('click', toggleCamera);
-// captureButton.addEventListener('click', captureImage);
-// stopButton.addEventListener('click', stopCamera);
 
 // Khởi tạo hệ thống
 initialize();
