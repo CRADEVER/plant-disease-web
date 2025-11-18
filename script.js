@@ -60,6 +60,7 @@ async function initialize() {
     try {
         // Tải Model và Data song song
         const [modelLoad, dataLoad] = await Promise.all([
+            // Sửa đường dẫn model
             tf.loadLayersModel('./tensorflowjs-model/model.json'),
             fetchData() 
         ]);
@@ -75,7 +76,7 @@ async function initialize() {
     }
 }
 
-// Hàm format nội dung chi tiết từ JSON thành HTML (Giữ nguyên logic đệ quy tốt)
+// Hàm format nội dung chi tiết từ JSON thành HTML
 function formatDetailsToHtml(diseaseItem) {
     let html = '';
     
@@ -177,11 +178,14 @@ async function predict() {
         await model_init_promise; 
     }
     
-    // Fix Preprocessing: Chuyển kích thước ảnh sang 256x256
+    // --- SỬA LỖI PREPROCESSING ---
+    // Kích thước 224x224 VÀ Chuẩn hóa [-1, 1]
     let tensorImg = tf.browser.fromPixels(img)
-        .resizeNearestNeighbor([256, 256]) // <--- ĐÃ SỬA TẠI ĐÂY
+        .resizeNearestNeighbor([224, 224]) // Kích thước 224x224
         .toFloat() // Chuyển sang Float32
-        .div(tf.scalar(255.0)) // Chuẩn hóa về [0, 1]
+        // Chuẩn hóa [-1, 1]
+        .div(tf.scalar(127.5)) // Chia 127.5 (ảnh về [0, 2])
+        .sub(tf.scalar(1.0))   // Trừ 1 (ảnh về [-1, 1])
         .expandDims(); 
     
     // Bước 2: Dự đoán
@@ -254,7 +258,6 @@ captureButton.addEventListener('click', function() {
         captureButton.disabled = true;
         cameraStatus.textContent = 'Đang phân tích...';
 
-        // Lấy khung hình từ video, không cần set kích thước 256x256 ở đây
         canvas.width = videoStream.videoWidth;
         canvas.height = videoStream.videoHeight;
         context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
