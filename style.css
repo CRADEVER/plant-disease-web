@@ -1,191 +1,472 @@
+/* ================================================= */
+/* BASE & TYPOGRAPHY STYLE               */
+/* ================================================= */
 
-*{
+* {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
 
-html,body{
+html, body {
     width: 95%;
     margin: 50px auto;
-    background: rgb(158, 209, 179);
+    font-family: Arial, sans-serif;
+    transition: background-color 0.5s, color 0.5s;
 }
 
-@media (min-width: 768px){
-    html,body{
-        width: 80%;
-        margin: 50px auto;
-    }
-}
+/* Base Headings */
 h1 {
     margin: 10px auto;
     text-transform: uppercase;
+    font-size: 2em;
 }
 
-h1 span{
+h1 span {
     color: limegreen;
 }
 
-hr{
-    margin: 10px 0px;
+hr {
+    margin: 10px 0px 20px 0px;
+    border: 0;
+    border-top: 1px solid #ccc;
 }
 
-.github-fork-ribbon:before{
+.tutorial {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+.tutorial a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* Fork Ribbon */
+.github-fork-ribbon:before {
     background: limegreen !important;
 }
 
+/* ================================================= */
+/* DARK/LIGHT MODE                  */
+/* ================================================= */
 
-.upload-btn-wrapper{
-    position: relative;
-    overflow:hidden;
-    display:inline-block;
-    cursor:pointer;
-    font-family: 'Poppins',sans-serif;
-    width: 100%;
-    margin: 20px 0px;
+/* Light Mode Defaults */
+.light-mode {
+    background: #eafaea; /* Light green-tinted background */
+    color: #222222;
 }
-.upload-file{
-    border:2px dashed #eee;
-    color:#9b9b9b;
+
+.light-mode h1, .light-mode h2 {
+    color: #1a1a1a;
+}
+
+.light-mode .box {
     background-color: white;
-    width:100%;
-    height:250px;
-    border-radius: 8px;
-    font-size:15px;
-    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.upload-btn-wrapper input[type=file]{
-    width:100%;
+
+.light-mode .upload-file, .light-mode .camera-btn {
+    background-color: white;
+    color: #9b9b9b;
+    border: 2px dashed #eee;
+}
+
+.light-mode .mode-toggle {
+    background: #f0f0f0;
+    color: #444;
+    border: 1px solid #ccc;
+}
+.light-mode .box-result p {
+    background: #4caf50; 
+    color: white;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background: #121212; /* Dark background */
+    color: #e0e0e0;
+}
+
+.dark-mode h1, .dark-mode h2 {
+    color: #e0e0e0;
+}
+
+.dark-mode .box {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode .upload-file, .dark-mode .camera-btn {
+    background-color: #1e1e1e;
+    color: #aaa;
+    border: 2px dashed #333;
+}
+
+.dark-mode .mode-toggle {
+    background: #282828;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+.dark-mode .box-result p {
+    background: #28a745;
+    color: white;
+}
+.dark-mode hr {
+    border-top: 1px solid #444;
+}
+
+/* ================================================= */
+/* HEADER & TOGGLE                  */
+/* ================================================= */
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.mode-toggle {
+    padding: 10px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ================================================= */
+/* UPLOAD & CAMERA BUTTONS            */
+/* ================================================= */
+
+.upload-btn-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.upload-wrapper {
+    flex: 1;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+}
+
+.upload-file {
+    width: 100%;
+    height: 250px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.upload-btn-wrapper input[type=file] {
+    width: 100%;
     position: absolute;
-    left:0;
-    right:0;
-    top:0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     opacity: 0;
     cursor: pointer;
-    min-height: 300px;
 }
-.success-1, .success-2{
-    display:none;
-    color: limegreen;
-}
-.success-1 i, .success-2 i{
-    font-size: 18px !important;
-    margin-left:6px;
-    margin-top:4px;
-    color: limegreen;
-    border: 1px solid limegreen;
-    padding: 5px;
-    border-radius: 50%;
-}
-.font-50{
-    font-size:50px;
-}
-.d-block{
-    display:block;
-}
-.btn .upload-file{
-    font-size: 30px;
-}
-.upload-btn{
-    display:block;
+
+.upload-btn {
+    display: block;
     font-size: 18px;
     color: limegreen;
 }
 
-.upload-btn i{
-    font-size: 100px;
+.upload-btn i {
+    font-size: 50px; /* Adjusting the icon size */
+    padding-bottom: 10px;
+}
+.camera-btn-text {
+    font-size: 18px;
+    color: inherit; /* Inherit color from parent (for mode switching) */
 }
 
-img{
+/* Upload Feedback */
+.uploaded-file {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+.uploaded-text {
+    font-size: 0.9em;
+    max-width: 80%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.success-1 {
+    display: none;
+    margin-left: 5px;
+}
+.success-1 i {
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    color: limegreen;
+}
+
+/* ================================================= */
+/* CAMERA CONTAINER                  */
+/* ================================================= */
+
+.camera-stream-container {
+    display: none; /* Mặc định ẩn, JS sẽ bật */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
     width: 100%;
-    height: 300px;
+    max-width: 600px;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+}
+
+.dark-mode .camera-stream-container {
+    border: 2px dashed #444;
+}
+
+#videoStream {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
     display: none;
 }
 
-.row{
+.capture-btn {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: limegreen;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.capture-btn.stop-btn {
+    background-color: #dc3545;
+}
+
+.camera-status {
+    margin-top: 10px;
+    font-style: italic;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* ================================================= */
+/* IMAGE & RESULT BOXES            */
+/* ================================================= */
+
+.row {
     display: flex;
     justify-content: space-around;
     flex-direction: row;
     flex-flow: wrap;
     margin: 20px auto;
-    }
-    
-.box{
-    width: 45%;
 }
 
-.box img{
+.box {
+    width: 45%;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s, color 0.5s;
+    text-align: center;
+}
+
+.box img {
     border-radius: 20px;
     height: 350px;
+    width: 100%;
+    object-fit: cover;
+    display: none;
 }
 
-.box-result p{
-    background: limegreen;
-    color: #fff;
+.box-result {
+    display: none; /* Mặc định ẩn, JS sẽ bật */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.box-result h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.box-result p {
     font-weight: bold;
     padding: 10px;
     margin-top: 20px;
     border-radius: 10px;
-    display : none;
+    display: none;
     text-align: center;
 }
 
-.box-result{
-    display: none;
-}
-
-.accuracy{
+/* Progress Bar */
+.accuracy {
     display: flex;
     justify-content: center;
     margin-top: 25px;
 }
 
-
 .progress {
-width: 130px;
-height: 130px;
-position: relative;
-display: flex;
-align-items: center;
-justify-content: center;
-
+    width: 130px;
+    height: 130px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .progress > .inner {
-position: absolute;
-color: limegreen; 
-border: 1px solid #9b9b9b;
+    position: absolute;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 .progress > svg {
-height: 100%;
-display: block;
+    height: 100%;
+    display: block;
 }
 
-.init_status{
-    background: limegreen;
-    color: white;
+.init_status {
     padding: 10px;
     border-radius: 10px;
     transition: ease-in-out .5s;
     text-align: center;
     margin: 10px 0px;
-
+    background: #4caf50;
+    color: white;
 }
 
-@media (max-width: 768px){
-    .box{
-        width: 100%;
+/* ================================================= */
+/* DISEASE DETAILS                  */
+/* ================================================= */
+
+.box.full-width {
+    width: 95%; 
+    margin: 20px auto;
+    padding: 25px;
+    text-align: left;
+}
+
+#diseaseDetails h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+.dark-mode #diseaseDetails h2 {
+    color: #4da6ff;
+}
+
+#detailContent {
+    margin-top: 10px;
+}
+
+.detail-section-title {
+    margin-top: 25px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #28a745; 
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+}
+
+.dark-mode .detail-section-title {
+    border-bottom: 2px solid #5bff00;
+    color: #e0e0e0;
+}
+
+/* Style cho các khối giai đoạn/phác đồ */
+.phase-block {
+    border-left: 5px solid #007bff; 
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #f0f8ff; 
+    border-radius: 5px;
+}
+
+.dark-mode .phase-block {
+    background-color: #1a1a1a;
+    border-left: 5px solid #28a745; 
+}
+
+.phase-block p {
+    margin: 5px 0;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.phase-block strong {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.dark-mode .phase-block strong {
+    color: #ffffff;
+}
+
+/* ================================================= */
+/* RESPONSIVENESS                   */
+/* ================================================= */
+
+/* Desktop/Tablet */
+@media (min-width: 768px) {
+    html, body {
+        width: 80%;
+        margin: 50px auto;
     }
 }
 
-.tutorial{
-    text-align: center;
-    color: #222222;
-}
-
-path {
-    stroke: limegreen;
-    stroke-width: 10;
-    fill-opacity: 0.2;
+/* Mobile */
+@media (max-width: 767px) {
+    .row {
+        flex-direction: column;
+    }
+    .box {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .upload-btn-container {
+        flex-direction: column;
+    }
+    .box img {
+        height: 300px; /* Giảm chiều cao trên mobile */
+    }
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
 }
