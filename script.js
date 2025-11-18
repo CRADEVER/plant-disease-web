@@ -41,17 +41,19 @@ async function fetchData(){
     let indices = {};
     disease_lookup_map = {}; // Reset map
     
-    // Xử lý cấu trúc JSON có Phac_do_Quan_Ly_Tong_Hop_Chi_tiet là mảng
+    // Logic xử lý cấu trúc JSON từ class_indices.json
     if (data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet && Array.isArray(data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet)) {
         data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet.forEach(item => {
             const id = item.Mã_ID; 
             if (id !== undefined) {
+                // Sử dụng Tên_Bệnh để hiển thị kết quả
                 indices[id] = item.Tên_Bệnh; 
+                // Lưu object chi tiết để hiển thị phác đồ
                 disease_lookup_map[id] = item; 
             }
         });
     } else {
-        // Xử lý các cấu trúc JSON khác (ví dụ: JSON cũ hoặc Object tối ưu)
+        // Fallback cho cấu trúc JSON đơn giản hơn (nếu có)
         for (const key in data) {
             if (typeof data[key] === 'object' && data[key] !== null && data[key].Tên_Bệnh) {
                  indices[key] = data[key].Tên_Bệnh;
@@ -72,28 +74,40 @@ async function initialize() {
     let status = document.querySelector('.init_status')
     status.innerHTML = 'Đang tải mô hình và dữ liệu IPM.... <span class="fa fa-spinner fa-spin"></span>'
     
-    // Tải model
-    model = await tf.loadLayersModel('./tensorflowjs-model/model.json');
-    
-    // Tải và chuẩn hóa dữ liệu JSON
-    await fetchData();
-    
-    status.innerHTML = 'Tải mô hình thành công <span class="fa fa-check"></span>'
-    boxResult.style.display = 'block'
+    try {
+        // DÙ BẠN NÓI ĐƯỜNG DẪN NÀY ĐÚNG, NẾU VẪN LỖI 404 THÌ HÃY KIỂM TRA LẠI CẤU TRÚC THƯ MỤC THẬT SỰ
+        model = await tf.loadLayersModel('./tensorflowjs-model/model.json');
+        
+        // Tải và chuẩn hóa dữ liệu JSON
+        await fetchData();
+        
+        status.innerHTML = 'Tải mô hình thành công <span class="fa fa-check"></span>'
+        boxResult.style.display = 'block'
+    } catch (error) {
+        // HIỂN THỊ LỖI RÕ RÀNG HƠN CHO NGƯỜI DÙNG
+        status.innerHTML = `⚠️ Lỗi khởi tạo: Không thể tải model.json (404). Hãy kiểm tra thư mục 'tensorflowjs-model' và các file .bin.`;
+        console.error("Initialization error:", error);
+    }
 }
 
-// KHÔNG GỌI initialize() TRONG HÀM NÀY
+// Hàm dự đoán: Đảm bảo chỉ chạy sau khi model đã tải
 async function predict() {
-    // Đảm bảo model đã tải. Nếu chưa, tải ngay (chỉ xảy ra lần đầu)
     if (!model) {
-        await initialize();
+        // Nếu model chưa tải (do lỗi 404 trước đó), không dự đoán
+        document.querySelector('.init_status').innerHTML = '⚠️ Dự đoán bị hủy: Mô hình chưa được tải thành công.';
+        return;
     }
     
-    // Ẩn chi tiết bệnh cũ
+    // Logic dự đoán
     diseaseDetailsContainer.innerHTML = '';
     document.querySelector('.init_status').innerHTML = 'Đang dự đoán...';
     
     let offset = tf.scalar(255)
+    
+    if (!img.src || img.style.display === 'none') {
+        document.querySelector('.init_status').innerHTML = 'Vui lòng chọn hoặc chụp ảnh hợp lệ.';
+        return;
+    }
     
     let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
     let tensorImg_scaled = tensorImg.div(offset)
@@ -122,7 +136,7 @@ function onPredict(pred) {
 
     document.querySelector('.init_status').innerHTML = '';
 
-    // 2. LOGIC CẢI TIẾN: Lấy và hiển thị thông tin chi tiết về bệnh
+    // 2. Lấy và hiển thị thông tin chi tiết về bệnh
     const diseaseDetails = disease_lookup_map[index];
     if (diseaseDetails) {
         displayDiseaseDetails(diseaseDetails);
@@ -132,7 +146,7 @@ function onPredict(pred) {
     }
 }
 
-// Hàm mới để định dạng và hiển thị thông tin chi tiết từ JSON (ĐÃ SỬA LỖI TRUY CẬP THUỘC TÍNH)
+// Hàm mới để định dạng và hiển thị thông tin chi tiết từ JSON (ĐÃ SỬA LỖI MẤT DỮ LIỆU)
 function displayDiseaseDetails(details) {
     // Hàm hỗ trợ render danh sách phác đồ con an toàn hơn
     const renderPhacDoGiaiDoan = (steps) => {

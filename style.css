@@ -1,3 +1,4 @@
+
 *{
     box-sizing: border-box;
     padding: 0;
@@ -36,23 +37,6 @@ html,body{
     border: 1px solid #ccc;
 }
 
-/* --- STYLE CẢI TIẾN LIGHT MODE --- */
-.light-mode .disease-details {
-    background-color: white;
-    border-color: #ddd;
-}
-.light-mode .details-title {
-    color: #4CAF50; 
-}
-.light-mode .disease-details h4 {
-    color: #2c3e50;
-}
-.light-mode .content-box {
-    background-color: #f7f7f7;
-    border: 1px solid #eee;
-}
-/* --- END CẢI TIẾN LIGHT MODE --- */
-
 
 .dark-mode {
     background: #121212; 
@@ -83,26 +67,6 @@ html,body{
 .dark-mode .init_status {
     background: #004d40;
 }
-
-/* --- STYLE CẢI TIẾN DARK MODE --- */
-.dark-mode .disease-details {
-    background-color: #1e1e1e;
-    border-color: #333;
-}
-.dark-mode .details-title {
-    color: #8cc63f; /* Màu xanh lá cây sáng hơn cho chế độ tối */
-}
-.dark-mode .disease-details hr {
-    background-color: #333;
-}
-.dark-mode .disease-details h4 {
-    color: #e0e0e0;
-}
-.dark-mode .content-box {
-    background-color: #222;
-    border: 1px solid #333;
-}
-/* --- END CẢI TIẾN DARK MODE --- */
 
 
 .github-fork-ribbon:before, 
@@ -343,75 +307,6 @@ display: block;
     color: white;
 }
 
-
-/* ----------------------------------------------------------------- */
-/* STYLE CẢI TIẾN: KHU VỰC HIỂN THỊ CHI TIẾT BỆNH (DISEASE DETAILS) */
-/* ----------------------------------------------------------------- */
-.disease-details {
-    margin-top: 30px;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    text-align: left; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.details-title {
-    font-size: 1.6em;
-    margin-bottom: 15px;
-    border-bottom: 2px solid;
-    padding-bottom: 5px;
-}
-
-.disease-details hr {
-    border: 0;
-    height: 1px;
-    margin: 15px 0;
-}
-
-.disease-details h4 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-size: 1.2em;
-    padding-left: 10px;
-    border-left: 5px solid #4CAF50;
-}
-
-.content-box {
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.disease-details ul {
-    list-style-type: none; /* Bỏ list-style-type mặc định */
-    padding-left: 0;
-    margin-top: 10px;
-}
-
-.disease-details li {
-    margin-bottom: 10px;
-    line-height: 1.5;
-    padding-left: 20px; /* Tạo khoảng lề */
-    position: relative;
-}
-.disease-details li::before {
-    content: "•"; /* Dùng ký tự đặc biệt làm dấu chấm */
-    color: #4CAF50;
-    font-weight: bold;
-    display: inline-block;
-    width: 1em;
-    margin-left: -1em;
-}
-
-.disease-details .note {
-    display: block;
-    font-size: 0.9em;
-    color: orange;
-    margin-top: 3px;
-    font-style: italic;
-}
-/* ----------------------------------------------------------------- */
 
 
 @media (min-width: 768px){
