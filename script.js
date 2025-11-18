@@ -164,7 +164,7 @@ function displayResult(result, confidence_val) {
     // 1. Lấy Tên bệnh từ index
     const diseaseName = class_indices[result];
     
-    // 2. Tìm chi tiết bệnh trong mảng disease_data
+    // 2. Tìm chi tiết bệnh trong mảng disease_data (đảm bảo phân tích chính xác)
     const diseaseItem = disease_data.find(item => item.Mã_ID == result);
 
     predClassElement.textContent = diseaseName || 'Không xác định';
@@ -173,7 +173,7 @@ function displayResult(result, confidence_val) {
     
     progressBar.animate(confidence_val / 100);
 
-    // 3. Goal 3 & 5: Hiển thị nội dung phân tích chi tiết
+    // 3. Goal 3 & 5: Hiển thị nội dung phân tích chi tiết trọn vẹn
     if (diseaseItem) {
         detailContent.innerHTML = formatDetailsToHtml(diseaseItem);
         diseaseDetails.style.display = 'block';
@@ -210,8 +210,6 @@ async function predict(imgElement) {
         cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh khác.';
     }
 }
-
-// ... (Các phần còn lại của script.js như xử lý file, camera, và dark mode giữ nguyên) ...
 
 // ... (Khai báo các event listeners) ...
 
