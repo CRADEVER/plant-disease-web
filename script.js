@@ -1,4 +1,4 @@
-// script.js (Phiên bản Hoàn Chỉnh - Đã FIX triệt để lỗi TypeError bằng Optional Chaining)
+// script.js (Phiên bản Hoàn Chỉnh - Đã sử dụng cấu trúc JSON thống nhất)
 
 let model;
 let disease_protocols_map = {}; // Lưu trữ map các phác đồ để tra cứu nhanh bằng Mã_ID
@@ -47,7 +47,6 @@ async function fetchData(){
     try {
         let response = await fetch('./class_indices.json');
         
-        // KIỂM TRA LỖI: File JSON có được tải thành công không (ví dụ: lỗi 404)?
         if (!response.ok) {
             throw new Error(`HTTP Error! Status: ${response.status}. Hãy đảm bảo file class_indices.json nằm cùng cấp với index.html.`);
         }
@@ -57,12 +56,10 @@ async function fetchData(){
         let protocolMap = {};
         let indicesMap = {};
         
-        // CHỈNH SỬA: Xử lý cấu trúc JSON dạng MẢNG đã cố định
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
 
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // Sử dụng Mã_ID làm key để tra cứu nhanh O(1)
                 protocolMap[item.Mã_ID] = item;
                 indicesMap[item.Mã_ID] = item.Tên_Bệnh; 
             });
@@ -107,16 +104,47 @@ async function initialize() {
 }
 
 
-// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ (Đã FIX lỗi TypeError)
+// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ (Đã FIX sử dụng cấu trúc JSON thống nhất)
 function displayDiseaseDetails(protocol) {
     resultContainer.style.display = 'block';
     
-    // Sử dụng Optional Chaining (?.) để truy cập an toàn các thuộc tính lồng nhau
-    // Nếu protocol.III_Chiến_lược_Kiểm_soát_Hóa_học là undefined/null, nó sẽ trả về undefined
-    // Sau đó || [] sẽ đảm bảo phacDoGiaiDoan là một mảng rỗng nếu không có dữ liệu.
     const phacDoGiaiDoan = protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Phác_đồ_Giai_đoạn_Cây || [];
 
-    // Tạo cấu trúc HTML chi tiết, sử dụng thẻ <details>
+    // --- LOGIC XỬ LÝ PHẦN II (Biện pháp Canh tác Chuyên sâu) ---
+    // Sử dụng key thống nhất: II_Biện_pháp_Canh_tác_Chuyên_sâu
+    const intensiveCultivationProtocol = protocol.II_Biện_pháp_Canh_tác_Chuyên_sâu;
+    let sectionIICulturalContent = '';
+
+    if (intensiveCultivationProtocol) {
+        sectionIICulturalContent = `
+            <ul>
+                <li><b>Quản lý Tàn dư & Đất:</b> ${intensiveCultivationProtocol.Quản_lý_Tàn_dư_Đất || 'Đang cập nhật...'}</li>
+                <li><b>Quản lý Nước Tưới:</b> ${intensiveCultivationProtocol.Quản_lý_Nước_Tưới || 'Đang cập nhật...'}</li>
+                <li><b>Mật độ & Thông thoáng:</b> ${intensiveCultivationProtocol.Mật_độ_Thông_thoáng || 'Đang cập nhật...'}</li>
+                <li><b>Quản lý Dinh dưỡng Vi lượng:</b> ${intensiveCultivationProtocol.Quản_lý_Dinh_dưỡng_Vi_lượng || 'Đang cập nhật...'}</li>
+            </ul>
+        `;
+    } else {
+         sectionIICulturalContent = '<p>Đang cập nhật chiến lược Canh tác chuyên sâu...</p>';
+    }
+
+    // --- LOGIC XỬ LÝ PHẦN IV (Giải pháp Sinh học) ---
+    // Sử dụng key thống nhất: IV_Giải_pháp_Sinh_học_và_Thay_thế
+    const bioProtocol = protocol.IV_Giải_pháp_Sinh_học_và_Thay_thế;
+    let sectionIVBioContent = '';
+    
+    if (bioProtocol) {
+        sectionIVBioContent = `
+            <p><b>Chất Đối kháng VSV:</b> ${bioProtocol.Chất_Đối_kháng_VSV || 'Đang cập nhật...'}</p>
+            <p><b>Cảm ứng Kháng Bệnh (SAR):</b> ${bioProtocol.Cảm_ứng_Kháng_Bệnh_SAR || 'Không có.'}</p>
+            <p><b>Kiểm soát Côn trùng Vector:</b> ${bioProtocol.Kiểm_soát_Côn_trùng_Vector || 'Đang cập nhật...'}</p>
+            <p><b>Quản lý Kháng thuốc (IRM):</b> ${bioProtocol.Quản_lý_Kháng_thuốc_IRM || 'Đang cập nhật...'}</p>
+        `;
+    } else {
+        sectionIVBioContent = '<p>Đang cập nhật giải pháp sinh học và thay thế...</p>';
+    }
+    
+    // Tạo cấu trúc HTML chi tiết
     let html = `
         <div class="protocol-header">
             <h3>${protocol.Tên_Bệnh || 'Chưa xác định'}</h3>
@@ -141,14 +169,10 @@ function displayDiseaseDetails(protocol) {
             <details class="protocol-detail-section">
                 <summary>
                     <i class="material-icons">agriculture</i>
-                    II. Chiến lược Văn hóa và Cơ học (Phòng ngừa)
+                    II. Biện pháp Canh tác Chuyên sâu (Phòng ngừa)
                 </summary>
                 <div class="detail-content">
-                    <ul>
-                        <li><b>Quản lý Giống & Cây trồng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học?.Quản_lý_Giống_Cây_trồng || 'Đang cập nhật...'}</li>
-                        <li><b>Quản lý Dinh dưỡng & Nước:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học?.Quản_lý_Dinh_dưỡng_và_Nước || 'Đang cập nhật...'}</li>
-                        <li><b>Vệ sinh đồng ruộng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học?.Vệ_sinh_Đồng_ruộng_Tiểu_khí_hậu || 'Đang cập nhật...'}</li>
-                    </ul>
+                    ${sectionIICulturalContent}
                 </div>
             </details>
 
@@ -168,17 +192,17 @@ function displayDiseaseDetails(protocol) {
                             <p><b>Lưu ý:</b> ${step.Lưu_ý_Ứng_dụng || 'N/A'}</p>
                         </div>
                     `).join('') : '<p>Đang cập nhật phác đồ giai đoạn hóa học...</p>'}
+                    <p><b>Thuốc Trừ Tận gốc Eradicant:</b> ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Thuốc_Trừ_Tận_gốc_Eradicant || 'Không sử dụng.'}</p>
                 </div>
             </details>
             
             <details class="protocol-detail-section">
                 <summary>
                     <i class="material-icons">hive</i>
-                    IV. Giải pháp Sinh học và Khác
+                    IV. Giải pháp Sinh học và Thay thế
                 </summary>
                 <div class="detail-content">
-                    <p><b>Giải pháp Sinh học:</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác?.Giải_pháp_Sinh_học || 'Đang cập nhật...'}</p>
-                    <p><b>Quản lý Kháng thuốc (IRM):</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác?.Quản_lý_Kháng_thuốc_IRM || 'Đang cập nhật...'}</p>
+                    ${sectionIVBioContent}
                 </div>
             </details>
         </div>
