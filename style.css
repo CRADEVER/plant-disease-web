@@ -1,5 +1,3 @@
-/* Các style hiện có giữ nguyên */
-
 * {
     box-sizing: border-box;
     padding: 0;
@@ -10,24 +8,21 @@ html, body {
     width: 95%;
     margin: 50px auto;
     transition: background-color 0.5s, color 0.5s;
-    font-family: Arial, sans-serif; /* Đảm bảo font dễ đọc */
 }
 
 
-/* Chế độ Sáng */
 .light-mode {
     background: #eafaea;
     color: #222222;
 }
 
-.light-mode h1, .light-mode h2, .light-mode h3, .light-mode h4 {
+.light-mode h1, .light-mode h2 {
     color: #1a1a1a;
 }
 
 .light-mode .upload-file, .light-mode .camera-btn, .light-mode .capture-btn, .light-mode .stop-btn {
     background-color: white;
     color: #9b9b9b;
-    border: 1px solid #ddd;
 }
 
 .light-mode .box-result p {
@@ -41,86 +36,78 @@ html, body {
     border: 1px solid #ccc;
 }
 
-.light-mode .box, .light-mode .box-result, .light-mode .analysis-content {
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
 
-/* Chế độ Tối */
 .dark-mode {
     background: #121212; 
     color: #e0e0e0;
 }
 
-.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4 {
+.dark-mode h1, .dark-mode h2 {
     color: #e0e0e0;
 }
 
 .dark-mode .upload-file, .dark-mode .camera-btn, .dark-mode .capture-btn, .dark-mode .stop-btn {
     background-color: #1e1e1e;
-    color: #ccc;
-    border: 1px solid #333;
+    color: #9b9b9b;
 }
 
 .dark-mode .box-result p {
-    background: #004d40; /* Màu xanh đậm hơn */
-    color: #e0e0e0;
+    background: #4caf50; 
+    color: white;
 }
 
 .dark-mode .mode-toggle {
-    background: #1e1e1e;
+    background: #2a2a2a;
     color: #ccc;
-    border: 1px solid #333;
+    border: 1px solid #444;
 }
 
-.dark-mode .box, .dark-mode .box-result, .dark-mode .analysis-content {
-    background-color: #1e1e1e;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Các thành phần chung */
+/* Base Styles */
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .mode-toggle {
-    display: flex;
-    align-items: center;
     padding: 10px 15px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.mode-toggle i {
-    margin-right: 5px;
-}
-
-hr {
-    border: 0;
-    border-top: 1px solid #eee;
-    margin: 20px 0;
-}
-
-.dark-mode hr {
-    border-top: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .upload-btn-container {
     display: flex;
-    gap: 15px;
     justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.upload-btn-wrapper {
-    overflow: hidden;
-    position: relative;
-    display: inline-block;
+.upload-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn {
+    display: block;
+    padding: 20px 30px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1.1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .upload-btn-wrapper input[type=file] {
@@ -130,110 +117,118 @@ hr {
     top: 0;
     opacity: 0;
     cursor: pointer;
+    width: 100%;
+    height: 100%;
 }
 
-.btn {
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease-in-out;
-    border: 1px solid #ccc;
-}
-
-.btn:hover {
-    opacity: 0.8;
-}
-
-.upload-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 14px;
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
 }
 
 .font-size-30 {
-    font-size: 30px !important;
+    font-size: 30px;
 }
 
+.font-weight-500 {
+    font-weight: 500;
+}
+
+.d-block {
+    display: block;
+}
+
+/* Camera Styles */
 .camera-stream-container {
-    display: none; /* Ẩn mặc định */
+    display: none;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px dashed #ccc;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dark-mode .camera-stream-container {
-    border: 1px dashed #333;
+    background: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
 #videoStream {
-    border-radius: 10px;
-    margin-bottom: 10px;
-    max-width: 100%;
+    border-radius: 15px;
+    background: #000;
 }
 
 .capture-btn {
+    margin-top: 10px;
     padding: 10px 20px;
-    margin: 5px;
-    border-radius: 5px;
+    font-size: 1.1em;
+    background-color: #4caf50;
+    color: white;
     border: none;
-    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 .capture-btn:disabled {
-    opacity: 0.5;
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
 .stop-btn {
-    background-color: #f44336 !important;
-    color: white !important;
+    background-color: #f44336;
+    margin-left: 10px;
 }
 
 .camera-status {
     margin-top: 10px;
     font-style: italic;
-    color: #2196F3;
+    color: #666;
 }
 
+.dark-mode .camera-status {
+    color: #ccc;
+}
+
+
+/* Content Boxes */
 .row {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    justify-content: center; /* Căn giữa ảnh */
 }
 
 .box {
-    padding: 20px;
+    flex: 1 1 100%; /* Trên mobile, mỗi box chiếm 100% */
+    background: #ffffff;
+    padding: 30px;
     border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 300px; /* Chiều cao tối thiểu */
 }
 
-.box img {
-    border-radius: 10px;
-    max-height: 350px;
-    max-width: 100%;
-    display: none;
-    object-fit: contain;
+.dark-mode .box {
+    background: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
-.box-result {
-    display: none;
-    padding: 20px;
-    border-radius: 20px;
+.box h2 {
+    margin-bottom: 20px;
     text-align: center;
 }
 
-.box-result h2 {
-    margin-top: 15px;
+.box img {
+    border-radius: 20px;
+    height: 350px;
+    max-width: 100%;
+    object-fit: contain;
+    display: none;
 }
 
 .box-result p {
@@ -241,8 +236,14 @@ hr {
     padding: 10px;
     margin-top: 20px;
     border-radius: 10px;
-    display: block; /* Luôn hiển thị */
+    display: none;
     text-align: center;
+}
+
+.box-result {
+    display: none;
+    padding: 20px;
+    border-radius: 20px;
 }
 
 .accuracy {
@@ -258,6 +259,7 @@ hr {
     display: flex;
     align-items: center;
     justify-content: center;
+
 }
 
 .progress > .inner {
@@ -276,96 +278,113 @@ hr {
     transition: ease-in-out .5s;
     text-align: center;
     margin: 10px 0px;
+
     background: #4caf50;
     color: white;
 }
 
 
-/* STYLE MỚI CHO PHÂN TÍCH CHI TIẾT */
-.analysis-container {
-    margin-top: 30px;
-    margin-bottom: 50px;
-    padding: 20px;
+/* CSS ĐÃ ĐIỀU CHỈNH THEO YÊU CẦU */
+/* New Result Container (to hold both box-result and box-details) */
+#resultContainer {
+    display: flex; /* Bật flexbox để sắp xếp kết quả */
+    flex-direction: column; /* Luôn xếp chồng các box theo chiều dọc */
+    gap: 20px; /* Khoảng cách giữa các box */
+}
+
+/* Box hiển thị chi tiết bệnh (Goal 5: một khối nội dung) */
+.box-details {
+    display: none; /* Mặc định ẩn, sẽ hiện khi có kết quả */
+    width: 100%;
+    padding: 30px;
     border-radius: 20px;
-    display: none; /* Ẩn mặc định, chỉ hiện khi có kết quả */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white; /* Màu nền mặc định */
+    color: #333; /* Màu chữ mặc định */
 }
 
-.analysis-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2196F3; /* Màu xanh nổi bật */
+/* Dark mode for box-details */
+.dark-mode .box-details {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
-.analysis-content {
-    padding: 20px;
-    border-radius: 15px;
-    line-height: 1.6;
-}
-
-.analysis-content h3 {
-    font-size: 1.8em;
+.box-details h2 {
     color: #4caf50;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    text-align: center;
+}
+
+.dark-mode .box-details h2 {
+    color: #a4e5a4;
+    border-bottom: 2px solid #333;
+}
+
+/* Styling cho từng phần nội dung chi tiết */
+.detail-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-left: 5px solid #4caf50;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.dark-mode .detail-section {
+    background-color: #2a2a2a;
+    border-left-color: #a4e5a4;
+}
+
+.detail-section-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #333;
     margin-top: 0;
     margin-bottom: 10px;
 }
 
-.analysis-content h4 {
-    font-size: 1.4em;
-    margin-top: 25px;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid #eee;
+.dark-mode .detail-section-title {
+    color: #e0e0e0;
 }
 
-.dark-mode .analysis-content h4 {
-     border-bottom: 2px solid #333;
-}
-
-.analysis-content h5 {
-    font-size: 1.1em;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: #FF9800; /* Màu cam cho tiêu đề phụ */
-}
-
-.analysis-content p {
-    margin-bottom: 10px;
-    text-align: justify;
-}
-
-.analysis-content ul {
-    list-style-type: disc;
-    margin-left: 25px;
-    padding-left: 0;
-}
-
-.analysis-content li {
+.detail-section p {
     margin-bottom: 8px;
+    line-height: 1.6;
+    font-size: 0.95em;
 }
 
-.analysis-content hr {
-    margin: 20px 0;
-    border: 0;
-    border-top: 1px dashed #ccc;
-}
-.dark-mode .analysis-content hr {
-    border-top: 1px dashed #333;
+.detail-section p strong {
+    color: #000;
 }
 
+.dark-mode .detail-section p strong {
+    color: #a4e5a4;
+}
 
-/* Media query cho desktop */
+/* Styling cho các khối giai đoạn cây (trong Phác đồ Hóa học) */
+.phase-block {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.dark-mode .phase-block {
+    background-color: #121212;
+    border-color: #444;
+}
+
+.phase-block p {
+    margin: 5px 0;
+}
+
+/* Media Query cho màn hình lớn */
 @media (min-width: 768px) {
     html, body {
         width: 80%;
         margin: 50px auto;
-    }
-
-    .row {
-        flex-direction: row;
-    }
-
-    .box {
-        flex: 1;
-        min-height: 400px;
     }
 }
