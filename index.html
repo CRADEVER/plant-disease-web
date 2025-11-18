@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHÂN LOẠI VÀ QUẢN LÝ BỆNH CÂY</title>
+    <title>PHÂN LOẠI BỆNH CÂY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -21,17 +21,19 @@
 
     <div class="upload-btn-container">
         <div class="upload-btn-wrapper upload-wrapper">
-            <input type="file" name="uploadImage" id="uploadImage" accept="image/*" style="display: none;"> 
-            <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
+            <button class="btn upload-file font-weight-500">
                 <span class="upload-btn">
-                    <i class="material-icons d-block font-size-18">file_upload</i> Tải Ảnh Lên
+                    <i class="material-icons d-block font-size-30">cloud_upload</i>
+                    Tải ảnh lên
                 </span>
+                <input type="file" id="uploadImage" accept="image/*">
             </button>
         </div>
-        <div class="upload-btn-wrapper">
+        <div class="upload-btn-wrapper camera-wrapper">
             <button class="btn camera-btn font-weight-500" id="cameraToggle">
-                <span class="camera-btn-text">
-                    <i class="material-icons d-block font-size-18">camera_alt</i> Bật Camera
+                <span class="upload-btn">
+                    <i class="material-icons d-block font-size-30">photo_camera</i>
+                    Mở Camera
                 </span>
             </button>
         </div>
@@ -40,7 +42,7 @@
     <div class="camera-stream-container" id="cameraContainer">
         <video id="videoStream" width="320" height="240" autoplay></video>
         <button id="captureButton" class="capture-btn" disabled>Chụp</button>
-        <button id="stopButton" class="capture-btn stop-btn" style="display: none;">Dừng Camera</button>
+        <button id="stopButton" class="capture-btn stop-btn">Dừng Camera</button>
         <p class="camera-status" id="cameraStatus"></p>
     </div>
 
@@ -55,22 +57,29 @@
             <div class="init_status"></div>
             <div>
                 <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
+                
             </div>
             <div class="accuracy">
                 <div class="progress" id="progress">
                     <div class="inner">
+                      
                     </div>
                   </div>
+
             </div>
-            <p class="confidence-text" style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
+            <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
         </div>
     </div>
+    
+    <div class="analysis-container" id="analysisContainer" style="display: none;">
+        <h2>NỘI DUNG PHÂN TÍCH VÀ PHÁC ĐỒ QUẢN LÝ TỔNG HỢP</h2>
+        <div class="analysis-content" id="analysisContent">
+            </div>
+    </div>
 
-    <div class="box-result-details" id="resultDetails">
-        </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.1/progressbar.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
