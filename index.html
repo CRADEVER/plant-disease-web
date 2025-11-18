@@ -29,10 +29,10 @@
                 <input type="file" id="uploadImage" accept="image/*">
             </button>
         </div>
-        <div class="upload-btn-wrapper camera-wrapper">
+        <div class="camera-btn-wrapper upload-wrapper">
             <button class="btn camera-btn font-weight-500" id="cameraToggle">
-                <span class="upload-btn">
-                    <i class="material-icons d-block font-size-30">photo_camera</i>
+                <span class="camera-btn-text">
+                    <i class="material-icons d-block font-size-30">camera_alt</i>
                     Mở Camera
                 </span>
             </button>
@@ -52,7 +52,11 @@
             <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
             <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
+    </div>
 
+
+    <div id="resultContainer" style="display: none; margin-top: 20px;">
+        
         <div class="box box-result">
             <div class="init_status"></div>
             <div>
@@ -69,16 +73,14 @@
             </div>
             <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
         </div>
-    </div>
-    
-    <div class="analysis-container" id="analysisContainer" style="display: none;">
-        <h2>NỘI DUNG PHÂN TÍCH VÀ PHÁC ĐỒ QUẢN LÝ TỔNG HỢP</h2>
-        <div class="analysis-content" id="analysisContent">
-            </div>
-    </div>
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+        <div class="box box-details" id="diseaseDetails">
+            <h2>📜 PHÂN TÍCH CHUYÊN SÂU & PHÁC ĐỒ QUẢN LÝ</h2>
+            <div id="detailContent">
+                </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.1/progressbar.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="script.js"></script>
 </body>
