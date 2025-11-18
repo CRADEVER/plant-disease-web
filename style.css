@@ -1,69 +1,28 @@
-/* ================================================= */
-/* 1. RESET & BASE STYLES                            */
-/* ================================================= */
-
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    /* Font hiện đại hơn, dễ đọc hơn */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
 html, body {
     width: 95%;
-    max-width: 1200px;
-    margin: 30px auto;
+    margin: 50px auto;
     transition: background-color 0.5s, color 0.5s;
-    line-height: 1.6;
 }
 
-/* Base Headings */
-h1 {
-    font-size: 2.2em;
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: #007bff; /* Màu xanh nổi bật */
-}
 
-h2 {
-    font-size: 1.5em;
-    font-weight: 600;
-}
-
-hr {
-    margin: 15px 0px 25px 0px;
-    border: 0;
-    border-top: 1px solid #ddd;
-}
-
-.tutorial {
-    text-align: center;
-    margin: 15px 0 25px 0;
-    font-size: 0.95em;
-    color: #555;
-}
-
-.tutorial a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-/* ================================================= */
-/* 2. DARK/LIGHT MODE STYLES (Color Scheme)          */
-/* ================================================= */
-
-/* Light Mode Defaults */
 .light-mode {
-    background: #f7f7f7; /* Nền trắng xám nhạt */
+    background: #eafaea;
     color: #222222;
 }
 
-.light-mode .box, .light-mode .upload-file {
+.light-mode h1, .light-mode h2 {
+    color: #1a1a1a;
+}
+
+.light-mode .upload-file, .light-mode .camera-btn, .light-mode .capture-btn, .light-mode .stop-btn {
     background-color: white;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Bóng nhẹ nhàng */
-    border: 1px solid #eee;
+    color: #9b9b9b;
 }
 
 .light-mode .box-result p {
@@ -72,48 +31,38 @@ hr {
 }
 
 .light-mode .mode-toggle {
-    background: #e0e0e0;
+    background: #f0f0f0;
     color: #444;
+    border: 1px solid #ccc;
 }
 
-/* Dark Mode Styles */
+
 .dark-mode {
-    background: #121212; /* Nền tối sâu */
+    background: #121212; 
     color: #e0e0e0;
 }
 
-.dark-mode h1 {
-    color: #4da6ff;
+.dark-mode h1, .dark-mode h2 {
+    color: #e0e0e0;
 }
 
-.dark-mode hr {
-    border-top: 1px solid #333;
-}
-
-.dark-mode .box, .dark-mode .upload-file {
-    background-color: #242424;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-    border: 1px solid #333;
+.dark-mode .upload-file, .dark-mode .camera-btn, .dark-mode .capture-btn, .dark-mode .stop-btn {
+    background-color: #1e1e1e;
+    color: #9b9b9b;
 }
 
 .dark-mode .box-result p {
-    background: #28a745;
+    background: #4caf50; 
     color: white;
 }
 
 .dark-mode .mode-toggle {
-    background: #3a3a3a;
-    color: #e0e0e0;
+    background: #2a2a2a;
+    color: #ccc;
+    border: 1px solid #444;
 }
 
-.dark-mode .tutorial {
-    color: #bbb;
-}
-
-/* ================================================= */
-/* 3. LAYOUT & BUTTONS (Header, Upload, Camera)      */
-/* ================================================= */
-
+/* Base Styles */
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -123,193 +72,180 @@ hr {
 .mode-toggle {
     padding: 10px 15px;
     border: none;
-    border-radius: 25px;
+    border-radius: 5px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.95em;
-    font-weight: 500;
 }
 
-/* Upload & Camera Container */
 .upload-btn-container {
     display: flex;
+    justify-content: center;
     gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .upload-wrapper {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn {
+    display: block;
+    padding: 20px 30px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1.1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
 }
 
 .upload-btn-wrapper {
     position: relative;
     overflow: hidden;
     display: inline-block;
-    width: 100%;
 }
 
-.upload-file {
-    width: 100%;
-    height: 180px; 
-    border: 2px dashed #ccc;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    transition: all 0.2s ease-in-out;
-    color: #555;
-    font-weight: 600;
+.font-size-30 {
+    font-size: 30px;
 }
 
-.upload-file:hover {
-    border-color: #007bff;
+.font-weight-500 {
+    font-weight: 500;
 }
 
-.dark-mode .upload-file {
-    color: #bbb;
-    border: 2px dashed #555;
-}
-
-.upload-btn-wrapper input[type=file] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-}
-
-.upload-btn {
+.d-block {
     display: block;
-    color: limegreen;
 }
 
-.upload-btn i {
-    font-size: 50px !important;
-    padding-bottom: 10px;
-}
-.camera-btn i {
-    font-size: 30px !important;
-}
-
-.uploaded-file {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 5px;
-    font-weight: normal;
-    font-size: 0.9em;
-}
-.success-1 {
-    display: none;
-    margin-left: 5px;
-    color: limegreen;
-}
-
-
-/* Camera Container */
+/* Camera Styles */
 .camera-stream-container {
-    display: flex; /* Bắt đầu là none, JS sẽ bật */
+    display: none;
     flex-direction: column;
     align-items: center;
-    margin: 25px auto;
-    width: 100%;
-    max-width: 600px;
+    margin: 20px 0;
     padding: 20px;
-    border-radius: 15px;
-    background-color: #f0f0f0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dark-mode .camera-stream-container {
-    background-color: #2c2c2c;
-    border: 1px solid #444;
+    background: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
 }
 
 #videoStream {
-    width: 100%;
-    max-width: 480px;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    border-radius: 15px;
     background: #000;
 }
 
 .capture-btn {
+    margin-top: 10px;
     padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    margin: 5px;
-    border: none;
-    border-radius: 8px;
+    font-size: 1.1em;
+    background-color: #4caf50;
     color: white;
-    transition: background-color 0.2s;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
-.capture-btn#captureButton {
-    background-color: #007bff;
+.capture-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
-.capture-btn#stopButton {
-    background-color: #dc3545;
+.stop-btn {
+    background-color: #f44336;
+    margin-left: 10px;
 }
 
-/* ================================================= */
-/* 4. MAIN CONTENT & RESULT BOXES                    */
-/* ================================================= */
+.camera-status {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
 
+.dark-mode .camera-status {
+    color: #ccc;
+}
+
+
+/* Content Boxes */
 .row {
     display: flex;
-    justify-content: space-between;
-    gap: 25px;
-    margin: 30px auto;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center; 
 }
 
 .box {
-    width: 48%; 
-    padding: 25px;
-    border-radius: 15px;
-    transition: background-color 0.5s, color 0.5s, box-shadow 0.5s;
+    flex: 1 1 100%;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dark-mode .box {
+    background: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.box h2 {
+    margin-bottom: 20px;
     text-align: center;
 }
 
 .box img {
-    border-radius: 10px;
+    border-radius: 20px;
     height: 350px;
-    width: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    object-fit: contain;
     display: none;
-}
-
-.box-result {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.box-result h2 {
-    font-size: 1.4em;
-    margin-bottom: 20px;
-    min-height: 40px; /* Đảm bảo chiều cao không nhảy */
 }
 
 .box-result p {
     font-weight: bold;
-    padding: 10px 15px;
+    padding: 10px;
     margin-top: 20px;
     border-radius: 10px;
     display: none;
     text-align: center;
-    font-size: 1.1em;
 }
 
-/* Progress Bar (Accuracy) */
+.box-result {
+    display: none;
+    padding: 20px;
+    border-radius: 20px;
+}
+
 .accuracy {
     display: flex;
     justify-content: center;
@@ -323,17 +259,18 @@ hr {
     display: flex;
     align-items: center;
     justify-content: center;
+
 }
 
 .progress > .inner {
     position: absolute;
-    font-size: 1.3em;
+    border: 1px solid;
+    /* Style cho text bên trong vòng tròn */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
     font-weight: bold;
-    color: #4caf50;
-}
-
-.dark-mode .progress > .inner {
-    color: limegreen;
 }
 
 .progress > svg {
@@ -343,127 +280,115 @@ hr {
 
 .init_status {
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
+    transition: ease-in-out .5s;
     text-align: center;
-    margin: 10px 0px 20px 0px;
-    background: #007bff;
+    margin: 10px 0px;
+
+    background: #4caf50;
     color: white;
-    font-weight: 500;
 }
 
-.dark-mode .init_status {
-    background: #4da6ff;
+
+/* CSS ĐÃ ĐIỀU CHỈNH CHO PHẦN CHI TIẾT */
+#resultContainer {
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
 }
 
-/* ================================================= */
-/* 5. DISEASE DETAILS (Phác đồ Quản lý)              */
-/* ================================================= */
-
-.box.full-width {
-    width: 100%; 
+.box-details {
+    display: none; 
+    width: 100%;
     padding: 30px;
-    text-align: left;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white; 
+    color: #333; 
+    text-align: left; /* Căn lề trái cho nội dung chi tiết */
 }
 
-#diseaseDetails h2 {
-    font-size: 1.8em;
-    color: #007bff;
-    margin-bottom: 20px;
+.dark-mode .box-details {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.box-details h2 {
+    color: #4caf50;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ccc;
     text-align: center;
 }
-.dark-mode #diseaseDetails h2 {
-    color: #4da6ff;
+
+.dark-mode .box-details h2 {
+    color: #a4e5a4;
+    border-bottom: 2px solid #333;
 }
 
-/* Tiêu đề các phần nhỏ (Tác nhân, Chiến lược...) */
+
+/* Styling cho từng phần nội dung chi tiết */
+.detail-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-left: 5px solid #4caf50;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.dark-mode .detail-section {
+    background-color: #2a2a2a;
+    border-left-color: #a4e5a4;
+}
+
 .detail-section-title {
-    margin-top: 30px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #28a745; /* Màu xanh lá cây đậm */
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: 700;
     color: #333;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
+
 .dark-mode .detail-section-title {
-    border-bottom: 2px solid limegreen;
     color: #e0e0e0;
 }
 
-/* Khối phác đồ theo giai đoạn/chiến lược */
+.detail-section p {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-size: 0.95em;
+}
+
+.detail-section p strong {
+    color: #000;
+}
+
+.dark-mode .detail-section p strong {
+    color: #a4e5a4;
+}
+
+/* Styling cho các khối giai đoạn cây */
 .phase-block {
-    border-left: 6px solid #007bff; 
-    padding: 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    background-color: #f0f8ff; 
-    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    background-color: #fff;
 }
 
 .dark-mode .phase-block {
-    background-color: #3a3a3a;
-    border-left: 6px solid #28a745; 
+    background-color: #121212;
+    border-color: #444;
 }
 
 .phase-block p {
     margin: 5px 0;
-    font-size: 1em;
-    line-height: 1.6;
 }
 
-.phase-block strong {
-    font-weight: 700;
-    color: #000000;
-}
-.dark-mode .phase-block strong {
-    color: #ffffff;
-}
-
-/* ================================================= */
-/* 6. RESPONSIVENESS (MOBILE)                        */
-/* ================================================= */
-
-@media (max-width: 767px) {
+@media (min-width: 768px) {
     html, body {
-        width: 100%;
-        margin: 10px auto;
-        padding: 0 10px;
-    }
-    h1 {
-        font-size: 1.6em;
-    }
-    .header-container {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 10px;
-    }
-    .upload-btn-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .row {
-        flex-direction: column;
-        gap: 20px;
-    }
-    .box {
-        width: 100%;
-        margin: 0;
-        padding: 15px;
-    }
-    .upload-file {
-        height: 150px;
-    }
-    .box img {
-        height: 250px;
-    }
-    .box.full-width {
-        width: 100%;
-        padding: 15px;
-    }
-    .detail-section-title {
-        font-size: 1.3em;
-    }
-    #diseaseDetails h2 {
-        font-size: 1.5em;
+        width: 80%;
+        margin: 50px auto;
     }
 }
