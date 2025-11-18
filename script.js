@@ -1,4 +1,4 @@
-// script.js (Phiên bản Hoàn Chỉnh - Đã sửa lỗi TypeError)
+// script.js (Phiên bản Hoàn Chỉnh - Đã FIX triệt để lỗi TypeError bằng Optional Chaining)
 
 let model;
 let disease_protocols_map = {}; // Lưu trữ map các phác đồ để tra cứu nhanh bằng Mã_ID
@@ -47,6 +47,7 @@ async function fetchData(){
     try {
         let response = await fetch('./class_indices.json');
         
+        // KIỂM TRA LỖI: File JSON có được tải thành công không (ví dụ: lỗi 404)?
         if (!response.ok) {
             throw new Error(`HTTP Error! Status: ${response.status}. Hãy đảm bảo file class_indices.json nằm cùng cấp với index.html.`);
         }
@@ -56,6 +57,7 @@ async function fetchData(){
         let protocolMap = {};
         let indicesMap = {};
         
+        // CHỈNH SỬA: Xử lý cấu trúc JSON dạng MẢNG đã cố định
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
 
         if (Array.isArray(protocolsArray)) {
@@ -109,14 +111,10 @@ async function initialize() {
 function displayDiseaseDetails(protocol) {
     resultContainer.style.display = 'block';
     
-    // Sử dụng giá trị mặc định {} nếu các phần tử cha bị thiếu, để tránh lỗi 'undefined'
-    const sectionI = protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện || {};
-    const sectionII = protocol.II_Chiến_lược_Văn_hóa_Cơ_học || {};
-    const sectionIII = protocol.III_Chiến_lược_Kiểm_soát_Hóa_học || {};
-    const sectionIV = protocol.IV_Giải_pháp_Sinh_học_và_Khác || {};
-    
-    // Đảm bảo Phác đồ Giai đoạn là mảng, nếu không thì dùng mảng rỗng
-    const phacDoGiaiDoan = sectionIII.Phác_đồ_Giai_đoạn_Cây || [];
+    // Sử dụng Optional Chaining (?.) để truy cập an toàn các thuộc tính lồng nhau
+    // Nếu protocol.III_Chiến_lược_Kiểm_soát_Hóa_học là undefined/null, nó sẽ trả về undefined
+    // Sau đó || [] sẽ đảm bảo phacDoGiaiDoan là một mảng rỗng nếu không có dữ liệu.
+    const phacDoGiaiDoan = protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Phác_đồ_Giai_đoạn_Cây || [];
 
     // Tạo cấu trúc HTML chi tiết, sử dụng thẻ <details>
     let html = `
@@ -133,10 +131,10 @@ function displayDiseaseDetails(protocol) {
                     I. Tác nhân, Chu kỳ và Điều kiện (Cơ sở)
                 </summary>
                 <div class="detail-content">
-                    <p><b>Tác nhân:</b> ${sectionI.Tác_nhân_Sinh_học || 'Đang cập nhật...'}</p>
-                    <p><b>Cơ chế lây lan:</b> ${sectionI.Cơ_chế_Lây_lan || 'Đang cập nhật...'}</p>
-                    <p><b>Nhiệt độ tối ưu:</b> ${sectionI.Nhiệt_độ_Thời_điểm_tối_ưu || 'Đang cập nhật...'}</p>
-                    <p><b>Dấu hiệu:</b> ${sectionI.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu || 'Đang cập nhật...'}</p>
+                    <p><b>Tác nhân:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Tác_nhân_Sinh_học || 'Đang cập nhật...'}</p>
+                    <p><b>Cơ chế lây lan:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Cơ_chế_Lây_lan || 'Đang cập nhật...'}</p>
+                    <p><b>Nhiệt độ tối ưu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Nhiệt_độ_Thời_điểm_tối_ưu || 'Đang cập nhật...'}</p>
+                    <p><b>Dấu hiệu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu || 'Đang cập nhật...'}</p>
                 </div>
             </details>
 
@@ -147,9 +145,9 @@ function displayDiseaseDetails(protocol) {
                 </summary>
                 <div class="detail-content">
                     <ul>
-                        <li><b>Quản lý Giống & Cây trồng:</b> ${sectionII.Quản_lý_Giống_Cây_trồng || 'Đang cập nhật...'}</li>
-                        <li><b>Quản lý Dinh dưỡng & Nước:</b> ${sectionII.Quản_lý_Dinh_dưỡng_và_Nước || 'Đang cập nhật...'}</li>
-                        <li><b>Vệ sinh đồng ruộng:</b> ${sectionII.Vệ_sinh_Đồng_ruộng_Tiểu_khí_hậu || 'Đang cập nhật...'}</li>
+                        <li><b>Quản lý Giống & Cây trồng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học?.Quản_lý_Giống_Cây_trồng || 'Đang cập nhật...'}</li>
+                        <li><b>Quản lý Dinh dưỡng & Nước:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học?.Quản_lý_Dinh_dưỡng_và_Nước || 'Đang cập nhật...'}</li>
+                        <li><b>Vệ sinh đồng ruộng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học?.Vệ_sinh_Đồng_ruộng_Tiểu_khí_hậu || 'Đang cập nhật...'}</li>
                     </ul>
                 </div>
             </details>
@@ -160,7 +158,7 @@ function displayDiseaseDetails(protocol) {
                     III. Chiến lược Kiểm soát Hóa học (Thuốc)
                 </summary>
                 <div class="detail-content">
-                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${sectionIII.Nguyên_tắc_FRAC_IRAC || 'Đang cập nhật...'}</p>
+                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Nguyên_tắc_FRAC_IRAC || 'Đang cập nhật...'}</p>
                     
                     <h4>Phác đồ theo Giai đoạn:</h4>
                     ${phacDoGiaiDoan.length > 0 ? phacDoGiaiDoan.map(step => `
@@ -179,8 +177,8 @@ function displayDiseaseDetails(protocol) {
                     IV. Giải pháp Sinh học và Khác
                 </summary>
                 <div class="detail-content">
-                    <p><b>Giải pháp Sinh học:</b> ${sectionIV.Giải_pháp_Sinh_học || 'Đang cập nhật...'}</p>
-                    <p><b>Quản lý Kháng thuốc (IRM):</b> ${sectionIV.Quản_lý_Kháng_thuốc_IRM || 'Đang cập nhật...'}</p>
+                    <p><b>Giải pháp Sinh học:</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác?.Giải_pháp_Sinh_học || 'Đang cập nhật...'}</p>
+                    <p><b>Quản lý Kháng thuốc (IRM):</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác?.Quản_lý_Kháng_thuốc_IRM || 'Đang cập nhật...'}</p>
                 </div>
             </details>
         </div>
@@ -223,11 +221,9 @@ async function predict(imageElement) {
         // 3. Xử lý kết quả
         const highestPrediction = Math.max(...predictionArray);
         
-        // Chuyển index thành chuỗi, vì Mã_ID trong JSON là chuỗi ("0", "1", "2", ...)
         predicted_index = predictionArray.indexOf(highestPrediction).toString(); 
         confidence_score = Math.floor(highestPrediction * 100);
 
-        // Giải phóng tensor để tránh rò rỉ bộ nhớ
         tensor.dispose(); 
         predictions.dispose();
 
