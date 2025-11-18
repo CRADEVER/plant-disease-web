@@ -37,7 +37,8 @@ let progressBar =
 
 // Function để fetch dữ liệu JSON chi tiết
 async function fetchData(){
-    let response = await fetch('./class_indices.json');
+    // Dùng file JSON từ xa do bạn cung cấp
+    let response = await fetch('https://raw.githubusercontent.com/Van-Thuan/data_json/main/class_indices.json');
     let data = await response.json();
     
     // Lưu trữ dữ liệu chi tiết
@@ -178,14 +179,13 @@ async function predict() {
         await model_init_promise; 
     }
     
-    // --- SỬA LỖI PREPROCESSING ---
-    // Kích thước 224x224 VÀ Chuẩn hóa [-1, 1]
+    // --- SỬA LỖI PREPROCESSING (Theo model.json) ---
+    // Model đã có lớp Rescaling(1./255) bên trong.
+    // Chúng ta KHÔNG chuẩn hóa, chỉ resize và cast sang float.
     let tensorImg = tf.browser.fromPixels(img)
         .resizeNearestNeighbor([224, 224]) // Kích thước 224x224
-        .toFloat() // Chuyển sang Float32
-        // Chuẩn hóa [-1, 1]
-        .div(tf.scalar(127.5)) // Chia 127.5 (ảnh về [0, 2])
-        .sub(tf.scalar(1.0))   // Trừ 1 (ảnh về [-1, 1])
+        .toFloat() // Chuyển sang Float32 (model yêu cầu)
+        // KHÔNG .div() hay .sub()
         .expandDims(); 
     
     // Bước 2: Dự đoán
