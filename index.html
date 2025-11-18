@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHÂN LOẠI BỆNH CÂY</title>
+    <title>PHÂN LOẠI VÀ QUẢN LÝ BỆNH CÂY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -21,7 +21,7 @@
 
     <div class="upload-btn-container">
         <div class="upload-btn-wrapper upload-wrapper">
-            <input type="file" name="uploadImage" id="uploadImage" accept="image/*" style="display: none;">
+            <input type="file" name="uploadImage" id="uploadImage" accept="image/*" style="display: none;"> 
             <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
                 <span class="upload-btn">
                     <i class="material-icons d-block font-size-18">file_upload</i> Tải Ảnh Lên
@@ -40,7 +40,7 @@
     <div class="camera-stream-container" id="cameraContainer">
         <video id="videoStream" width="320" height="240" autoplay></video>
         <button id="captureButton" class="capture-btn" disabled>Chụp</button>
-        <button id="stopButton" class="capture-btn stop-btn">Dừng Camera</button>
+        <button id="stopButton" class="capture-btn stop-btn" style="display: none;">Dừng Camera</button>
         <p class="camera-status" id="cameraStatus"></p>
     </div>
 
