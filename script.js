@@ -1,4 +1,4 @@
-// script.js (Phiên bản Hoàn Chỉnh - Tích hợp TensorFlow.js thực tế)
+// script.js (Phiên bản Hoàn Chỉnh - Tích hợp TensorFlow.js và xử lý JSON Dạng Mảng)
 
 let model;
 let disease_protocols_map = {}; // Lưu trữ map các phác đồ để tra cứu nhanh bằng Mã_ID
@@ -31,11 +31,11 @@ const body = document.body;
 
 // Cấu hình ProgressBar (Yêu cầu thư viện progressbar.js)
 const progressBar = new ProgressBar.Circle('#progress', {
-    color: 'limegreen',
+    color: '#00a896', // Dùng màu xanh Teal chủ đạo
     strokeWidth: 10,
     duration: 1000,
     easing: 'easeInOut',
-    trailColor: '#e0e0e0',
+    trailColor: '#e0e0e0', // Màu nền cho Light mode
     trailWidth: 4,
     svgStyle: null
 });
@@ -51,8 +51,9 @@ async function fetchData(){
         let protocolMap = {};
         let indicesMap = {};
         
-        // Chuyển đổi mảng JSON thành map tra cứu (Mã_ID -> Phác đồ chi tiết)
+        // CHỈNH SỬA: Xử lý cấu trúc JSON dạng MẢNG đã cố định
         data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet.forEach(item => {
+            // Sử dụng Mã_ID làm key để tra cứu nhanh O(1)
             protocolMap[item.Mã_ID] = item;
             indicesMap[item.Mã_ID] = item.Tên_Bệnh; 
         });
@@ -78,10 +79,9 @@ async function initialize() {
 
     // 2. Tải mô hình THỰC TẾ
     try {
-        // ĐƯỜNG DẪN ĐƯỢC CHỈNH SỬA THEO YÊU CẦU CỦA BẠN
+        // Đường dẫn được chỉ định: './tensorflowjs-model/model.json'
         const modelUrl = './tensorflowjs-model/model.json'; 
         model = await tf.loadLayersModel(modelUrl); 
-        console.log("Mô hình đã tải thành công:", model);
 
         mainStatus.className = 'status success';
         mainStatus.innerHTML = '<i class="material-icons">check_circle_outline</i> Hệ thống đã sẵn sàng. Hãy chọn ảnh hoặc dùng Camera.';
@@ -94,7 +94,7 @@ async function initialize() {
 }
 
 
-// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ
+// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ (Không đổi, vì nó xử lý đối tượng protocolMap đã được ánh xạ)
 function displayDiseaseDetails(protocol) {
     resultContainer.style.display = 'block';
     
