@@ -1,65 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLANT DISEASE CLASSIFIER</title>
+    <title>PHÂN LOẠI BỆNH CÂY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="light-mode">
     <a class="github-fork-ribbon" href="https://url.to-your.repo" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
-    <h1>Plant Disease Classifier 🍀</h1>
-    <p>Built with ❤️ for Farmers using (Tensorflow, Tensorflow.js, Python, Javascript, HTML5)</p>
+
+    <div class="header-container">
+        <h1>🌱 HỆ THỐNG NHẬN DIỆN BỆNH CÂY</h1>
+        <button class="mode-toggle" id="modeToggle">
+            <i class="material-icons">brightness_4</i> Chế độ Tối
+        </button>
+    </div>
     <hr>
 
+    <div class="upload-btn-container">
+        <div class="upload-btn-wrapper upload-wrapper">
+            <button class="btn upload-file font-weight-500">
+                <span class="upload-btn">
+                    <i class="material-icons d-block font-50 pb-2">cloud_upload</i>
+                    <p id="choose-text-1">Tải ảnh lên</p>
+                    <div class="uploaded-file">
+                        <p class="uploaded-text" id="blankFile-1">Chưa có file</p>
+                        <i class="material-icons success-1">check_circle</i>
+                    </div>
+                </span>
+            </button>
+            <input type="file" name="uploadImage" id="uploadImage">
+        </div>
 
-    <div class="upload-btn-wrapper">
-        <button class="btn upload-file font-weight-500">
-            <span class="upload-btn">
-                <i class="material-icons d-block font-50 pb-2">cloud_upload</i>
-                <p id="choose-text-1">Choose Image of Crop leaf</p>
-            </span>
-            <span class="upload-select-button" id="blankFile-1">
-                *Supports .png, .jpg, .jpeg, .jfif
-            </span>
-            <span class="success-1">
-                <i class="material-icons text-success">check</i>
-            </span>
-        </button>
-        <input type="file" name="uploadImage" id="uploadImage">
+        <div class="upload-btn-wrapper upload-wrapper">
+            <button class="btn upload-file font-weight-500 camera-btn" id="cameraToggle">
+                <span class="camera-btn-text">
+                    <i class="material-icons d-block font-size-30">camera_alt</i> Mở Camera
+                </span>
+            </button>
+        </div>
     </div>
-
-    <p class = "tutorial">😇 Check out how and why this was built <a href="https://medium.com/@rexsimiloluwa/building-a-plant-disease-classification-web-app-in-keras-and-tensorflow-js-d435829213fa" target="blank">HERE</a> → Download test images <a href="https://github.com/rexsimiloluwah/PLANT-DISEASE-CLASSIFIER-WEB-APP-TENSORFLOWJS/tree/master/test-dataset" target="blank">HERE</a> </p>
+    
+    <p class="tutorial">🤓 Kiểm tra cách xây dựng hệ thống <a href="https://medium.com/@rexsimiloluwa/building-a-plant-disease-classification-web-app-in-keras-and-tensorflow-js-d435829213fa" target="blank">TẠI ĐÂY</a> → Tải ảnh thử nghiệm <a href="https://github.com/rexsimiloluwah/PLANT-DISEASE-CLASSIFIER-WEB-APP-TENSORFLOWJS/tree/master/test-dataset" target="blank">TẠI ĐÂY</a> </p>
+    
+    <div class="camera-stream-container" id="cameraContainer" style="display: none;">
+        <video id="videoStream" width="320" height="240" autoplay></video>
+        <button id="captureButton" class="capture-btn" disabled>Chụp</button>
+        <button id="stopButton" class="capture-btn stop-btn">Dừng Camera</button>
+        <p class="camera-status" id="cameraStatus"></p>
+    </div>
 
     <div class="row">
         <div class="box">
-            <img src="" alt="" id="image" width="224" height="224">
+            <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
+            <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
 
         <div class="box box-result">
             <div class="init_status"></div>
             <div>
-                <h2>Your Plant is infected with :- <span class="pred_class"></span></h2>
-                
+                <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
             </div>
             <div class="accuracy">
                 <div class="progress" id="progress">
                     <div class="inner">
-                      
-                    </div>
+                      </div>
                   </div>
-
             </div>
-            <p style="padding : 10px;"> CONFIDENCE : <b><span class="confidence"></span></b> %</p>
+            <p style="padding : 10px;"> ĐỘ CHÍNH XÁ : <b><span class="confidence"></span></b> %</p>
         </div>
     </div>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/2.0.1/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    
+    <div class="row">
+        <div class="box full-width" id="diseaseDetails" style="display: none;">
+            <h2>📝 Phác đồ Quản lý Tổng hợp:</h2>
+            <div id="detailContent">
+                </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.13.0/tf.min.js"></script>
+    <script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/master/dist/progressbar.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
