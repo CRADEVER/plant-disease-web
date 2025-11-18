@@ -1,9 +1,9 @@
 let model;
 let class_indices; // Map: Mã_ID (string) -> Tên_Bệnh
-let disease_data; // Raw JSON Data for details lookup
-let model_init_promise; // Promise để theo dõi trạng thái tải model (Tải 1 lần)
+let disease_data; // Raw JSON Data (Phác đồ chi tiết)
+let model_init_promise; // Promise để theo dõi trạng thái tải model (FIX: Tải 1 lần)
 
-// Các biến DOM cần thiết cho UI
+// Các biến DOM
 let fileUpload = document.getElementById('uploadImage');
 let img = document.getElementById('image');
 let boxResult = document.querySelector('.box-result');
@@ -12,7 +12,7 @@ let pconf = document.querySelector('.box-result p');
 let modeToggle = document.getElementById('modeToggle');
 let body = document.body;
 
-// Biến cho Camera (từ file index.html)
+// Biến Camera
 let cameraToggle = document.getElementById('cameraToggle');
 let cameraContainer = document.getElementById('cameraContainer');
 let videoStream = document.getElementById('videoStream');
@@ -23,10 +23,10 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 let currentStream;
 
-// Biến cho Kết quả và Chi tiết
-let resultContainer = document.querySelector('.box-result'); // Sử dụng lại boxResult
-let diseaseDetails = document.getElementById('diseaseDetails'); // Nếu bạn có phần tử này
-let detailContent = document.getElementById('detailContent'); // Nếu bạn có phần tử này
+// Biến cho Kết quả và Chi tiết (Cần đảm bảo các ID này có trong index.html)
+let diseaseDetails = document.getElementById('diseaseDetails'); 
+let detailContent = document.getElementById('detailContent'); 
+
 
 let progressBar =
     new ProgressBar.Circle('#progress', {
@@ -36,7 +36,7 @@ let progressBar =
     easing: 'easeInOut'
 });
 
-// --- LỚP DỮ LIỆU ---
+// --- TẢI DỮ LIỆU & KHỞI TẠO ---
 
 async function fetchData(){
     // Dùng file JSON chi tiết tiếng Việt
@@ -47,7 +47,7 @@ async function fetchData(){
     let rawData = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet; 
    
     let indices = {};
-    // Tạo map: Mã_ID (string) -> Tên_Bệnh để lookup nhanh
+    // Tạo map: Mã_ID (string) -> Tên_Bệnh để lookup nhanh (ví dụ: "0" -> "Táo - Ghẻ Táo...")
     for (const item of rawData) {
         indices[item.Mã_ID] = item.Tên_Bệnh; 
     }
@@ -79,7 +79,8 @@ async function initialize() {
     }
 }
 
-// Hàm format nội dung chi tiết từ JSON thành HTML
+// --- HÀM XỬ LÝ HIỂN THỊ CHI TIẾT PHÁC ĐỒ ---
+
 function formatDetailsToHtml(diseaseItem) {
     let html = '';
     
@@ -91,7 +92,6 @@ function formatDetailsToHtml(diseaseItem) {
         }
 
         if (Array.isArray(obj)) {
-            // Xử lý danh sách Phác đồ Giai đoạn Cây
             for (const item of obj) {
                 content += `<div class="phase-block">`;
                 content += `<p><strong>Giai đoạn:</strong> <span>${item.Giai_đoạn || 'N/A'}</span></p>`;
@@ -119,7 +119,6 @@ function formatDetailsToHtml(diseaseItem) {
             }
         }
         
-        // Chỉ thêm div bao bọc nếu có tiêu đề và không phải là list
         if (title && !Array.isArray(obj)) {
             html += `<div class="detail-section">${content}</div>`;
         } else {
@@ -144,11 +143,10 @@ function formatDetailsToHtml(diseaseItem) {
 }
 
 function displayResult(resultID, confidence_val) {
-    // Hiển thị container kết quả
-    if (resultContainer) resultContainer.style.display = 'block'; 
+    // Hiển thị boxResult
+    if (boxResult) boxResult.style.display = 'flex'; 
 
     const diseaseName = class_indices[resultID];
-    // Tìm chi tiết bệnh trong mảng raw data
     const diseaseItem = disease_data.find(item => item.Mã_ID == resultID);
 
     document.querySelector('.pred_class').innerHTML = diseaseName || 'Không xác định';
@@ -159,20 +157,20 @@ function displayResult(resultID, confidence_val) {
     progressBar.set(0); 
     progressBar.animate(confidence_val / 100);
 
-    // Hiển thị nội dung phân tích chi tiết trọn vẹn
+    // Hiển thị nội dung chi tiết
     if (diseaseItem && detailContent) {
         detailContent.innerHTML = formatDetailsToHtml(diseaseItem);
-        // Cần có phần tử có id="diseaseDetails" trong index.html
-        // Nếu không có, bạn có thể chỉ hiển thị boxResult và đặt chi tiết vào đó
+        if (diseaseDetails) diseaseDetails.style.display = 'block';
     } else if (detailContent) {
         detailContent.innerHTML = '<p>Không tìm thấy phác đồ quản lý chi tiết cho bệnh này.</p>';
+        if (diseaseDetails) diseaseDetails.style.display = 'block';
     }
     
     document.querySelector('.init_status').innerHTML = '';
 }
 
 
-// --- LỚP DỰ ĐOÁN ---
+// --- LỚP DỰ ĐOÁN (PREDICTION) ---
 
 async function predict() {
     // 1. Chắc chắn model đã tải xong
@@ -182,7 +180,7 @@ async function predict() {
         await model_init_promise; 
     }
     
-    // 2. Tiền xử lý ảnh: Kích thước 224x224, KHÔNG chuẩn hóa (LỖI ĐÃ KHẮC PHỤC)
+    // 2. Tiền xử lý ảnh: Kích thước 224x224, KHÔNG chuẩn hóa [0, 255] (FIX: Tránh Double Normalization)
     let tensorImg = tf.browser.fromPixels(img)
         .resizeNearestNeighbor([224, 224]) 
         .toFloat() // Giá trị [0, 255]
@@ -195,11 +193,11 @@ async function predict() {
     let predicted_index = tf.argMax(predictions).dataSync()[0];
     let confidence_value = predictions[predicted_index] * 100;
     
-    // 5. Hiển thị kết quả (chuyển index thành string để khớp với Mã_ID trong JSON)
+    // 5. Hiển thị kết quả
     displayResult(predicted_index.toString(), confidence_value);
 
-    // Kích hoạt lại nút chụp nếu cần
-    if (currentStream) {
+    // Kích hoạt lại nút chụp nếu có
+    if (currentStream && captureButton) {
         captureButton.disabled = false;
         cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh khác.';
     }
@@ -219,8 +217,10 @@ fileUpload.addEventListener('change', function(e){
     let file = this.files[0];
     if (file){
         // Cập nhật tên file (UI feedback)
-        if (e.target.value) {
-            document.getElementById("blankFile-1").innerHTML = e.target.value.replace("C:\\fakepath\\","");
+        let uploadedImage = e.target.value;
+        if (uploadedImage) {
+            // Logic cập nhật UI feedback khi upload file
+            document.getElementById("blankFile-1").innerHTML = uploadedImage.replace("C:\\fakepath\\","");
             document.getElementById("choose-text-1").innerText = "Change Selected Image";
             document.querySelector(".success-1").style.display = "inline-block";
         }
@@ -232,7 +232,7 @@ fileUpload.addEventListener('change', function(e){
         reader.addEventListener("load", function(){
             img.style.display = "block";
             img.setAttribute('src', this.result);
-            img.style.width = "100%";
+            img.style.width = "100%"; // Giữ nguyên kích thước hiển thị
             img.style.height = "350px"; 
             
             // CHỈ GỌI PREDICT (FIX LỖI TẢI MODEL LẶP)
@@ -246,16 +246,15 @@ fileUpload.addEventListener('change', function(e){
     }
 })
 
-
-// Logic cho Camera (Đảm bảo các nút và container có ID/class đúng trong index.html)
+// Logic cho Camera (Cần đảm bảo các phần tử này tồn tại trong index.html)
 if (cameraToggle) {
     cameraToggle.addEventListener('click', function() {
         if (currentStream) {
             stopCamera();
-            cameraContainer.style.display = 'none';
+            if (cameraContainer) cameraContainer.style.display = 'none';
             cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-30">camera_alt</i> Mở Camera</span>';
         } else {
-            cameraContainer.style.display = 'flex';
+            if (cameraContainer) cameraContainer.style.display = 'flex';
             cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-30">videocam_off</i> Đóng Camera</span>';
             startCamera();
         }
@@ -264,7 +263,7 @@ if (cameraToggle) {
 if (stopButton) {
     stopButton.addEventListener('click', function() {
         stopCamera();
-        cameraContainer.style.display = 'none';
+        if (cameraContainer) cameraContainer.style.display = 'none';
         cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-30">camera_alt</i> Mở Camera</span>';
     });
 }
@@ -284,7 +283,7 @@ if (captureButton) {
             img.style.height = "350px";
 
             stopCamera();
-            cameraContainer.style.display = 'none';
+            if (cameraContainer) cameraContainer.style.display = 'none';
             
             predict();
         }
