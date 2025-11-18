@@ -1,15 +1,8 @@
 let model;
-let class_indices; // Map: Index -> Disease Name
-let disease_data; // Raw JSON Data for details lookup
-let model_init_promise; // Promise để theo dõi trạng thái tải model (Sửa lỗi TypeError)
-
+let class_indices;
 let fileUpload = document.getElementById('uploadImage');
 let img = document.getElementById('image');
-let boxResult = document.querySelector('.box-result'); // Prediction/Confidence box
-let resultContainer = document.getElementById('resultContainer'); // Container tổng (Bạn cần thêm vào index.html)
-let diseaseDetails = document.getElementById('diseaseDetails'); // Box chi tiết (Bạn cần thêm vào index.html)
-let detailContent = document.getElementById('detailContent'); // Container nội dung chi tiết
-
+let boxResult = document.querySelector('.box-result');
 let confidence = document.querySelector('.confidence');
 let pconf = document.querySelector('.box-result p');
 let modeToggle = document.getElementById('modeToggle');
@@ -26,6 +19,10 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 let currentStream;
 
+// NEW: Global variable for detailed data lookup
+let class_indices_map = {}; 
+let detailedResultContainer = document.getElementById('detailedResultContainer');
+
 
 let progressBar =
     new ProgressBar.Circle('#progress', {
@@ -35,293 +32,236 @@ let progressBar =
     easing: 'easeInOut'
 });
 
-// Function để fetch dữ liệu JSON chi tiết (Sửa lại logic fetchData)
 async function fetchData(){
     let response = await fetch('./class_indices.json');
     let data = await response.json();
-    
-    // Lưu trữ dữ liệu chi tiết
-    disease_data = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet; 
    
-    let indices = {};
-    for (const item of disease_data) {
-        // Tạo map: Mã_ID (string) -> Tên_Bệnh cho việc tra cứu kết quả predict
+    let indices = {}; // Map: Index (0, 1, 2...) -> Class Name
+    
+    // Populate indices map and the new class_indices_map for detailed lookup
+    data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet.forEach(item => {
+        // The ML model output is an index, which corresponds to Mã_ID (e.g., "0", "1", "2")
+        class_indices_map[item.Mã_ID] = item;
         indices[item.Mã_ID] = item.Tên_Bệnh; 
-    }
-    return {indices: indices, rawData: data};
+    });
+
+    class_indices = indices; // Update the global variable
+    
+    // The full array of detailed data
+    return data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet; 
 }
 
 
 async function initialize() {
-    let status = document.querySelector('.init_status');
-    status.innerHTML = 'Đang tải Mô hình & Dữ liệu... <span class="fa fa-spinner fa-spin"></span>';
-    boxResult.style.display = 'block';
-
+    let status = document.querySelector('.init_status')
+    status.innerHTML = 'Đang tải dữ liệu mô hình...';
+    // Fetch data and populate global maps
+    await fetchData(); 
+    
+    status.innerHTML = 'Đang tải mô hình học sâu...';
     try {
-        // Fix Lỗi 404: Cập nhật đường dẫn model
-        const [modelLoad, dataLoad] = await Promise.all([
-            tf.loadLayersModel('./tensorflowjs-model/model.json'),
-            fetchData() 
-        ]);
+        // Assuming the model is in a 'model' directory
+        model = await tf.loadGraphModel('./model/model.json'); 
+        status.innerHTML = 'Hệ thống đã sẵn sàng!';
+        status.style.backgroundColor = '#28a745';
         
-        model = modelLoad;
-        class_indices = dataLoad.indices;
-        
-        status.innerHTML = 'Hệ thống đã sẵn sàng! Tải ảnh lên hoặc dùng Camera. <span class="fa fa-check"></span>';
-        console.log('Model và dữ liệu đã tải xong.');
     } catch (error) {
-        status.innerHTML = `Lỗi khởi tạo: ${error.message}. Vui lòng kiểm tra đường dẫn model và file json.`;
-        console.error('Initialization error:', error);
+        status.innerHTML = 'Lỗi tải mô hình. Vui lòng kiểm tra file model.json.';
+        status.style.backgroundColor = '#dc3545';
+        console.error("Error loading model:", error);
     }
 }
 
-// Hàm format nội dung chi tiết từ JSON thành HTML (Đã tối ưu hóa logic hiển thị)
-function formatDetailsToHtml(diseaseItem) {
-    let html = '';
-    
-    function traverse(obj, title) {
-        let content = '';
-        let isList = false;
-
-        if (title) {
-            // Tên mục lớn I, II, III
-            content += `<h3 class="detail-section-title">${title.replace(/_/g, ' ')}</h3>`;
-        }
-
-        if (Array.isArray(obj)) {
-            isList = true;
-            for (const item of obj) {
-                // Xử lý các mục mảng lồng nhau (VD: Phác đồ Giai đoạn Cây)
-                content += `<div class="phase-block">`;
-                content += `<p><strong>Giai đoạn:</strong> ${item.Giai_đoạn || 'N/A'}</p>`;
-                content += `<p><strong>Hoạt chất:</strong> ${item.Hoạt_chất_Đề_xuất || 'N/A'}</p>`;
-                content += `<p><strong>Nhóm FRAC/IRAC:</strong> ${item.Nhóm_FRAC_IRAC || 'N/A'}</p>`;
-                content += `<p><strong>Lưu ý:</strong> <em>${item.Lưu_ý_Ứng_dụng || 'Không'}</em></p>`;
-                content += `</div>`;
+function processImage(file) {
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+            img.style.display = 'block';
+            videoStream.style.display = 'none';
+            captureButton.style.display = 'none';
+            stopButton.style.display = 'none';
+            boxResult.style.display = 'none';
+            pconf.style.display = 'none';
+            detailedResultContainer.style.display = 'none'; // NEW: Hide detailed result on new image
+            
+            // Wait for image to load before prediction
+            img.onload = () => {
+                predict();
             }
-        } else if (typeof obj === 'object' && obj !== null) {
-            for (const key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    let value = obj[key];
-                    let formattedKey = key.replace(/_/g, ' ');
-
-                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                        content += traverse(value, key);
-                    } else if (Array.isArray(value)) {
-                        content += traverse(value, key);
-                    } else {
-                        if (formattedKey === 'Phân loại' || formattedKey === 'Tên Bệnh' || formattedKey === 'Mã ID') {
-                            // Bỏ qua hoặc đã hiển thị ở trên
-                        } else {
-                            content += `<p><strong>${formattedKey}:</strong> <span>${value}</span></p>`;
-                        }
-                    }
-                }
-            }
-        } 
-        
-        if (title && !isList) {
-            html += `<div class="detail-section">${content}</div>`;
-        } else {
-            html += content;
-        }
+        };
+        reader.readAsDataURL(file);
     }
-    
-    // Bắt đầu hiển thị thông tin chính
-    html += `<h3>Bệnh: ${diseaseItem.Tên_Bệnh}</h3>`;
-    html += `<p><strong>Phân loại:</strong> ${diseaseItem.Phân_loại}</p>`;
-    
-    const keysToExclude = ['Tên_Bệnh', 'Mã_ID', 'Phân_loại'];
-    
-    for (const key in diseaseItem) {
-        if (diseaseItem.hasOwnProperty(key) && !keysToExclude.includes(key)) {
-            traverse(diseaseItem[key], key);
-        }
-    }
-    
-    return html;
-}
-
-
-function displayResult(resultID, confidence_val) {
-    // Hiển thị container kết quả
-    if (resultContainer) resultContainer.style.display = 'block'; 
-    boxResult.style.display = 'block';
-
-    // 1. Lấy Tên bệnh từ index
-    const diseaseName = class_indices[resultID];
-    
-    // 2. Tìm chi tiết bệnh trong mảng disease_data
-    const diseaseItem = disease_data.find(item => item.Mã_ID == resultID);
-
-    document.querySelector('.pred_class').innerHTML = diseaseName || 'Không xác định';
-    confidence.innerHTML = confidence_val.toFixed(2);
-    document.querySelector('.inner').innerHTML = `${confidence_val.toFixed(2)}%`;
-    pconf.style.display = 'block';
-    
-    progressBar.animate(confidence_val / 100);
-
-    // 3. Hiển thị nội dung phân tích chi tiết trọn vẹn
-    if (diseaseItem) {
-        detailContent.innerHTML = formatDetailsToHtml(diseaseItem);
-        if (diseaseDetails) diseaseDetails.style.display = 'block';
-    } else {
-        detailContent.innerHTML = '<p>Không tìm thấy phác đồ quản lý chi tiết cho bệnh này.</p>';
-        if (diseaseDetails) diseaseDetails.style.display = 'block';
-    }
-    
-    document.querySelector('.init_status').innerHTML = ''; // Xóa trạng thái tải
 }
 
 
 async function predict() {
-    // Fix Lỗi TypeError: Chắc chắn model đã tải xong
+    // Hide previous detailed result 
+    detailedResultContainer.style.display = 'none';
+    
     if (!model) {
-        let status = document.querySelector('.init_status');
-        status.innerHTML = 'Hệ thống đang tải model, vui lòng đợi... <span class="fa fa-spinner fa-spin"></span>';
-        await model_init_promise; 
+        alert('Mô hình chưa được tải hoặc bị lỗi.');
+        return;
     }
-    
-    let offset = tf.scalar(255)
-    
-    let tensorImg = tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
-    let tensorImg_scaled = tensorImg.div(offset)
-    
-    let predictions = await model.predict(tensorImg_scaled).data();
 
-    let predicted_index = tf.argMax(predictions).dataSync()[0];
-    let confidence_value = predictions[predicted_index] * 100;
-    
-    // Mã ID trong JSON là string, nên chuyển index về string
-    displayResult(predicted_index.toString(), confidence_value);
+    // Preprocessing the image for the model
+    let tensor = tf.browser.fromPixels(img)
+        .resizeNearestNeighbor([224, 224]) // Resize to model input size
+        .toFloat()
+        .div(tf.scalar(255.0)) // Normalize
+        .expandDims(); // Add batch dimension
 
-    // Kích hoạt lại nút chụp nếu cần
-    if (currentStream) {
-        captureButton.disabled = false;
-        cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh khác.';
+    // Show loading indicator
+    boxResult.style.display = 'block';
+    pconf.style.display = 'block';
+    document.querySelector('.pred_class').textContent = 'Đang phân tích...';
+    confidence.textContent = '...';
+    progressBar.set(0);
+
+    // Run prediction
+    let prediction = await model.predict(tensor).data();
+    tensor.dispose(); // Clean up tensor memory
+
+    // Get the result
+    let max_index = prediction.indexOf(Math.max(...prediction));
+    let predicted_class_name = class_indices[max_index];
+    let conf = Math.floor(Math.max(...prediction) * 100);
+
+    // Update prediction summary
+    pconf.style.display = 'block';
+    confidence.textContent = conf;
+    document.querySelector('.pred_class').textContent = predicted_class_name;
+    boxResult.style.display = 'block';
+
+    progressBar.animate(conf / 100);
+
+    // NEW: Display detailed result
+    const resultData = class_indices_map[max_index.toString()]; 
+    if (resultData) {
+        displayDetailedResult(resultData);
+    } else {
+        detailedResultContainer.style.display = 'block';
+        detailedResultContainer.innerHTML = '<h3>Không tìm thấy thông tin chi tiết cho loại bệnh này.</h3>';
     }
 }
 
-// ----------------------------------------------------------------
-// EVENT LISTENERS 
-// ----------------------------------------------------------------
 
-fileUpload.addEventListener('change', function(e){
-
-    stopCamera();
-    cameraContainer.style.display = 'none';
-
-    // Xử lý hiển thị tên file (nếu cần, giữ nguyên code của bạn)
-    let uploadedImage = e.target.value
-    if (uploadedImage){
-        // document.getElementById("blankFile-1").innerHTML = uploadedImage.replace("C:\\fakepath\\","")
-        // document.getElementById("choose-text-1").innerText = "Đổi Ảnh Đã Chọn"
-        // document.querySelector(".success-1").style.display = "inline-block"
-        // document.querySelector(".success-1 i").style.border = "1px solid limegreen"
-        // document.querySelector(".success-1 i").style.color = "limegreen"
+// NEW: Helper function to format sections and lists
+function formatSection(title, content) {
+    let html = `<h3>${title}</h3>`;
+    for (const subTitle in content) {
+        let value = content[subTitle];
+        
+        // Clean up title for display
+        let displaySubTitle = subTitle.replace(/_/g, ' ');
+        
+        // Handle the Phác đồ Giai đoạn Cây array separately
+        if (subTitle === "Phác_đồ_Giai_đoạn_Cây" && Array.isArray(value)) {
+            html += `<h4>${displaySubTitle}:</h4><ul>`;
+            value.forEach((item, index) => {
+                html += `<li><p><strong>Giai đoạn ${index + 1}:</strong> ${item.Giai_đoạn}</p>`;
+                html += `<p><strong>Hoạt chất đề xuất:</strong> ${item.Hoạt_chất_Đề_xuất}</p>`;
+                html += `<p><strong>Nhóm FRAC/IRAC:</strong> ${item.Nhóm_FRAC_IRAC}</p>`;
+                html += `<p><strong>Lưu ý Ứng dụng:</strong> ${item.Lưu_ý_Ứng_dụng}</p></li>`;
+            });
+            html += `</ul>`;
+        } else if (typeof value === 'object' && value !== null) {
+            // Handle complex object fields like Dấu_hiệu_Chẩn_đoán_Chuyên_sâu
+            html += `<h4>${displaySubTitle}:</h4><ul>`;
+            for (const key in value) {
+                // Use key as a descriptive label
+                html += `<li><strong>${key.replace(/_/g, ' ')}:</strong> ${value[key]}</li>`;
+            }
+            html += '</ul>';
+        } else {
+            // For simple key-value pairs
+            html += `<h4>${displaySubTitle}:</h4>`;
+            html += `<p>${value}</p>`;
+        }
     }
+    return html;
+}
 
-    let file = this.files[0]
-    if (file){
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.addEventListener("load", function(){
-            img.style.display = "block"
-            img.setAttribute('src', this.result);
-            img.style.width = "100%";
-            img.style.height = "350px"; 
-            
-            // Fix: Gọi predict sau khi ảnh đã được load
-            predict(); 
-        });
-    }
+// NEW: Function to display the full, monolithic analysis content
+function displayDetailedResult(result) {
+    let htmlContent = `
+        <h2>${result.Tên_Bệnh} (ID: ${result.Mã_ID})</h2>
+        <p><strong>Phân loại tổng quát:</strong> ${result.Phân_loại}</p>
+        <hr/>
+    `;
 
-    else{
-        img.setAttribute("src", "");
-        img.style.display = "none";
-    }
-})
+    // Define the section order based on JSON structure
+    const sectionOrder = [
+        "I_Tác_nhân_Chu_kỳ_và_Điều_kiện",
+        "II_Biện_pháp_Canh_tác_Chuyên_sâu",
+        "III_Chiến_lược_Kiểm_soát_Hóa_học",
+        "IV_Giải_pháp_Sinh_học_và_Thay_thế"
+    ];
+
+    sectionOrder.forEach(sectionKey => {
+        if (result[sectionKey]) {
+            // Clean up the main section title (I_Tác_nhân_Chu_kỳ_và_Điều_kiện -> I Tác nhân Chu kỳ và Điều kiện)
+            let sectionTitle = sectionKey.replace(/_/g, ' ');
+            htmlContent += formatSection(sectionTitle, result[sectionKey]);
+        }
+    });
+
+    detailedResultContainer.innerHTML = htmlContent;
+    detailedResultContainer.style.display = 'block';
+}
 
 
-
-cameraToggle.addEventListener('click', function() {
-    if (currentStream) {
-        stopCamera();
-        cameraContainer.style.display = 'none';
-        cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-30">camera_alt</i> Mở Camera</span>';
-    } else {
-        cameraContainer.style.display = 'flex';
-        cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-30">videocam_off</i> Đóng Camera</span>';
-        startCamera();
-    }
+fileUpload.addEventListener('change', (e) => {
+    processImage(e.target.files[0]);
 });
 
-stopButton.addEventListener('click', function() {
-    stopCamera();
-    cameraContainer.style.display = 'none';
-    cameraToggle.innerHTML = '<span class="camera-btn-text"><i class="material-icons d-block font-size-30">camera_alt</i> Mở Camera</span>';
-});
+captureButton.addEventListener('click', () => {
+    // Take a snapshot from the video stream
+    canvas.width = videoStream.videoWidth;
+    canvas.height = videoStream.videoHeight;
+    context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
 
-captureButton.addEventListener('click', function() {
-    if (currentStream) {
-        captureButton.disabled = true; // Vô hiệu hóa nút chụp trong khi xử lý
-        cameraStatus.textContent = 'Đang phân tích...';
+    // Convert canvas to base64 image data
+    let dataUrl = canvas.toDataURL('image/jpeg');
 
-        canvas.width = videoStream.videoWidth;
-        canvas.height = videoStream.videoHeight;
-        context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
-        
-        img.setAttribute('src', canvas.toDataURL('image/jpeg'));
-        img.style.display = "block";
-        img.style.width = "100%";
-        img.style.height = "350px";
+    // Display the captured image
+    img.src = dataUrl;
+    img.style.display = 'block';
+    videoStream.style.display = 'none';
+    captureButton.style.display = 'none';
+    stopCamera(); // Stop the camera after capture
 
-        stopCamera();
-        cameraContainer.style.display = 'none';
-        
+    // Process the captured image
+    img.onload = () => {
         predict();
     }
 });
 
-// ... (Các hàm startCamera, stopCamera và modeToggle giữ nguyên) ...
 
-// Khởi tạo model khi tải trang (Fix logic tải model)
-model_init_promise = initialize();
+cameraToggle.addEventListener('click', () => {
+    if (cameraContainer.style.display === 'block') {
+        stopCamera();
+        cameraContainer.style.display = 'none';
+    } else {
+        startCamera();
+        cameraContainer.style.display = 'block';
+        img.style.display = 'none';
+        boxResult.style.display = 'none';
+        detailedResultContainer.style.display = 'none'; // NEW: Hide detailed result on camera toggle
+    }
+});
+
+stopButton.addEventListener('click', () => {
+    stopCamera();
+    cameraContainer.style.display = 'none';
+    detailedResultContainer.style.display = 'none'; // NEW: Hide detailed result on camera stop
+});
 
 
 async function startCamera() {
-    try {
-        cameraStatus.textContent = 'Đang yêu cầu truy cập camera...';
-        
-        const constraints = {
-            video: {
-                width: { ideal: 640 },
-                height: { ideal: 480 },
-                facingMode: 'environment' 
-            }
-        };
-        
-        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoStream.srcObject = currentStream;
-        videoStream.play();
-        cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh.';
-        captureButton.disabled = false;
-        videoStream.style.display = 'block';
-        captureButton.style.display = 'block';
-        stopButton.style.display = 'block';
-        img.style.display = 'none'; 
-        boxResult.style.display = 'none'; 
-        if (resultContainer) resultContainer.style.display = 'none'; // Ẩn kết quả cũ
-    } catch (err) {
-        
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         try {
-            const constraints = {
-                video: {
-                    width: { ideal: 640 },
-                    height: { ideal: 480 },
-                    facingMode: 'user' 
-                }
-            };
+            const constraints = { video: { width: { ideal: 320 }, height: { ideal: 240 }, facingMode: 'environment' } }; 
             currentStream = await navigator.mediaDevices.getUserMedia(constraints);
             videoStream.srcObject = currentStream;
             videoStream.play();
@@ -332,7 +272,6 @@ async function startCamera() {
             stopButton.style.display = 'block';
             img.style.display = 'none';
             boxResult.style.display = 'none';
-            if (resultContainer) resultContainer.style.display = 'none';
         } catch (error) {
             cameraStatus.textContent = `Lỗi truy cập camera: ${error.name}. Vui lòng đảm bảo camera được phép sử dụng.`;
             captureButton.disabled = true;
@@ -354,6 +293,7 @@ function stopCamera() {
 }
 
 
+
 modeToggle.addEventListener('click', () => {
     if (body.classList.contains('light-mode')) {
         body.classList.replace('light-mode', 'dark-mode');
@@ -363,3 +303,6 @@ modeToggle.addEventListener('click', () => {
         modeToggle.innerHTML = '<i class="material-icons">brightness_4</i> Chế độ Tối';
     }
 });
+
+// Start initialization when the page loads
+window.onload = initialize;
