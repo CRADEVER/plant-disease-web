@@ -60,7 +60,6 @@ async function initialize() {
     try {
         // Tải Model và Data song song
         const [modelLoad, dataLoad] = await Promise.all([
-            // Sử dụng tf.loadLayersModel() cho model Keras/Sequenial
             tf.loadLayersModel('./tensorflowjs-model/model.json'),
             fetchData() 
         ]);
@@ -154,7 +153,6 @@ function displayResult(resultID, confidence_val) {
     document.querySelector('.inner').innerHTML = `${confidence_val.toFixed(2)}%`;
     pconf.style.display = 'block';
     
-    // Animate thanh progress dựa trên confidence_val / 100
     progressBar.set(0); 
     progressBar.animate(confidence_val / 100);
 
@@ -179,13 +177,12 @@ async function predict() {
         await model_init_promise; 
     }
     
-    // Fix Lỗi Preprocessing - Sử dụng chuẩn hóa 0-1 (div(255))
-    // Hầu hết các mô hình được huấn luyện bằng Keras/TF đều cần chuẩn hóa [0, 1]
+    // Fix Preprocessing: Chuyển kích thước ảnh sang 256x256
     let tensorImg = tf.browser.fromPixels(img)
-        .resizeNearestNeighbor([224, 224])
+        .resizeNearestNeighbor([256, 256]) // <--- ĐÃ SỬA TẠI ĐÂY
         .toFloat() // Chuyển sang Float32
         .div(tf.scalar(255.0)) // Chuẩn hóa về [0, 1]
-        .expandDims(); // Thêm chiều batch (1, 224, 224, 3)
+        .expandDims(); 
     
     // Bước 2: Dự đoán
     let predictions = await model.predict(tensorImg).data();
@@ -257,6 +254,7 @@ captureButton.addEventListener('click', function() {
         captureButton.disabled = true;
         cameraStatus.textContent = 'Đang phân tích...';
 
+        // Lấy khung hình từ video, không cần set kích thước 256x256 ở đây
         canvas.width = videoStream.videoWidth;
         canvas.height = videoStream.videoHeight;
         context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
