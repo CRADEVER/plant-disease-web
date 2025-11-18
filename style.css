@@ -199,11 +199,11 @@ html, body {
     flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
-    justify-content: center; 
+    justify-content: center; /* Căn giữa ảnh */
 }
 
 .box {
-    flex: 1 1 100%;
+    flex: 1 1 100%; /* Trên mobile, mỗi box chiếm 100% */
     background: #ffffff;
     padding: 30px;
     border-radius: 20px;
@@ -265,12 +265,6 @@ html, body {
 .progress > .inner {
     position: absolute;
     border: 1px solid;
-    /* Style cho text bên trong vòng tròn */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2em;
-    font-weight: bold;
 }
 
 .progress > svg {
@@ -290,24 +284,26 @@ html, body {
 }
 
 
-/* CSS ĐÃ ĐIỀU CHỈNH CHO PHẦN CHI TIẾT */
+/* CSS ĐÃ ĐIỀU CHỈNH THEO YÊU CẦU */
+/* New Result Container (to hold both box-result and box-details) */
 #resultContainer {
-    display: flex; 
-    flex-direction: column; 
-    gap: 20px; 
+    display: flex; /* Bật flexbox để sắp xếp kết quả */
+    flex-direction: column; /* Luôn xếp chồng các box theo chiều dọc */
+    gap: 20px; /* Khoảng cách giữa các box */
 }
 
+/* Box hiển thị chi tiết bệnh (Goal 5: một khối nội dung) */
 .box-details {
-    display: none; 
+    display: none; /* Mặc định ẩn, sẽ hiện khi có kết quả */
     width: 100%;
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: white; 
-    color: #333; 
-    text-align: left; /* Căn lề trái cho nội dung chi tiết */
+    background-color: white; /* Màu nền mặc định */
+    color: #333; /* Màu chữ mặc định */
 }
 
+/* Dark mode for box-details */
 .dark-mode .box-details {
     background: #1e1e1e;
     color: #e0e0e0;
@@ -326,7 +322,6 @@ html, body {
     color: #a4e5a4;
     border-bottom: 2px solid #333;
 }
-
 
 /* Styling cho từng phần nội dung chi tiết */
 .detail-section {
@@ -368,7 +363,7 @@ html, body {
     color: #a4e5a4;
 }
 
-/* Styling cho các khối giai đoạn cây */
+/* Styling cho các khối giai đoạn cây (trong Phác đồ Hóa học) */
 .phase-block {
     padding: 10px;
     margin: 10px 0;
@@ -386,6 +381,7 @@ html, body {
     margin: 5px 0;
 }
 
+/* Media Query cho màn hình lớn */
 @media (min-width: 768px) {
     html, body {
         width: 80%;
