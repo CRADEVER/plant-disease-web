@@ -1,14 +1,14 @@
 let model;
-let class_indices; // Map: Index -> Disease Name
+let class_indices; // Map: Mã_ID (string) -> Tên_Bệnh
 let disease_data; // Raw JSON Data for details lookup
-let model_init_promise; // Promise để theo dõi trạng thái tải model (Sửa lỗi TypeError)
+let model_init_promise; // Promise để theo dõi trạng thái tải model
 
 let fileUpload = document.getElementById('uploadImage');
 let img = document.getElementById('image');
-let boxResult = document.querySelector('.box-result'); // Prediction/Confidence box
-let resultContainer = document.getElementById('resultContainer'); // Container tổng (Bạn cần thêm vào index.html)
-let diseaseDetails = document.getElementById('diseaseDetails'); // Box chi tiết (Bạn cần thêm vào index.html)
-let detailContent = document.getElementById('detailContent'); // Container nội dung chi tiết
+let boxResult = document.querySelector('.box-result');
+let resultContainer = document.getElementById('resultContainer');
+let diseaseDetails = document.getElementById('diseaseDetails');
+let detailContent = document.getElementById('detailContent');
 
 let confidence = document.querySelector('.confidence');
 let pconf = document.querySelector('.box-result p');
@@ -35,7 +35,7 @@ let progressBar =
     easing: 'easeInOut'
 });
 
-// Function để fetch dữ liệu JSON chi tiết (Sửa lại logic fetchData)
+// Function để fetch dữ liệu JSON chi tiết
 async function fetchData(){
     let response = await fetch('./class_indices.json');
     let data = await response.json();
@@ -45,7 +45,7 @@ async function fetchData(){
    
     let indices = {};
     for (const item of disease_data) {
-        // Tạo map: Mã_ID (string) -> Tên_Bệnh cho việc tra cứu kết quả predict
+        // Tạo map: Mã_ID (string) -> Tên_Bệnh
         indices[item.Mã_ID] = item.Tên_Bệnh; 
     }
     return {indices: indices, rawData: data};
@@ -58,8 +58,9 @@ async function initialize() {
     boxResult.style.display = 'block';
 
     try {
-        // Fix Lỗi 404: Cập nhật đường dẫn model
+        // Tải Model và Data song song
         const [modelLoad, dataLoad] = await Promise.all([
+            // Sử dụng tf.loadLayersModel() cho model Keras/Sequenial
             tf.loadLayersModel('./tensorflowjs-model/model.json'),
             fetchData() 
         ]);
@@ -75,7 +76,7 @@ async function initialize() {
     }
 }
 
-// Hàm format nội dung chi tiết từ JSON thành HTML (Đã tối ưu hóa logic hiển thị)
+// Hàm format nội dung chi tiết từ JSON thành HTML (Giữ nguyên logic đệ quy tốt)
 function formatDetailsToHtml(diseaseItem) {
     let html = '';
     
@@ -84,14 +85,12 @@ function formatDetailsToHtml(diseaseItem) {
         let isList = false;
 
         if (title) {
-            // Tên mục lớn I, II, III
             content += `<h3 class="detail-section-title">${title.replace(/_/g, ' ')}</h3>`;
         }
 
         if (Array.isArray(obj)) {
             isList = true;
             for (const item of obj) {
-                // Xử lý các mục mảng lồng nhau (VD: Phác đồ Giai đoạn Cây)
                 content += `<div class="phase-block">`;
                 content += `<p><strong>Giai đoạn:</strong> ${item.Giai_đoạn || 'N/A'}</p>`;
                 content += `<p><strong>Hoạt chất:</strong> ${item.Hoạt_chất_Đề_xuất || 'N/A'}</p>`;
@@ -111,7 +110,7 @@ function formatDetailsToHtml(diseaseItem) {
                         content += traverse(value, key);
                     } else {
                         if (formattedKey === 'Phân loại' || formattedKey === 'Tên Bệnh' || formattedKey === 'Mã ID') {
-                            // Bỏ qua hoặc đã hiển thị ở trên
+                            // Bỏ qua
                         } else {
                             content += `<p><strong>${formattedKey}:</strong> <span>${value}</span></p>`;
                         }
@@ -127,7 +126,6 @@ function formatDetailsToHtml(diseaseItem) {
         }
     }
     
-    // Bắt đầu hiển thị thông tin chính
     html += `<h3>Bệnh: ${diseaseItem.Tên_Bệnh}</h3>`;
     html += `<p><strong>Phân loại:</strong> ${diseaseItem.Phân_loại}</p>`;
     
@@ -148,10 +146,7 @@ function displayResult(resultID, confidence_val) {
     if (resultContainer) resultContainer.style.display = 'block'; 
     boxResult.style.display = 'block';
 
-    // 1. Lấy Tên bệnh từ index
     const diseaseName = class_indices[resultID];
-    
-    // 2. Tìm chi tiết bệnh trong mảng disease_data
     const diseaseItem = disease_data.find(item => item.Mã_ID == resultID);
 
     document.querySelector('.pred_class').innerHTML = diseaseName || 'Không xác định';
@@ -159,9 +154,11 @@ function displayResult(resultID, confidence_val) {
     document.querySelector('.inner').innerHTML = `${confidence_val.toFixed(2)}%`;
     pconf.style.display = 'block';
     
+    // Animate thanh progress dựa trên confidence_val / 100
+    progressBar.set(0); 
     progressBar.animate(confidence_val / 100);
 
-    // 3. Hiển thị nội dung phân tích chi tiết trọn vẹn
+    // Hiển thị nội dung phân tích chi tiết trọn vẹn
     if (diseaseItem) {
         detailContent.innerHTML = formatDetailsToHtml(diseaseItem);
         if (diseaseDetails) diseaseDetails.style.display = 'block';
@@ -170,29 +167,34 @@ function displayResult(resultID, confidence_val) {
         if (diseaseDetails) diseaseDetails.style.display = 'block';
     }
     
-    document.querySelector('.init_status').innerHTML = ''; // Xóa trạng thái tải
+    document.querySelector('.init_status').innerHTML = '';
 }
 
 
 async function predict() {
-    // Fix Lỗi TypeError: Chắc chắn model đã tải xong
+    // Bước 1: Chắc chắn model đã tải xong
     if (!model) {
         let status = document.querySelector('.init_status');
         status.innerHTML = 'Hệ thống đang tải model, vui lòng đợi... <span class="fa fa-spinner fa-spin"></span>';
         await model_init_promise; 
     }
     
-    let offset = tf.scalar(255)
+    // Fix Lỗi Preprocessing - Sử dụng chuẩn hóa 0-1 (div(255))
+    // Hầu hết các mô hình được huấn luyện bằng Keras/TF đều cần chuẩn hóa [0, 1]
+    let tensorImg = tf.browser.fromPixels(img)
+        .resizeNearestNeighbor([224, 224])
+        .toFloat() // Chuyển sang Float32
+        .div(tf.scalar(255.0)) // Chuẩn hóa về [0, 1]
+        .expandDims(); // Thêm chiều batch (1, 224, 224, 3)
     
-    let tensorImg = tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
-    let tensorImg_scaled = tensorImg.div(offset)
-    
-    let predictions = await model.predict(tensorImg_scaled).data();
+    // Bước 2: Dự đoán
+    let predictions = await model.predict(tensorImg).data();
 
+    // Bước 3: Post-process
     let predicted_index = tf.argMax(predictions).dataSync()[0];
     let confidence_value = predictions[predicted_index] * 100;
     
-    // Mã ID trong JSON là string, nên chuyển index về string
+    // Bước 4: Hiển thị kết quả (chuyển index thành string để khớp với Mã_ID trong JSON)
     displayResult(predicted_index.toString(), confidence_value);
 
     // Kích hoạt lại nút chụp nếu cần
@@ -211,16 +213,6 @@ fileUpload.addEventListener('change', function(e){
     stopCamera();
     cameraContainer.style.display = 'none';
 
-    // Xử lý hiển thị tên file (nếu cần, giữ nguyên code của bạn)
-    let uploadedImage = e.target.value
-    if (uploadedImage){
-        // document.getElementById("blankFile-1").innerHTML = uploadedImage.replace("C:\\fakepath\\","")
-        // document.getElementById("choose-text-1").innerText = "Đổi Ảnh Đã Chọn"
-        // document.querySelector(".success-1").style.display = "inline-block"
-        // document.querySelector(".success-1 i").style.border = "1px solid limegreen"
-        // document.querySelector(".success-1 i").style.color = "limegreen"
-    }
-
     let file = this.files[0]
     if (file){
         const reader = new FileReader();
@@ -231,7 +223,6 @@ fileUpload.addEventListener('change', function(e){
             img.style.width = "100%";
             img.style.height = "350px"; 
             
-            // Fix: Gọi predict sau khi ảnh đã được load
             predict(); 
         });
     }
@@ -241,7 +232,6 @@ fileUpload.addEventListener('change', function(e){
         img.style.display = "none";
     }
 })
-
 
 
 cameraToggle.addEventListener('click', function() {
@@ -264,7 +254,7 @@ stopButton.addEventListener('click', function() {
 
 captureButton.addEventListener('click', function() {
     if (currentStream) {
-        captureButton.disabled = true; // Vô hiệu hóa nút chụp trong khi xử lý
+        captureButton.disabled = true;
         cameraStatus.textContent = 'Đang phân tích...';
 
         canvas.width = videoStream.videoWidth;
@@ -283,9 +273,7 @@ captureButton.addEventListener('click', function() {
     }
 });
 
-// ... (Các hàm startCamera, stopCamera và modeToggle giữ nguyên) ...
-
-// Khởi tạo model khi tải trang (Fix logic tải model)
+// Khởi tạo model khi tải trang
 model_init_promise = initialize();
 
 
@@ -311,7 +299,7 @@ async function startCamera() {
         stopButton.style.display = 'block';
         img.style.display = 'none'; 
         boxResult.style.display = 'none'; 
-        if (resultContainer) resultContainer.style.display = 'none'; // Ẩn kết quả cũ
+        if (resultContainer) resultContainer.style.display = 'none'; 
     } catch (err) {
         
         try {
