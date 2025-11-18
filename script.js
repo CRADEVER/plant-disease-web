@@ -1,4 +1,4 @@
-// script.js (Phiên bản Hoàn Chỉnh - Tích hợp TensorFlow.js và xử lý JSON Dạng Mảng)
+// script.js (Phiên bản Hoàn Chỉnh - Đã sửa lỗi TypeError)
 
 let model;
 let disease_protocols_map = {}; // Lưu trữ map các phác đồ để tra cứu nhanh bằng Mã_ID
@@ -46,25 +46,37 @@ const progressBar = new ProgressBar.Circle('#progress', {
 async function fetchData(){
     try {
         let response = await fetch('./class_indices.json');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}. Hãy đảm bảo file class_indices.json nằm cùng cấp với index.html.`);
+        }
+        
         let data = await response.json();
         
         let protocolMap = {};
         let indicesMap = {};
         
-        // CHỈNH SỬA: Xử lý cấu trúc JSON dạng MẢNG đã cố định
-        data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet.forEach(item => {
-            // Sử dụng Mã_ID làm key để tra cứu nhanh O(1)
-            protocolMap[item.Mã_ID] = item;
-            indicesMap[item.Mã_ID] = item.Tên_Bệnh; 
-        });
+        const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
+
+        if (Array.isArray(protocolsArray)) {
+            protocolsArray.forEach(item => {
+                // Sử dụng Mã_ID làm key để tra cứu nhanh O(1)
+                protocolMap[item.Mã_ID] = item;
+                indicesMap[item.Mã_ID] = item.Tên_Bệnh; 
+            });
+        } else {
+             throw new Error("Cấu trúc JSON không hợp lệ: 'Phac_do_Quan_Ly_Tong_Hop_Chi_tiet' không phải là mảng hoặc không tồn tại.");
+        }
 
         disease_protocols_map = protocolMap;
         class_indices = indicesMap; 
+        
+        console.log("DEBUG: class_indices.json đã tải thành công và được ánh xạ.", { class_indices, disease_protocols_map });
 
     } catch (error) {
         console.error("Lỗi khi tải class_indices.json:", error);
         mainStatus.className = 'status error';
-        mainStatus.innerHTML = '<i class="material-icons">error_outline</i> Lỗi: Không thể tải phác đồ quản lý bệnh.';
+        mainStatus.innerHTML = `<i class="material-icons">error_outline</i> Lỗi: Không thể tải phác đồ quản lý bệnh. Chi tiết: ${error.message}`;
         return null;
     }
 }
@@ -77,9 +89,8 @@ async function initialize() {
     // 1. Tải dữ liệu JSON
     await fetchData();
 
-    // 2. Tải mô hình THỰC TẾ
+    // 2. Tải mô hình
     try {
-        // Đường dẫn được chỉ định: './tensorflowjs-model/model.json'
         const modelUrl = './tensorflowjs-model/model.json'; 
         model = await tf.loadLayersModel(modelUrl); 
 
@@ -94,15 +105,24 @@ async function initialize() {
 }
 
 
-// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ (Không đổi, vì nó xử lý đối tượng protocolMap đã được ánh xạ)
+// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ (Đã FIX lỗi TypeError)
 function displayDiseaseDetails(protocol) {
     resultContainer.style.display = 'block';
     
+    // Sử dụng giá trị mặc định {} nếu các phần tử cha bị thiếu, để tránh lỗi 'undefined'
+    const sectionI = protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện || {};
+    const sectionII = protocol.II_Chiến_lược_Văn_hóa_Cơ_học || {};
+    const sectionIII = protocol.III_Chiến_lược_Kiểm_soát_Hóa_học || {};
+    const sectionIV = protocol.IV_Giải_pháp_Sinh_học_và_Khác || {};
+    
+    // Đảm bảo Phác đồ Giai đoạn là mảng, nếu không thì dùng mảng rỗng
+    const phacDoGiaiDoan = sectionIII.Phác_đồ_Giai_đoạn_Cây || [];
+
     // Tạo cấu trúc HTML chi tiết, sử dụng thẻ <details>
     let html = `
         <div class="protocol-header">
-            <h3>${protocol.Tên_Bệnh}</h3>
-            <p class="classification">Phân loại: <b>${protocol.Phân_loại}</b></p>
+            <h3>${protocol.Tên_Bệnh || 'Chưa xác định'}</h3>
+            <p class="classification">Phân loại: <b>${protocol.Phân_loại || 'Đang cập nhật'}</b></p>
         </div>
         <hr>
         
@@ -113,10 +133,10 @@ function displayDiseaseDetails(protocol) {
                     I. Tác nhân, Chu kỳ và Điều kiện (Cơ sở)
                 </summary>
                 <div class="detail-content">
-                    <p><b>Tác nhân:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Tác_nhân_Sinh_học}</p>
-                    <p><b>Cơ chế lây lan:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Cơ_chế_Lây_lan}</p>
-                    <p><b>Nhiệt độ tối ưu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Nhiệt_độ_Thời_điểm_tối_ưu}</p>
-                    <p><b>Dấu hiệu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu}</p>
+                    <p><b>Tác nhân:</b> ${sectionI.Tác_nhân_Sinh_học || 'Đang cập nhật...'}</p>
+                    <p><b>Cơ chế lây lan:</b> ${sectionI.Cơ_chế_Lây_lan || 'Đang cập nhật...'}</p>
+                    <p><b>Nhiệt độ tối ưu:</b> ${sectionI.Nhiệt_độ_Thời_điểm_tối_ưu || 'Đang cập nhật...'}</p>
+                    <p><b>Dấu hiệu:</b> ${sectionI.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu || 'Đang cập nhật...'}</p>
                 </div>
             </details>
 
@@ -127,9 +147,9 @@ function displayDiseaseDetails(protocol) {
                 </summary>
                 <div class="detail-content">
                     <ul>
-                        <li><b>Quản lý Giống & Cây trồng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học.Quản_lý_Giống_Cây_trồng}</li>
-                        <li><b>Quản lý Dinh dưỡng & Nước:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học.Quản_lý_Dinh_dưỡng_và_Nước}</li>
-                        <li><b>Vệ sinh đồng ruộng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học.Vệ_sinh_Đồng_ruộng_Tiểu_khí_hậu}</li>
+                        <li><b>Quản lý Giống & Cây trồng:</b> ${sectionII.Quản_lý_Giống_Cây_trồng || 'Đang cập nhật...'}</li>
+                        <li><b>Quản lý Dinh dưỡng & Nước:</b> ${sectionII.Quản_lý_Dinh_dưỡng_và_Nước || 'Đang cập nhật...'}</li>
+                        <li><b>Vệ sinh đồng ruộng:</b> ${sectionII.Vệ_sinh_Đồng_ruộng_Tiểu_khí_hậu || 'Đang cập nhật...'}</li>
                     </ul>
                 </div>
             </details>
@@ -140,16 +160,16 @@ function displayDiseaseDetails(protocol) {
                     III. Chiến lược Kiểm soát Hóa học (Thuốc)
                 </summary>
                 <div class="detail-content">
-                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học.Nguyên_tắc_FRAC_IRAC}</p>
+                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${sectionIII.Nguyên_tắc_FRAC_IRAC || 'Đang cập nhật...'}</p>
                     
                     <h4>Phác đồ theo Giai đoạn:</h4>
-                    ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học.Phác_đồ_Giai_đoạn_Cây.map(step => `
+                    ${phacDoGiaiDoan.length > 0 ? phacDoGiaiDoan.map(step => `
                         <div class="stage-step">
-                            <p><b>Giai đoạn:</b> ${step.Giai_đoạn}</p>
-                            <p><b>Hoạt chất đề xuất:</b> <span>${step.Hoạt_chất_Đề_xuất}</span> (Nhóm: ${step.Nhóm_FRAC_IRAC})</p>
-                            <p><b>Lưu ý:</b> ${step.Lưu_ý_Ứng_dụng}</p>
+                            <p><b>Giai đoạn:</b> ${step.Giai_đoạn || 'N/A'}</p>
+                            <p><b>Hoạt chất đề xuất:</b> <span>${step.Hoạt_chất_Đề_xuất || 'N/A'}</span> (Nhóm: ${step.Nhóm_FRAC_IRAC || 'N/A'})</p>
+                            <p><b>Lưu ý:</b> ${step.Lưu_ý_Ứng_dụng || 'N/A'}</p>
                         </div>
-                    `).join('')}
+                    `).join('') : '<p>Đang cập nhật phác đồ giai đoạn hóa học...</p>'}
                 </div>
             </details>
             
@@ -159,8 +179,8 @@ function displayDiseaseDetails(protocol) {
                     IV. Giải pháp Sinh học và Khác
                 </summary>
                 <div class="detail-content">
-                    <p><b>Giải pháp Sinh học:</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác.Giải_pháp_Sinh_học}</p>
-                    <p><b>Quản lý Kháng thuốc (IRM):</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác.Quản_lý_Kháng_thuốc_IRM}</p>
+                    <p><b>Giải pháp Sinh học:</b> ${sectionIV.Giải_pháp_Sinh_học || 'Đang cập nhật...'}</p>
+                    <p><b>Quản lý Kháng thuốc (IRM):</b> ${sectionIV.Quản_lý_Kháng_thuốc_IRM || 'Đang cập nhật...'}</p>
                 </div>
             </details>
         </div>
@@ -170,7 +190,7 @@ function displayDiseaseDetails(protocol) {
 }
 
 
-// HÀM DỰ ĐOÁN THỰC TẾ (Sử dụng TensorFlow.js)
+// HÀM DỰ ĐOÁN THỰC TẾ (Sử dụng TensorFlow.js - Giữ nguyên logic)
 async function predict(imageElement) {
     if (!model) {
         mainStatus.className = 'status error';
@@ -191,10 +211,10 @@ async function predict(imageElement) {
     try {
         // 1. Tiền xử lý ảnh (Resize 224x224, Chuẩn hóa, Thêm chiều batch)
         const tensor = tf.browser.fromPixels(imageElement)
-            .resizeNearestNeighbor([224, 224]) // Kích thước input thường thấy
+            .resizeNearestNeighbor([224, 224]) 
             .toFloat()
-            .div(tf.scalar(255.0)) // Chuẩn hóa về [0, 1]
-            .expandDims(); // Thêm chiều batch
+            .div(tf.scalar(255.0)) 
+            .expandDims(); 
 
         // 2. Chạy dự đoán
         const predictions = model.predict(tensor);
@@ -202,6 +222,8 @@ async function predict(imageElement) {
         
         // 3. Xử lý kết quả
         const highestPrediction = Math.max(...predictionArray);
+        
+        // Chuyển index thành chuỗi, vì Mã_ID trong JSON là chuỗi ("0", "1", "2", ...)
         predicted_index = predictionArray.indexOf(highestPrediction).toString(); 
         confidence_score = Math.floor(highestPrediction * 100);
 
@@ -210,14 +232,14 @@ async function predict(imageElement) {
         predictions.dispose();
 
     } catch (e) {
-        console.error("Lỗi khi chạy dự đoán:", e);
+        console.error("Lỗi khi chạy dự đoán TensorFlow.js:", e);
         loadingPredictionBar.style.display = 'none';
         predClassSpan.textContent = 'Lỗi Phân Tích!';
         confidenceSpan.textContent = 0;
         resultContainer.style.display = 'block';
         resultContainer.innerHTML = `<div class="protocol-header error">
             <i class="material-icons">warning</i> 
-            Lỗi trong quá trình xử lý ảnh và dự đoán. Vui lòng kiểm tra console.
+            Lỗi trong quá trình xử lý ảnh và dự đoán. Vui lòng kiểm tra console để biết chi tiết lỗi TensorFlow.
         </div>`;
         return;
     }
@@ -233,14 +255,18 @@ async function predict(imageElement) {
     const diseaseName = class_indices[predicted_index] || "Không xác định (Mã: " + predicted_index + ")";
     predClassSpan.textContent = diseaseName;
     
+    console.log(`DEBUG: Index dự đoán: ${predicted_index}. Confidence: ${confidence_score}%. Bệnh: ${diseaseName}`); 
+    
     const protocol = disease_protocols_map[predicted_index];
 
     if (protocol) {
+        console.log("DEBUG: Đã tìm thấy Phác đồ chi tiết. Bắt đầu hiển thị."); 
         displayDiseaseDetails(protocol);
     } else {
+        console.error("DEBUG: KHÔNG tìm thấy Phác đồ cho Mã_ID:", predicted_index); 
         resultContainer.innerHTML = `<div class="protocol-header error">
             <i class="material-icons">warning</i> 
-            Không tìm thấy phác đồ quản lý chi tiết cho bệnh <b>${diseaseName}</b>.
+            Không tìm thấy phác đồ quản lý chi tiết cho bệnh <b>${diseaseName}</b>. (Mã: ${predicted_index}).
         </div>`;
         resultContainer.style.display = 'block';
     }
@@ -349,17 +375,17 @@ captureButton.addEventListener('click', () => {
 
 // Logic Dark/Light Mode
 modeToggle.addEventListener('click', () => {
-    if (body.classList.contains('light-mode')) {
+    const isLightMode = body.classList.contains('light-mode');
+    if (isLightMode) {
         body.classList.replace('light-mode', 'dark-mode');
         modeToggle.innerHTML = '<i class="material-icons">wb_sunny</i> Chế độ Sáng';
         progressBar.options.trailColor = '#333333';
-        progressBar.set(progressBar.value()); 
     } else {
         body.classList.replace('dark-mode', 'light-mode');
         modeToggle.innerHTML = '<i class="material-icons">brightness_4</i> Chế độ Tối';
         progressBar.options.trailColor = '#e0e0e0';
-        progressBar.set(progressBar.value()); 
     }
+    progressBar.set(progressBar.value()); 
 });
 
 
