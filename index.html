@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-mode">
-    <a class="github-fork-ribbon" href="https://url.to-your.repo" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
-
     <div class="header-container">
         <h1>🌱 HỆ THỐNG NHẬN DIỆN BỆNH CÂY</h1>
         <button class="mode-toggle" id="modeToggle">
@@ -20,69 +18,70 @@
     </div>
     <hr>
 
+
     <div class="upload-btn-container">
         <div class="upload-btn-wrapper upload-wrapper">
             <button class="btn upload-file font-weight-500">
                 <span class="upload-btn">
-                    <i class="material-icons d-block font-50 pb-2">cloud_upload</i>
-                    <p id="choose-text-1">Tải ảnh lên</p>
-                    <div class="uploaded-file">
-                        <p class="uploaded-text" id="blankFile-1">Chưa có file</p>
-                        <i class="material-icons success-1">check_circle</i>
-                    </div>
+                    <i class="material-icons d-block font-size-30">cloud_upload</i>
+                    Tải ảnh lên
                 </span>
+                <input type="file" id="uploadImage" accept="image/*">
             </button>
-            <input type="file" name="uploadImage" id="uploadImage">
         </div>
-
-        <div class="upload-btn-wrapper upload-wrapper">
-            <button class="btn upload-file font-weight-500 camera-btn" id="cameraToggle">
+        <div class="camera-btn-wrapper upload-wrapper">
+            <button class="btn camera-btn font-weight-500" id="cameraToggle">
                 <span class="camera-btn-text">
-                    <i class="material-icons d-block font-size-30">camera_alt</i> Mở Camera
+                    <i class="material-icons d-block font-size-30">camera_alt</i>
+                    Mở Camera
                 </span>
             </button>
         </div>
     </div>
     
-    <p class="tutorial">🤓 Kiểm tra cách xây dựng hệ thống <a href="https://medium.com/@rexsimiloluwa/building-a-plant-disease-classification-web-app-in-keras-and-tensorflow-js-d435829213fa" target="blank">TẠI ĐÂY</a> → Tải ảnh thử nghiệm <a href="https://github.com/rexsimiloluwah/PLANT-DISEASE-CLASSIFIER-WEB-APP-TENSORFLOWJS/tree/master/test-dataset" target="blank">TẠI ĐÂY</a> </p>
-    
-    <div class="camera-stream-container" id="cameraContainer" style="display: none;">
+    <div class="camera-stream-container" id="cameraContainer">
         <video id="videoStream" width="320" height="240" autoplay></video>
         <button id="captureButton" class="capture-btn" disabled>Chụp</button>
         <button id="stopButton" class="capture-btn stop-btn">Dừng Camera</button>
         <p class="camera-status" id="cameraStatus"></p>
     </div>
 
+
     <div class="row">
         <div class="box">
             <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
             <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
+    </div>
 
+
+    <div id="resultContainer" style="display: none; margin-top: 20px;">
+        
         <div class="box box-result">
             <div class="init_status"></div>
             <div>
                 <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
+                
             </div>
             <div class="accuracy">
                 <div class="progress" id="progress">
                     <div class="inner">
-                      </div>
+                      
+                    </div>
                   </div>
+
             </div>
-            <p style="padding : 10px;"> ĐỘ CHÍNH XÁ : <b><span class="confidence"></span></b> %</p>
+            <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
         </div>
-    </div>
-    
-    <div class="row">
-        <div class="box full-width" id="diseaseDetails" style="display: none;">
-            <h2>📝 Phác đồ Quản lý Tổng hợp:</h2>
+
+        <div class="box box-details" id="diseaseDetails">
+            <h2>📜 PHÂN TÍCH CHUYÊN SÂU & PHÁC ĐỒ QUẢN LÝ</h2>
             <div id="detailContent">
                 </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.13.0/tf.min.js"></script>
-    <script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/master/dist/progressbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.1/progressbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
