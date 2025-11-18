@@ -1,322 +1,283 @@
+// script.js (Phiên bản Hoàn Chỉnh - Tích hợp TensorFlow.js thực tế)
+
 let model;
-let class_indices;
-// Biến mới để lưu trữ bản đồ tra cứu chi tiết bệnh (ID -> Object chi tiết)
-let disease_lookup_map = {}; 
-
-let fileUpload = document.getElementById('uploadImage');
-let img = document.getElementById('image');
-
-// THAY ĐỔI: Sử dụng ID của thẻ chứa toàn bộ kết quả mới
-let analysisCard = document.getElementById('analysisCard'); 
-let confidence = document.querySelector('.confidence');
-let confidenceText = document.querySelector('.confidence-text'); // Selector mới cho thẻ p chứa confidence
-let modeToggle = document.getElementById('modeToggle');
-let body = document.body;
-
-// Vẫn sử dụng ID này để chứa chi tiết IPM
-let diseaseDetailsContainer = document.getElementById('diseaseDetails'); 
-
-
-let cameraToggle = document.getElementById('cameraToggle');
-let cameraContainer = document.getElementById('cameraContainer');
-let videoStream = document.getElementById('videoStream');
-let captureButton = document.getElementById('captureButton');
-let stopButton = document.getElementById('stopButton');
-let cameraStatus = document.getElementById('cameraStatus');
-let canvas = document.getElementById('canvas');
-let context = canvas.getContext('2d');
+let disease_protocols_map = {}; // Lưu trữ map các phác đồ để tra cứu nhanh bằng Mã_ID
+let class_indices = {}; // Ánh xạ Mã ID -> Tên Bệnh
 let currentStream;
 
+// === KHAI BÁO CÁC PHẦN TỬ DOM ===
+const fileUpload = document.getElementById('uploadImage');
+const img = document.getElementById('image');
+const boxResult = document.getElementById('boxResult');
+const predClassSpan = document.querySelector('.pred_class');
+const confidenceSpan = document.querySelector('.confidence');
+const resultContainer = document.getElementById('resultContainer'); 
+const mainStatus = document.getElementById('mainStatus'); 
+const loadingPredictionBar = document.getElementById('loadingPredictionBar'); 
 
-let progressBar =
-    new ProgressBar.Circle('#progress', {
-    color: '#00796B', // Màu chủ đạo mới
+// Camera/Video elements
+const cameraToggle = document.getElementById('cameraToggle');
+const cameraContainer = document.getElementById('cameraContainer');
+const videoStream = document.getElementById('videoStream');
+const captureButton = document.getElementById('captureButton');
+const stopButton = document.getElementById('stopButton');
+const cameraStatus = document.getElementById('cameraStatus');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+
+// Mode toggle
+const modeToggle = document.getElementById('modeToggle');
+const body = document.body;
+
+// Cấu hình ProgressBar (Yêu cầu thư viện progressbar.js)
+const progressBar = new ProgressBar.Circle('#progress', {
+    color: 'limegreen',
     strokeWidth: 10,
-    duration: 2000,
-    easing: 'easeInOut'
+    duration: 1000,
+    easing: 'easeInOut',
+    trailColor: '#e0e0e0',
+    trailWidth: 4,
+    svgStyle: null
 });
 
+
+// === LOGIC XỬ LÝ DỮ LIỆU ===
+
 async function fetchData(){
-    // Đảm bảo đường dẫn file class_indices.json là chính xác
-    let response = await fetch('./class_indices.json');
-    let data = await response.json();
-   
-    let indices = {};
-    disease_lookup_map = {}; // Reset map
-    
-    // Logic xử lý cấu trúc JSON từ class_indices.json
-    if (data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet && Array.isArray(data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet)) {
+    try {
+        let response = await fetch('./class_indices.json');
+        let data = await response.json();
+        
+        let protocolMap = {};
+        let indicesMap = {};
+        
+        // Chuyển đổi mảng JSON thành map tra cứu (Mã_ID -> Phác đồ chi tiết)
         data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet.forEach(item => {
-            const id = item.Mã_ID; 
-            if (id !== undefined) {
-                indices[id] = item.Tên_Bệnh; 
-                disease_lookup_map[id] = item; 
-            }
+            protocolMap[item.Mã_ID] = item;
+            indicesMap[item.Mã_ID] = item.Tên_Bệnh; 
         });
-    } else {
-        // Fallback cho cấu trúc JSON đơn giản hơn (nếu có)
-        for (const key in data) {
-            if (typeof data[key] === 'object' && data[key] !== null && data[key].Tên_Bệnh) {
-                 indices[key] = data[key].Tên_Bệnh;
-                 disease_lookup_map[key] = data[key];
-            } else if (typeof data[key] === 'string' && /^\d+$/.test(data[key])) { 
-                 indices[data[key]] = key;
-            }
-        }
+
+        disease_protocols_map = protocolMap;
+        class_indices = indicesMap; 
+
+    } catch (error) {
+        console.error("Lỗi khi tải class_indices.json:", error);
+        mainStatus.className = 'status error';
+        mainStatus.innerHTML = '<i class="material-icons">error_outline</i> Lỗi: Không thể tải phác đồ quản lý bệnh.';
+        return null;
     }
-    
-    class_indices = indices;
-    return indices; 
 }
 
 
 async function initialize() {
-    let status = document.querySelector('.init_status')
-    status.innerHTML = 'Đang tải mô hình và dữ liệu IPM.... <span class="fa fa-spinner fa-spin"></span>'
+    mainStatus.className = 'status loading';
+    mainStatus.innerHTML = '<i class="material-icons loading-icon">cached</i> Đang tải mô hình và dữ liệu quản lý...';
     
+    // 1. Tải dữ liệu JSON
+    await fetchData();
+
+    // 2. Tải mô hình THỰC TẾ
     try {
-        // Kiểm tra đường dẫn này nếu lỗi 404
-        model = await tf.loadLayersModel('./tensorflowjs-model/model.json');
+        // ĐƯỜNG DẪN ĐƯỢC CHỈNH SỬA THEO YÊU CẦU CỦA BẠN
+        const modelUrl = './tensorflowjs-model/model.json'; 
+        model = await tf.loadLayersModel(modelUrl); 
+        console.log("Mô hình đã tải thành công:", model);
+
+        mainStatus.className = 'status success';
+        mainStatus.innerHTML = '<i class="material-icons">check_circle_outline</i> Hệ thống đã sẵn sàng. Hãy chọn ảnh hoặc dùng Camera.';
         
-        await fetchData();
-        
-        status.innerHTML = 'Tải mô hình thành công <span class="fa fa-check"></span>'
-        analysisCard.style.display = 'none'; // Ẩn khi khởi tạo, chỉ hiện khi có ảnh
     } catch (error) {
-        status.innerHTML = `⚠️ Lỗi khởi tạo: Không thể tải model.json (404). Hãy kiểm tra thư mục 'tensorflowjs-model' và các file .bin.`;
-        console.error("Initialization error:", error);
+        console.error("Lỗi khi tải mô hình TensorFlow.js:", error);
+        mainStatus.className = 'status error';
+        mainStatus.innerHTML = '<i class="material-icons">error_outline</i> Lỗi: Không thể tải mô hình dự đoán. Đảm bảo thư mục <b>tensorflowjs-model</b> chứa <b>model.json</b> và các file <b>.bin</b>.';
     }
 }
 
-async function predict() {
-    if (!model) {
-        document.querySelector('.init_status').innerHTML = '⚠️ Dự đoán bị hủy: Mô hình chưa được tải thành công.';
-        return;
-    }
+
+// HÀM HIỂN THỊ CHI TIẾT PHÁC ĐỒ
+function displayDiseaseDetails(protocol) {
+    resultContainer.style.display = 'block';
     
-    diseaseDetailsContainer.innerHTML = '';
-    document.querySelector('.init_status').innerHTML = 'Đang dự đoán...';
-    analysisCard.style.display = 'block'; // Hiển thị card phân tích khi bắt đầu dự đoán
-    
-    let offset = tf.scalar(255)
-    
-    if (!img.src || img.style.display === 'none') {
-        document.querySelector('.init_status').innerHTML = 'Vui lòng chọn hoặc chụp ảnh hợp lệ.';
-        return;
-    }
-    
-    let tensorImg =   tf.browser.fromPixels(img).resizeNearestNeighbor([224,224]).toFloat().expandDims();
-    let tensorImg_scaled = tensorImg.div(offset)
-    
-    let prediction = await model.predict(tensorImg_scaled).data();
-
-    onPredict(tf.tensor(prediction));
-    
-}
-
-function onPredict(pred) {
-    let index = pred.argMax().dataSync()[0];
-    let confidenceValue = pred.dataSync()[index];
-    
-    // 1. Hiển thị Tên Bệnh và Độ chính xác
-    let pred_class_name = class_indices[index] || 'Không xác định'; 
-    document.querySelector('.pred_class').innerHTML = pred_class_name;
-    document.querySelector('.inner').innerHTML = `${parseFloat(confidenceValue * 100).toFixed(2)}%`;
-
-    progressBar.set(0);
-    progressBar.animate(confidenceValue - 0.005); 
-
-    // THAY ĐỔI: Hiển thị thẻ confidence mới
-    confidenceText.style.display = 'inline-block'; 
-
-    confidence.innerHTML = Math.round(confidenceValue * 100);
-
-    document.querySelector('.init_status').innerHTML = '';
-
-    // 2. Lấy và hiển thị thông tin chi tiết về bệnh
-    const diseaseDetails = disease_lookup_map[index];
-    if (diseaseDetails) {
-        displayDiseaseDetails(diseaseDetails);
-    } else {
-        diseaseDetailsContainer.innerHTML = '<p class="error-msg">⚠️ Không tìm thấy thông tin chi tiết về phác đồ quản lý bệnh này.</p>';
-        console.error(`Không tìm thấy chi tiết bệnh cho Mã ID: ${index}`);
-    }
-}
-
-// Hàm mới để định dạng và hiển thị thông tin chi tiết từ JSON
-function displayDiseaseDetails(details) {
-    
-    const renderPhacDoGiaiDoan = (steps) => {
-        if (!Array.isArray(steps) || steps.length === 0) {
-            return '<li>Thông tin phác đồ cụ thể đang được cập nhật.</li>';
-        }
-        return steps.map(step => 
-            `<li><strong>${step.Giai_đoạn || 'Giai đoạn N/A'}:</strong> ${step.Hoạt_chất_Đề_xuất || 'N/A'} (Nhóm ${step.Nhóm_FRAC_IRAC || 'N/A'}). 
-            <span class="note">Lưu ý: ${step.Lưu_ý_Ứng_dụng || 'Không có lưu ý đặc biệt.'}</span></li>`
-        ).join('');
-    };
-
-    // Sử dụng Optional Chaining (?.) để truy cập thuộc tính lồng sâu an toàn
+    // Tạo cấu trúc HTML chi tiết, sử dụng thẻ <details>
     let html = `
-        <div class="details-section">
-            <h3 class="details-title">🌿 PHÁC ĐỒ QUẢN LÝ TỔNG HỢP (IPM)</h3>
-            <p><strong>Bệnh:</strong> ${details.Tên_Bệnh || 'N/A'}</p>
-            <p><strong>Mã ID:</strong> ${details.Mã_ID || 'N/A'}</p>
-            <p><strong>Phân loại:</strong> ${details.Phân_loại || 'Đang cập nhật'}</p>
-            <hr>
-            
-            <h4>1. Tác nhân, Chu kỳ và Điều kiện</h4>
-            <div class="content-box">
-                <p><strong>Tác nhân Sinh học:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Tác_nhân_Sinh_học || 'N/A'}</p>
-                <p><strong>Cơ chế Lây lan:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Cơ_chế_Lây_lan || 'N/A'}</p>
-                <p><strong>Nhiệt độ/Thời điểm tối ưu:</strong> ${details.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Nhiệt_độ_Thời_điểm_tối_ưu || 'N/A'}</p>
-            </div>
-            
-            <h4>2. Chiến lược Kiểm soát Văn hóa và Vật lý</h4>
-            <div class="content-box">
-                <p>${details.II_Chiến_lược_Kiểm_soát_Văn_hóa_và_Vật_lý?.Nguyên_tắc_Cơ_bản || 'Chưa có dữ liệu chi tiết.'}</p>
-            </div>
-            
-            <h4>3. Chiến lược Kiểm soát Hóa học (Ưu tiên luân phiên nhóm thuốc)</h4>
-            <div class="content-box">
-                <p><strong>Nguyên tắc FRAC/IRAC:</strong> ${details.III_Chiến_lược_Kiểm_soát_Hóa_học?.Nguyên_tắc_FRAC_IRAC || 'N/A'}</p>
-                <ul>
-                    ${renderPhacDoGiaiDoan(details.III_Chiến_lược_Kiểm_soát_Hóa_học?.Phác_đồ_Giai_đoạn_Cây)}
-                </ul>
-            </div>
+        <div class="protocol-header">
+            <h3>${protocol.Tên_Bệnh}</h3>
+            <p class="classification">Phân loại: <b>${protocol.Phân_loại}</b></p>
+        </div>
+        <hr>
+        
+        <div class="protocol-sections">
+            <details class="protocol-detail-section" open>
+                <summary>
+                    <i class="material-icons">science</i>
+                    I. Tác nhân, Chu kỳ và Điều kiện (Cơ sở)
+                </summary>
+                <div class="detail-content">
+                    <p><b>Tác nhân:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Tác_nhân_Sinh_học}</p>
+                    <p><b>Cơ chế lây lan:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Cơ_chế_Lây_lan}</p>
+                    <p><b>Nhiệt độ tối ưu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Nhiệt_độ_Thời_điểm_tối_ưu}</p>
+                    <p><b>Dấu hiệu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu}</p>
+                </div>
+            </details>
 
-            <h4>4. Giải pháp Sinh học và Thân thiện Môi trường</h4>
-            <div class="content-box">
-                <p>${details.IV_Giải_pháp_Sinh_học_và_Thân_thiện_Môi_trường?.Các_Hoạt_chất_Sinh_học_Đề_xuất || 'Chưa có dữ liệu chi tiết.'}</p>
-            </div>
+            <details class="protocol-detail-section">
+                <summary>
+                    <i class="material-icons">agriculture</i>
+                    II. Chiến lược Văn hóa và Cơ học (Phòng ngừa)
+                </summary>
+                <div class="detail-content">
+                    <ul>
+                        <li><b>Quản lý Giống & Cây trồng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học.Quản_lý_Giống_Cây_trồng}</li>
+                        <li><b>Quản lý Dinh dưỡng & Nước:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học.Quản_lý_Dinh_dưỡng_và_Nước}</li>
+                        <li><b>Vệ sinh đồng ruộng:</b> ${protocol.II_Chiến_lược_Văn_hóa_Cơ_học.Vệ_sinh_Đồng_ruộng_Tiểu_khí_hậu}</li>
+                    </ul>
+                </div>
+            </details>
 
+            <details class="protocol-detail-section">
+                <summary>
+                    <i class="material-icons">local_florist</i>
+                    III. Chiến lược Kiểm soát Hóa học (Thuốc)
+                </summary>
+                <div class="detail-content">
+                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học.Nguyên_tắc_FRAC_IRAC}</p>
+                    
+                    <h4>Phác đồ theo Giai đoạn:</h4>
+                    ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học.Phác_đồ_Giai_đoạn_Cây.map(step => `
+                        <div class="stage-step">
+                            <p><b>Giai đoạn:</b> ${step.Giai_đoạn}</p>
+                            <p><b>Hoạt chất đề xuất:</b> <span>${step.Hoạt_chất_Đề_xuất}</span> (Nhóm: ${step.Nhóm_FRAC_IRAC})</p>
+                            <p><b>Lưu ý:</b> ${step.Lưu_ý_Ứng_dụng}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </details>
+            
+            <details class="protocol-detail-section">
+                <summary>
+                    <i class="material-icons">hive</i>
+                    IV. Giải pháp Sinh học và Khác
+                </summary>
+                <div class="detail-content">
+                    <p><b>Giải pháp Sinh học:</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác.Giải_pháp_Sinh_học}</p>
+                    <p><b>Quản lý Kháng thuốc (IRM):</b> ${protocol.IV_Giải_pháp_Sinh_học_và_Khác.Quản_lý_Kháng_thuốc_IRM}</p>
+                </div>
+            </details>
         </div>
     `;
-    diseaseDetailsContainer.innerHTML = html;
+
+    resultContainer.innerHTML = html;
 }
 
 
-fileUpload.addEventListener('change', function(e){
+// HÀM DỰ ĐOÁN THỰC TẾ (Sử dụng TensorFlow.js)
+async function predict(imageElement) {
+    if (!model) {
+        mainStatus.className = 'status error';
+        mainStatus.innerHTML = '<i class="material-icons">error_outline</i> Mô hình chưa được tải. Vui lòng kiểm tra console.';
+        return;
+    }
+    
+    // UI Loading
+    resultContainer.style.display = 'none';
+    boxResult.style.display = 'flex'; 
+    loadingPredictionBar.style.display = 'flex'; 
+    progressBar.set(0);
+    confidenceSpan.textContent = 0;
+    predClassSpan.textContent = 'Đang phân tích...';
+    
+    let predicted_index, confidence_score;
+    
+    try {
+        // 1. Tiền xử lý ảnh (Resize 224x224, Chuẩn hóa, Thêm chiều batch)
+        const tensor = tf.browser.fromPixels(imageElement)
+            .resizeNearestNeighbor([224, 224]) // Kích thước input thường thấy
+            .toFloat()
+            .div(tf.scalar(255.0)) // Chuẩn hóa về [0, 1]
+            .expandDims(); // Thêm chiều batch
 
-    stopCamera();
-    cameraContainer.style.display = 'none';
-
-    let uploadedImage = e.target.value
-    if (uploadedImage){
-        document.getElementById("blankFile-1").innerHTML = uploadedImage.replace("C:\\fakepath\\","")
-        document.getElementById("choose-text-1").innerText = "Đổi Ảnh Đã Chọn"
-        document.querySelector(".success-1").style.display = "inline-block"
-
-        document.querySelector(".success-1 i").style.border = "1px solid #00796B"
-        document.querySelector(".success-1 i").style.color = "#00796B"
+        // 2. Chạy dự đoán
+        const predictions = model.predict(tensor);
+        const predictionArray = await predictions.data();
         
-    }
-    let file = this.files[0]
-    if (file){
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.addEventListener("load", function(){
-            img.style.display = "block"
-            img.setAttribute('src', this.result);
-            img.style.width = "100%";
-            img.style.height = "350px"; 
-            predict(); 
-        });
-    }
-    else{
-        img.setAttribute("src", "");
-        img.style.display = "none";
-        analysisCard.style.display = 'none'; // Ẩn card nếu không có file
-    }
-})
+        // 3. Xử lý kết quả
+        const highestPrediction = Math.max(...predictionArray);
+        predicted_index = predictionArray.indexOf(highestPrediction).toString(); 
+        confidence_score = Math.floor(highestPrediction * 100);
 
+        // Giải phóng tensor để tránh rò rỉ bộ nhớ
+        tensor.dispose(); 
+        predictions.dispose();
 
+    } catch (e) {
+        console.error("Lỗi khi chạy dự đoán:", e);
+        loadingPredictionBar.style.display = 'none';
+        predClassSpan.textContent = 'Lỗi Phân Tích!';
+        confidenceSpan.textContent = 0;
+        resultContainer.style.display = 'block';
+        resultContainer.innerHTML = `<div class="protocol-header error">
+            <i class="material-icons">warning</i> 
+            Lỗi trong quá trình xử lý ảnh và dự đoán. Vui lòng kiểm tra console.
+        </div>`;
+        return;
+    }
+    
+    // Ẩn loading và hiển thị kết quả
+    loadingPredictionBar.style.display = 'none';
 
-cameraToggle.addEventListener('click', function() {
-    if (cameraContainer.style.display === 'flex') {
-        stopCamera();
-        cameraContainer.style.display = 'none';
+    let normalizedConfidence = confidence_score / 100;
+    progressBar.animate(normalizedConfidence, () => {
+        confidenceSpan.textContent = confidence_score;
+    });
+
+    const diseaseName = class_indices[predicted_index] || "Không xác định (Mã: " + predicted_index + ")";
+    predClassSpan.textContent = diseaseName;
+    
+    const protocol = disease_protocols_map[predicted_index];
+
+    if (protocol) {
+        displayDiseaseDetails(protocol);
     } else {
-        cameraContainer.style.display = 'flex';
-        startCamera();
+        resultContainer.innerHTML = `<div class="protocol-header error">
+            <i class="material-icons">warning</i> 
+            Không tìm thấy phác đồ quản lý chi tiết cho bệnh <b>${diseaseName}</b>.
+        </div>`;
+        resultContainer.style.display = 'block';
     }
-});
+}
 
-stopButton.addEventListener('click', function() {
-    stopCamera();
-    cameraContainer.style.display = 'none';
-});
 
-captureButton.addEventListener('click', function() {
-    if (currentStream) {
-
-        canvas.width = videoStream.videoWidth;
-        canvas.height = videoStream.videoHeight;
-        context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
-        
-        img.setAttribute('src', canvas.toDataURL('image/jpeg'));
-        img.style.display = "block";
-        img.style.width = "100%";
-        img.style.height = "350px";
-
-        stopCamera();
-        cameraContainer.style.display = 'none';
-        
-        predict();
-    }
-});
+// === LOGIC CAMERA VÀ XỬ LÝ SỰ KIỆN (Giữ nguyên) ===
 
 async function startCamera() {
-    try {
-        cameraStatus.textContent = 'Đang yêu cầu truy cập camera...';
-       
-        const constraints = {
-            video: {
-                width: { ideal: 640 },
-                height: { ideal: 480 },
-                facingMode: 'environment' 
-            }
-        };
-        
-        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoStream.srcObject = currentStream;
-        videoStream.play();
-        cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh.';
-        captureButton.disabled = false;
-        videoStream.style.display = 'block';
-        captureButton.style.display = 'block';
-        stopButton.style.display = 'block';
-        img.style.display = 'none'; 
-        analysisCard.style.display = 'none'; // THAY ĐỔI: Ẩn card kết quả lớn
-        diseaseDetailsContainer.innerHTML = ''; 
-    } catch (err) {
-      
+    boxResult.style.display = 'none';
+    resultContainer.style.display = 'none';
+    img.style.display = 'none';
+    document.querySelector('.image-placeholder').style.display = 'none';
+    
+    cameraContainer.style.display = 'block';
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         try {
-             const constraints = {
-                video: {
-                    width: { ideal: 640 },
-                    height: { ideal: 480 },
-                    facingMode: 'user' 
-                }
-            };
-            currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+            currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             videoStream.srcObject = currentStream;
             videoStream.play();
             cameraStatus.textContent = 'Camera đã sẵn sàng. Hãy chụp ảnh.';
             captureButton.disabled = false;
             videoStream.style.display = 'block';
-            captureButton.style.display = 'block';
-            stopButton.style.display = 'block';
-            img.style.display = 'none';
-            analysisCard.style.display = 'none'; // THAY ĐỔI: Ẩn card kết quả lớn
-            diseaseDetailsContainer.innerHTML = ''; 
+            captureButton.style.display = 'flex';
+            stopButton.style.display = 'flex';
         } catch (error) {
             cameraStatus.textContent = `Lỗi truy cập camera: ${error.name}. Vui lòng đảm bảo camera được phép sử dụng.`;
             captureButton.disabled = true;
             videoStream.style.display = 'none';
             captureButton.style.display = 'none';
             stopButton.style.display = 'none';
+            cameraContainer.style.display = 'block';
         }
+    } else {
+        cameraStatus.textContent = 'Trình duyệt không hỗ trợ Media Devices API.';
+        cameraContainer.style.display = 'block';
     }
 }
 
@@ -328,18 +289,79 @@ function stopCamera() {
     videoStream.srcObject = null;
     captureButton.disabled = true;
     cameraStatus.textContent = 'Camera đã dừng.';
+    cameraContainer.style.display = 'none';
+    captureButton.style.display = 'none';
+    stopButton.style.display = 'none';
+    document.querySelector('.image-placeholder').style.display = 'block';
 }
 
 
+// Đăng ký sự kiện Tải ảnh
+fileUpload.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+        stopCamera();
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            img.style.display = 'block'; 
+            document.querySelector('.image-placeholder').style.display = 'none';
+            img.onload = () => {
+                predict(img);
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+
+// Đăng ký sự kiện Camera
+cameraToggle.addEventListener('click', function() {
+    if (!currentStream) {
+        startCamera();
+    } else {
+        stopCamera();
+    }
+});
+
+// Chụp ảnh từ Camera
+captureButton.addEventListener('click', () => {
+    resultContainer.style.display = 'none'; 
+    
+    canvas.width = 224;
+    canvas.height = 224;
+    context.drawImage(videoStream, 0, 0, canvas.width, canvas.height); 
+    
+    const dataUrl = canvas.toDataURL('image/png');
+    img.src = dataUrl;
+    img.style.display = 'block'; 
+    
+    videoStream.style.display = 'none';
+    captureButton.style.display = 'none';
+    stopButton.style.display = 'none';
+    cameraContainer.style.display = 'none';
+    
+    cameraStatus.textContent = 'Ảnh đã được chụp. Đang phân tích...';
+    
+    predict(img);
+});
+
+
+// Logic Dark/Light Mode
 modeToggle.addEventListener('click', () => {
     if (body.classList.contains('light-mode')) {
         body.classList.replace('light-mode', 'dark-mode');
         modeToggle.innerHTML = '<i class="material-icons">wb_sunny</i> Chế độ Sáng';
+        progressBar.options.trailColor = '#333333';
+        progressBar.set(progressBar.value()); 
     } else {
         body.classList.replace('dark-mode', 'light-mode');
         modeToggle.innerHTML = '<i class="material-icons">brightness_4</i> Chế độ Tối';
+        progressBar.options.trailColor = '#e0e0e0';
+        progressBar.set(progressBar.value()); 
     }
 });
 
-// LỆNH GỌI KHỞI TẠO DUY NHẤT: Tải model và JSON ngay khi trang load xong
+
+// Khởi chạy hệ thống khi DOM đã tải
 document.addEventListener('DOMContentLoaded', initialize);
