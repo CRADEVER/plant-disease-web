@@ -3,6 +3,7 @@ let class_indices; // Map: Mã_ID (string) -> Tên_Bệnh
 let disease_data; // Raw JSON Data for details lookup
 let model_init_promise; // Promise để theo dõi trạng thái tải model
 
+// Các biến DOM cần thiết cho UI
 let fileUpload = document.getElementById('uploadImage');
 let img = document.getElementById('image');
 let boxResult = document.querySelector('.box-result');
@@ -37,16 +38,15 @@ let progressBar =
 
 // Function để fetch dữ liệu JSON chi tiết
 async function fetchData(){
-    // Dùng file JSON từ xa do bạn cung cấp
-    let response = await fetch('https://raw.githubusercontent.com/Van-Thuan/data_json/main/class_indices.json');
+    let response = await fetch('./class_indices.json');
     let data = await response.json();
     
     // Lưu trữ dữ liệu chi tiết
     disease_data = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet; 
    
     let indices = {};
+    // Đảm bảo logic ánh xạ Mã_ID -> Tên_Bệnh
     for (const item of disease_data) {
-        // Tạo map: Mã_ID (string) -> Tên_Bệnh
         indices[item.Mã_ID] = item.Tên_Bệnh; 
     }
     return {indices: indices, rawData: data};
@@ -61,8 +61,8 @@ async function initialize() {
     try {
         // Tải Model và Data song song
         const [modelLoad, dataLoad] = await Promise.all([
-            // Sửa đường dẫn model
-            tf.loadLayersModel('./tensorflowjs-model/model.json'),
+            // Sử dụng loadLayersModel theo code gốc của bạn
+            tf.loadLayersModel('./tensorflowjs-model/model.json'), 
             fetchData() 
         ]);
         
@@ -77,7 +77,7 @@ async function initialize() {
     }
 }
 
-// Hàm format nội dung chi tiết từ JSON thành HTML
+// Hàm format nội dung chi tiết từ JSON thành HTML (Giữ nguyên)
 function formatDetailsToHtml(diseaseItem) {
     let html = '';
     
@@ -172,20 +172,19 @@ function displayResult(resultID, confidence_val) {
 
 
 async function predict() {
-    // Bước 1: Chắc chắn model đã tải xong
+    // Bước 1: Chắc chắn model đã tải xong (chờ Promise khởi tạo hoàn tất)
     if (!model) {
         let status = document.querySelector('.init_status');
         status.innerHTML = 'Hệ thống đang tải model, vui lòng đợi... <span class="fa fa-spinner fa-spin"></span>';
         await model_init_promise; 
     }
     
-    // --- SỬA LỖI PREPROCESSING (Theo model.json) ---
-    // Model đã có lớp Rescaling(1./255) bên trong.
-    // Chúng ta KHÔNG chuẩn hóa, chỉ resize và cast sang float.
+    // --- KHẮC PHỤC LỖI CUỐI CÙNG: LOẠI BỎ CHUẨN HÓA KÉP ---
+    // Model đã có Rescaling(1./255) bên trong.
+    // Chỉ cần Resize (224x224) và chuyển sang Float (giá trị [0, 255]).
     let tensorImg = tf.browser.fromPixels(img)
         .resizeNearestNeighbor([224, 224]) // Kích thước 224x224
-        .toFloat() // Chuyển sang Float32 (model yêu cầu)
-        // KHÔNG .div() hay .sub()
+        .toFloat() // Giá trị [0, 255]
         .expandDims(); 
     
     // Bước 2: Dự đoán
@@ -274,7 +273,7 @@ captureButton.addEventListener('click', function() {
     }
 });
 
-// Khởi tạo model khi tải trang
+// Khởi tạo model khi tải trang (CHỈ 1 LẦN DUY NHẤT)
 model_init_promise = initialize();
 
 
