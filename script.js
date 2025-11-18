@@ -53,21 +53,29 @@ async function fetchData(){
 
 
 async function initialize() {
-    let status = document.querySelector('.init_status')
-    status.innerHTML = 'Đang tải dữ liệu mô hình...';
-    // Fetch data and populate global maps
+    let status = document.querySelector('.init_status');
+    if (status) { // Check for status element to prevent TypeError
+        status.innerHTML = 'Đang tải dữ liệu mô hình...';
+    }
+    
     await fetchData(); 
     
-    status.innerHTML = 'Đang tải mô hình học sâu...';
+    if (status) { // Check for status element
+        status.innerHTML = 'Đang tải mô hình học sâu...';
+    }
     try {
         // Assuming the model is in a 'model' directory
         model = await tf.loadGraphModel('./model/model.json'); 
-        status.innerHTML = 'Hệ thống đã sẵn sàng!';
-        status.style.backgroundColor = '#28a745';
+        if (status) {
+            status.innerHTML = 'Hệ thống đã sẵn sàng!';
+            status.style.backgroundColor = '#28a745';
+        }
         
     } catch (error) {
-        status.innerHTML = 'Lỗi tải mô hình. Vui lòng kiểm tra file model.json.';
-        status.style.backgroundColor = '#dc3545';
+        if (status) {
+            status.innerHTML = 'Lỗi tải mô hình. Vui lòng kiểm tra file model.json.';
+            status.style.backgroundColor = '#dc3545';
+        }
         console.error("Error loading model:", error);
     }
 }
@@ -81,9 +89,9 @@ function processImage(file) {
             videoStream.style.display = 'none';
             captureButton.style.display = 'none';
             stopButton.style.display = 'none';
-            boxResult.style.display = 'none';
-            pconf.style.display = 'none';
-            detailedResultContainer.style.display = 'none'; // NEW: Hide detailed result on new image
+            if (boxResult) boxResult.style.display = 'none'; // Null check
+            if (pconf) pconf.style.display = 'none'; // Null check
+            if (detailedResultContainer) detailedResultContainer.style.display = 'none'; // Null check
             
             // Wait for image to load before prediction
             img.onload = () => {
@@ -96,14 +104,17 @@ function processImage(file) {
 
 
 async function predict() {
-    // Hide previous detailed result 
-    detailedResultContainer.style.display = 'none';
-    
-    if (!model) {
-        alert('Mô hình chưa được tải hoặc bị lỗi.');
-        return;
+    // FIX: Check if essential DOM elements exist to prevent TypeError (Cannot set properties of null)
+    if (!boxResult || !pconf || !confidence || !model) {
+        console.error("Lỗi: Mô hình hoặc các phần tử DOM cần thiết chưa được tải/tìm thấy.");
+        return; 
     }
-
+    
+    // Hide previous detailed result 
+    if (detailedResultContainer) {
+        detailedResultContainer.style.display = 'none';
+    }
+    
     // Preprocessing the image for the model
     let tensor = tf.browser.fromPixels(img)
         .resizeNearestNeighbor([224, 224]) // Resize to model input size
@@ -140,50 +151,88 @@ async function predict() {
     if (resultData) {
         displayDetailedResult(resultData);
     } else {
-        detailedResultContainer.style.display = 'block';
-        detailedResultContainer.innerHTML = '<h3>Không tìm thấy thông tin chi tiết cho loại bệnh này.</h3>';
+        if (detailedResultContainer) {
+            detailedResultContainer.style.display = 'block';
+            detailedResultContainer.innerHTML = '<h3>Không tìm thấy thông tin chi tiết cho loại bệnh này.</h3>';
+        }
     }
 }
 
 
-// NEW: Helper function to format sections and lists
-function formatSection(title, content) {
-    let html = `<h3>${title}</h3>`;
-    for (const subTitle in content) {
-        let value = content[subTitle];
-        
-        // Clean up title for display
-        let displaySubTitle = subTitle.replace(/_/g, ' ');
-        
-        // Handle the Phác đồ Giai đoạn Cây array separately
-        if (subTitle === "Phác_đồ_Giai_đoạn_Cây" && Array.isArray(value)) {
-            html += `<h4>${displaySubTitle}:</h4><ul>`;
-            value.forEach((item, index) => {
-                html += `<li><p><strong>Giai đoạn ${index + 1}:</strong> ${item.Giai_đoạn}</p>`;
-                html += `<p><strong>Hoạt chất đề xuất:</strong> ${item.Hoạt_chất_Đề_xuất}</p>`;
-                html += `<p><strong>Nhóm FRAC/IRAC:</strong> ${item.Nhóm_FRAC_IRAC}</p>`;
-                html += `<p><strong>Lưu ý Ứng dụng:</strong> ${item.Lưu_ý_Ứng_dụng}</p></li>`;
-            });
-            html += `</ul>`;
-        } else if (typeof value === 'object' && value !== null) {
-            // Handle complex object fields like Dấu_hiệu_Chẩn_đoán_Chuyên_sâu
-            html += `<h4>${displaySubTitle}:</h4><ul>`;
-            for (const key in value) {
-                // Use key as a descriptive label
-                html += `<li><strong>${key.replace(/_/g, ' ')}:</strong> ${value[key]}</li>`;
-            }
-            html += '</ul>';
-        } else {
-            // For simple key-value pairs
-            html += `<h4>${displaySubTitle}:</h4>`;
-            html += `<p>${value}</p>`;
+// NEW: Recursive function to format any value (string, object, array)
+function formatValue(key, value) {
+    let html = '';
+    let displayKey = key.replace(/_/g, ' ');
+
+    if (value === null || value === "" || (Array.isArray(value) && value.length === 0)) {
+        // Skip empty or null values
+        return '';
+    }
+
+    if (Array.isArray(value)) {
+        // Handle Arrays (e.g., Phác_đồ_Giai_đoạn_Cây)
+        html += `<h4>${displayKey}:</h4><ul>`;
+        value.forEach((item, index) => {
+            html += `<li><strong>Mục ${index + 1}:</strong>`;
+            // Recursively process array object items
+            html += formatObject(item, true); // true indicates it's a list item sub-object
+            html += `</li>`;
+        });
+        html += `</ul>`;
+
+    } else if (typeof value === 'object' && value !== null) {
+        // Handle Nested Objects (e.g., Dấu_hiệu_Chẩn_đoán_Chuyên_sâu)
+        html += `<h4>${displayKey}:</h4>`;
+        html += formatObject(value, false);
+
+    } else {
+        // Handle Simple Key-Value Pairs (String/Number)
+        // If it's part of an array item, return simple paragraph with strong key
+        if (key === 'Giai_đoạn' || key === 'Hoạt_chất_Đề_xuất' || key === 'Nhóm_FRAC_IRAC' || key === 'Lưu_ý_Ứng_dụng') {
+             return `<p><strong>${displayKey}:</strong> ${value}</p>`;
         }
+        
+        // For regular paragraphs
+        html += `<h4>${displayKey}:</h4><p>${value}</p>`;
+    }
+
+    return html;
+}
+
+// NEW: Helper for formatting objects, called by formatValue
+function formatObject(obj, isListItem = false) {
+    let html = isListItem ? '<ul>' : ''; // Start a sub-list if it's within a list item
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            // If it's a list item sub-object, render keys as bold strings inside LIs
+            if (isListItem) {
+                // Call formatValue to handle potential nesting within the list item object (e.g., if there were sub-sub-objects)
+                // Since the array items are simple key-value pairs, we can just render them directly:
+                let displayKey = key.replace(/_/g, ' ');
+                html += `<li><strong>${displayKey}:</strong> ${obj[key]}</li>`;
+            } else {
+                // Otherwise, call formatValue recursively for the next level
+                html += formatValue(key, obj[key]);
+            }
+        }
+    }
+    
+    if (isListItem) {
+        html += '</ul>';
     }
     return html;
 }
 
+
 // NEW: Function to display the full, monolithic analysis content
 function displayDetailedResult(result) {
+    // FIX: Check if the element is null to avoid the TypeError
+    if (!detailedResultContainer) {
+        console.error("Lỗi: Không tìm thấy phần tử #detailedResultContainer.");
+        return;
+    }
+
     let htmlContent = `
         <h2>${result.Tên_Bệnh} (ID: ${result.Mã_ID})</h2>
         <p><strong>Phân loại tổng quát:</strong> ${result.Phân_loại}</p>
@@ -200,9 +249,10 @@ function displayDetailedResult(result) {
 
     sectionOrder.forEach(sectionKey => {
         if (result[sectionKey]) {
-            // Clean up the main section title (I_Tác_nhân_Chu_kỳ_và_Điều_kiện -> I Tác nhân Chu kỳ và Điều kiện)
             let sectionTitle = sectionKey.replace(/_/g, ' ');
-            htmlContent += formatSection(sectionTitle, result[sectionKey]);
+            // The main section is an object, so we call formatObject
+            htmlContent += `<h3>${sectionTitle}</h3>`;
+            htmlContent += formatObject(result[sectionKey], false);
         }
     });
 
@@ -246,15 +296,15 @@ cameraToggle.addEventListener('click', () => {
         startCamera();
         cameraContainer.style.display = 'block';
         img.style.display = 'none';
-        boxResult.style.display = 'none';
-        detailedResultContainer.style.display = 'none'; // NEW: Hide detailed result on camera toggle
+        if (boxResult) boxResult.style.display = 'none'; // Null check
+        if (detailedResultContainer) detailedResultContainer.style.display = 'none'; // Null check
     }
 });
 
 stopButton.addEventListener('click', () => {
     stopCamera();
     cameraContainer.style.display = 'none';
-    detailedResultContainer.style.display = 'none'; // NEW: Hide detailed result on camera stop
+    if (detailedResultContainer) detailedResultContainer.style.display = 'none'; // Null check
 });
 
 
@@ -271,7 +321,7 @@ async function startCamera() {
             captureButton.style.display = 'block';
             stopButton.style.display = 'block';
             img.style.display = 'none';
-            boxResult.style.display = 'none';
+            if (boxResult) boxResult.style.display = 'none'; // Null check
         } catch (error) {
             cameraStatus.textContent = `Lỗi truy cập camera: ${error.name}. Vui lòng đảm bảo camera được phép sử dụng.`;
             captureButton.disabled = true;
