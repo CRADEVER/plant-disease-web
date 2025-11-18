@@ -23,24 +23,17 @@
         <div class="upload-btn-wrapper upload-wrapper">
             <button class="btn upload-file font-weight-500">
                 <span class="upload-btn">
-                    <i class="material-icons d-block font-50 pb-2">cloud_upload</i>
-                    <p id="choose-text-1">Chọn Ảnh Lá Cây</p>
+                    <i class="material-icons d-block font-size-30">cloud_upload</i>
+                    Tải ảnh lên
                 </span>
-                <span class="upload-select-button" id="blankFile-1">
-                    *Hỗ trợ .png, .jpg, .jpeg, .jfif
-                </span>
-                <span class="success-1">
-                    <i class="material-icons text-success">check</i>
-                </span>
+                <input type="file" id="uploadImage" accept="image/*">
             </button>
-            <input type="file" name="uploadImage" id="uploadImage" accept="image/*">
         </div>
-        
         <div class="camera-btn-wrapper upload-wrapper">
             <button class="btn camera-btn font-weight-500" id="cameraToggle">
-                <span class="camera-icon">
-                    <i class="material-icons d-block font-50 pb-2">camera_alt</i>
-                    <p>Kích hoạt máy ảnh</p>
+                <span class="camera-btn-text">
+                    <i class="material-icons d-block font-size-30">camera_alt</i>
+                    Mở Camera
                 </span>
             </button>
         </div>
@@ -59,79 +52,36 @@
             <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
             <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
         </div>
+    </div>
 
+
+    <div id="resultContainer" style="display: none; margin-top: 20px;">
+        
         <div class="box box-result">
             <div class="init_status"></div>
             <div>
                 <h2>Dự đoán bệnh cây: <span class="pred_class"></span></h2>
+                
             </div>
             <div class="accuracy">
                 <div class="progress" id="progress">
                     <div class="inner">
+                      
                     </div>
-                </div>
-            </div>
-            <p style="padding: 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
+                  </div>
 
-            <div class="disease-info-container">
-                <div class="tabs">
-                    <button class="tab-link active" onclick="openTab(event, 'tab-overview')">Tổng Quan & Triệu Chứng</button>
-                    <button class="tab-link" onclick="openTab(event, 'tab-cultivation')">Biện Pháp Canh Tác</button>
-                    <button class="tab-link" onclick="openTab(event, 'tab-chemical')">Kiểm Soát Hóa Học</button>
-                    <button class="tab-link" onclick="openTab(event, 'tab-biological')">Kiểm Soát Sinh Học</button>
-                </div>
-    
-                <div id="tab-overview" class="tab-content" style="display: block;">
-                    <h3>Phân loại</h3>
-                    <p id="info-classification"></p>
-                    <h3>Dấu hiệu chẩn đoán</h3>
-                    <div id="info-symptoms"></div>
-                </div>
-    
-                <div id="tab-cultivation" class="tab-content">
-                    <h3>Quản lý Tàn dư/Đất</h3>
-                    <p id="info-cult-residue"></p>
-                    <h3>Quản lý Nước Tưới</h3>
-                    <p id="info-cult-water"></p>
-                    <h3>Mật độ & Thông thoáng</h3>
-                    <p id="info-cult-density"></p>
-                    <h3>Quản lý Dinh dưỡng</h3>
-                    <p id="info-cult-nutrition"></p>
-                </div>
-    
-                <div id="tab-chemical" class="tab-content">
-                    <h3>Nguyên tắc</h3>
-                    <p id="info-chem-principle"></p>
-                    <h3>Phác đồ Giai đoạn</h3>
-                    <table id="info-chem-plan">
-                        <thead>
-                            <tr>
-                                <th>Giai đoạn</th>
-                                <th>Hoạt chất</th>
-                                <th>Nhóm FRAC/IRAC</th>
-                                <th>Lưu ý</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            </tbody>
-                    </table>
-                </div>
-    
-                <div id="tab-biological" class="tab-content">
-                    <h3>Chất Đối kháng VSV</h3>
-                    <p id="info-bio-antagonist"></p>
-                    <h3>Cảm ứng Kháng Bệnh (SAR)</h3>
-                    <p id="info-bio-sar"></p>
-                    <h3>Kiểm soát Vector</h3>
-                    <p id="info-bio-vector"></p>
-                </div>
             </div>
-            </div>
+            <p style="padding : 10px;"> ĐỘ CHÍNH XÁC : <b><span class="confidence"></span></b> %</p>
+        </div>
+
+        <div class="box box-details" id="diseaseDetails">
+            <h2>📜 PHÂN TÍCH CHUYÊN SÂU & PHÁC ĐỒ QUẢN LÝ</h2>
+            <div id="detailContent">
+                </div>
+        </div>
     </div>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/2.0.1/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.1/progressbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
