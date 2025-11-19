@@ -1,4 +1,48 @@
 {
+    "Phac Do Quan Ly Tong Hop Chi Tiet": [
+      {
+        "Tên Bệnh": "Táo - Ghẻ Táo (Apple Scab)",
+        "Mã ID": "0",
+        "Phân Loại": "Nấm (Venturia inaequalis) - Bệnh lá và quả",
+        "I Tác Nhân Chu Kỳ Và Điều Kiện": {
+          "Tác Nhân Sinh Học": "Venturia inaequalis",
+          "Cơ Chế Lây Lan": "Nấm trú đông chủ yếu dưới dạng thể quả có chứa bào tử túi (ascospores) trong lá rụng dưới đất. Các bào tử túi này được giải phóng vào không khí vào mùa xuân, phát tán qua gió và nước mưa, bắt đầu lây nhiễm sơ cấp khi lá/chồi non vừa bung ra. Lây nhiễm thứ cấp xảy ra do bào tử trần (conidia) được tạo ra trên các vết bệnh mới, phát tán qua nước mưa, lây lan trong suốt mùa hè.",
+          "Nhiệt Độ Thời Điểm Tối Ưu": "Mát mẻ và ẩm ướt. Sự giải phóng bào tử túi (lây nhiễm sơ cấp) xảy ra khi có mưa và nhiệt độ trên 6°C. Thời gian lá ẩm (Leaf Wetness) càng dài, khả năng lây nhiễm càng cao. Nhiệt độ tối ưu để lây nhiễm là 18-24°C.",
+          "Dấu Hiệu Chẩn Đoán Chuyên Sâu": "1. Trên Lá: Xuất hiện các đốm nhỏ, hơi tròn, màu vàng xanh chuyển dần sang màu xanh ô-liu sẫm hoặc đen, có kết cấu nhung. Các đốm bệnh hợp nhất, làm lá biến dạng, nhăn nheo và rụng sớm.\n2. Trên Quả: Ban đầu là các đốm nhỏ, đen, lan rộng thành các vết loét có vỏ khô, sần sùi màu nâu/đen (vết ghẻ). Các vết ghẻ trên quả non có thể làm quả bị biến dạng, nứt nẻ, tạo điều kiện cho các bệnh thối khác xâm nhập.\n3. Trên Cành: Hiếm gặp, nhưng có thể tạo các vết loét nhỏ,..."
+        },
+        "II Biện Pháp Canh Tác Chuyên Sâu": {
+          "Quản Lý Tàn Dư Đất": "Biện pháp quan trọng nhất là Quản lý lá rụng vào cuối mùa thu/đầu đông. Có thể nghiền nát lá rụng bằng máy cắt, hoặc phun Urê (Urea) lên lá rụng (5% khối lượng) để thúc đẩy sự phân hủy nhanh chóng và giảm đáng kể lượng bào tử trú đông.",
+          "Quản Lý Nước Tưới": "Tưới nhỏ giọt hoặc tưới gốc. Tuyệt đối tránh tưới phun vào tán lá, đặc biệt vào buổi chiều tối, để giảm thời gian lá ẩm.",
+          "Mật Độ Thông Thoáng": "Cắt tỉa tạo tán mở, loại bỏ cành bị che khuất để tăng cường thông gió và ánh sáng, giúp lá khô nhanh sau mưa hoặc sương.",
+          "Quản Lý Dinh Dưỡng Vi Lượng": "Duy trì dinh dưỡng cân bằng. Việc bón thừa Đạm (Nitrogen) làm cây ra lá non liên tục, làm tăng số lượng mô nhạy cảm với bệnh."
+        },
+        "III Chiến Lược Kiểm Soát Hóa Học": {
+          "Nguyên Tắc FRAC IRAC": "Chiến lược kiểm soát tập trung vào việc ngăn chặn lây nhiễm sơ cấp bằng thuốc bảo vệ (M) và dập dịch bằng thuốc nội hấp/hệ thống (C3, C2).",
+          "Phác Đồ Giai Đoạn Cây": [
+            {
+              "Giai Đoạn": "Bung Chồi Xanh (Green Tip) đến Nụ Hoa Hồng (Pink Bud)",
+              "Hoạt Chất Đề Xuất": "Thuốc Đồng (Copper) hoặc Mancozeb/Captan",
+              "Nhóm FRAC IRAC": "M1, M3, hoặc M4",
+              "Lưu Ý Ứng Dụng": "Giai đoạn then chốt để ngăn chặn lây nhiễm sơ cấp. Cần phun định kỳ 7-10 ngày, đảm bảo che phủ toàn bộ mô non đang phát triển."
+            },
+            {
+              "Giai Đoạn": "Rụng Cánh Hoa (Petal Fall) đến Phát Triển Quả (Cover Sprays)",
+              "Hoạt Chất Đề Xuất": "Captan/Mancozeb Xen kẽ DMI (Triazole) hoặc Strobilurin (C3)",
+              "Nhóm FRAC IRAC": "M4/M3 xen kẽ C3 hoặc C2",
+              "Lưu Ý Ứng Dụng": "Duy trì lớp bảo vệ. Sử dụng thuốc nội hấp (DMI/Strobilurin) sau mưa lớn nếu không thể phun thuốc bảo vệ kịp thời để dập các đốm bệnh mới (trị bệnh sau lây nhiễm)."
+            }
+          ],
+          "Thuốc Trừ Tận Gốc Eradicant": "Các hoạt chất nhóm DMI (Triazole) như Myclobutanil hoặc Difennoconazole có khả năng 'trị' (kickback activity) Ghẻ Táo nếu phun trong vòng 72-96 giờ sau khi lây nhiễm."
+        },
+        "IV Giải Pháp Sinh Học Và Thay Thế": {
+          "Chất Đối Kháng VSV": "Các sản phẩm chứa Bacillus subtilis hoặc Dầu Khoáng (Mineral Oil) có thể được sử dụng trong các chương trình hữu cơ để giảm lây nhiễm, nhưng hiệu quả thấp hơn hóa chất.",
+          "Cảm Ứng Kháng Bệnh SAR": "Không có giải pháp SAR thương mại được chứng minh hiệu quả độc lập.",
+          "Kiểm Soát Côn Trùng Vector": "Không có côn trùng vector trực tiếp, nhưng việc kiểm soát côn trùng cắn phá lá (như bọ cánh cứng, sâu ăn lá) sẽ giảm thiểu vết thương tạo cửa ngõ lây nhiễm thứ cấp."
+        }
+      }
+    ]
+  }
+  {
     "Phac_do_Quan_Ly_Tong_Hop_Chi_tiet": [
         {
             "Tên_Bệnh": "Táo - Ghẻ Táo (Apple Scab)",
