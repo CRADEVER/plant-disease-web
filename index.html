@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPDM - HỆ THỐNG PHÂN LOẠI & QUẢN LÝ BỆNH CÂY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -12,7 +15,43 @@
 <body class="light-mode">
     <div class="header-container">
         <h1>🌱 HỆ THỐNG IPDM NHẬN DIỆN & QUẢN LÝ BỆNH CÂY</h1>
+        <button class="mode-toggle" id="modeToggle">
+            <i class="material-icons">brightness_4</i> Chế độ Tối
+        </button>
+    </div>
+    <hr>
+
+    <div class="status" id="mainStatus">Đang khởi động...</div> 
+    
+    <div class="input-selection-container">
+        <div class="upload-btn-container">
+            <div class="upload-btn-wrapper upload-wrapper">
+                <input type="file" id="uploadImage" accept="image/*" style="display: none;"/>
+                <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
+                    <span class="upload-btn">
+                        <i class="material-icons d-block">cloud_upload</i> Tải Ảnh Từ Thiết Bị
+                    </span>
+                </button>
+            </div>
+            <button class="btn camera-btn font-weight-500" id="cameraToggle">
+                <i class="material-icons d-block">camera_alt</i> Bật Camera
+            </button>
         </div>
+    </div>
+    
+    <div class="camera-stream-container" id="cameraContainer">
+        <video id="videoStream" width="100%" height="auto" autoplay></video>
+        <div class="camera-controls">
+            <button id="captureButton" class="capture-btn" disabled>
+                <i class="material-icons">camera</i> Chụp Ảnh
+            </button>
+            <button id="stopButton" class="capture-btn stop-btn">
+                <i class="material-icons">videocam_off</i> Dừng Camera
+            </button>
+        </div>
+        <p class="camera-status" id="cameraStatus"></p>
+    </div>
+
 
     <div class="row main-content-row">
         <div class="box image-box">
@@ -31,29 +70,15 @@
             
             <div class="accuracy">
                 <div class="progress" id="progress">
-                </div>
+                    </div>
             </div>
             <p class="confidence-summary">
                 ĐỘ CHÍNH XÁC: <b><span class="confidence">0</span></b> %
             </p>
-
-            <hr>
-
-            <div class="protocol-section">
-                <details class="protocol-detail-section" open>
-                    <summary>Phác đồ quản lý tổng hợp (IPDM)</summary>
-                    <div class="detail-content">
-                        <h4>I. Dấu hiệu chẩn đoán chuyên sâu:</h4>
-                        <p id="symptomsDetail">Chưa có dữ liệu chi tiết.</p>
-                        
-                        <h4>II. Phác đồ xử lý & Phòng ngừa:</h4>
-                        <div id="protocolSteps">
-                            <p>Đang chờ kết quả phân tích...</p>
-                        </div>
-                    </div>
-                </details>
-            </div>
         </div>
+    </div>
+
+    <div class="box protocol-detail-container" id="resultContainer">
         </div>
     
     <script src="script.js"></script>
