@@ -52,14 +52,12 @@ async function fetchData(){
         let protocolMap = {};
         let indicesMap = {};
         
-        // **Đã sửa:** Sử dụng tên key đã thống nhất (Phac_do_Quan_Ly_Tong_Hop_Chi_tiet)
-        const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet; 
+        const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
 
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // **Đã sửa:** Truy cập key bằng cú pháp chuỗi
-                protocolMap[item['Mã id']] = item; 
-                indicesMap[item['Mã id']] = item['Tên bệnh']; 
+                protocolMap[item.Mã id] = item;
+                indicesMap[item.Mã id] = item.Tên bệnh; 
             });
         } else {
              throw new Error("Cấu trúc JSON không hợp lệ: 'Phac_do_Quan_Ly_Tong_Hop_Chi_tiet' không phải là mảng hoặc không tồn tại.");
@@ -86,10 +84,9 @@ async function initialize() {
 
     await fetchData();
 
- 
+  
     try {
         const modelUrl = './tensorflowjs-model/model.json'; 
-        // Đây là bước tải mô hình, giả định đã có tf.js được include
         model = await tf.loadLayersModel(modelUrl); 
 
         mainStatus.className = 'status success';
@@ -107,22 +104,19 @@ async function initialize() {
 function displayDiseaseDetails(protocol) {
     resultContainer.style.display = 'block';
     
-    // **Đã sửa:** Truy cập key bằng cú pháp chuỗi
-    const chemicalProtocol = protocol['Iii. chiến lược kiểm soát hóa học'];
-    const phacDoGiaiDoan = chemicalProtocol?.['Phác đồ giai đoạn cây'] || [];
+    const phacDoGiaiDoan = protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Phác_đồ_Giai_đoạn_Cây || [];
 
    
-    // **Đã sửa:** Truy cập key bằng cú pháp chuỗi
-    const intensiveCultivationProtocol = protocol['Ii. biện pháp canh tác chuyên sâu'];
+    const intensiveCultivationProtocol = protocol.II_Biện_pháp_Canh_tác_Chuyên_sâu;
     let sectionIICulturalContent = '';
 
     if (intensiveCultivationProtocol) {
         sectionIICulturalContent = `
             <ul>
-                <li><b>Quản lý Tàn dư & Đất:</b> ${intensiveCultivationProtocol['Quản lý tàn dư đất'] || 'Đang cập nhật...'}</li>
-                <li><b>Quản lý Nước Tưới:</b> ${intensiveCultivationProtocol['Quản lý nước tưới'] || 'Đang cập nhật...'}</li>
-                <li><b>Mật độ & Thông thoáng:</b> ${intensiveCultivationProtocol['Mật độ thông thoáng'] || 'Đang cập nhật...'}</li>
-                <li><b>Quản lý Dinh dưỡng Vi lượng:</b> ${intensiveCultivationProtocol['Quản lý dinh dưỡng vi lượng'] || 'Đang cập nhật...'}</li>
+                <li><b>Quản lý Tàn dư & Đất:</b> ${intensiveCultivationProtocol.Quản_lý_Tàn_dư_Đất || 'Đang cập nhật...'}</li>
+                <li><b>Quản lý Nước Tưới:</b> ${intensiveCultivationProtocol.Quản_lý_Nước_Tưới || 'Đang cập nhật...'}</li>
+                <li><b>Mật độ & Thông thoáng:</b> ${intensiveCultivationProtocol.Mật_độ_Thông_thoáng || 'Đang cập nhật...'}</li>
+                <li><b>Quản lý Dinh dưỡng Vi lượng:</b> ${intensiveCultivationProtocol.Quản_lý_Dinh_dưỡng_Vi_lượng || 'Đang cập nhật...'}</li>
             </ul>
         `;
     } else {
@@ -130,26 +124,25 @@ function displayDiseaseDetails(protocol) {
     }
 
  
-    // **Đã sửa:** Truy cập key bằng cú pháp chuỗi
-    const bioProtocol = protocol['Iv giải pháp sinh học và thay thế'];
+    const bioProtocol = protocol.IV_Giải_pháp_Sinh_học_và_Thay_thế;
     let sectionIVBioContent = '';
     
     if (bioProtocol) {
         sectionIVBioContent = `
-            <p><b>Chất Đối kháng VSV:</b> ${bioProtocol['Chất đối kháng vsv'] || 'Đang cập nhật...'}</p>
-            <p><b>Cảm ứng Kháng Bệnh (SAR):</b> ${bioProtocol['Cảm ứng kháng bệnh sar'] || 'Không có.'}</p>
-            <p><b>Kiểm soát Côn trùng Vector:</b> ${bioProtocol['Kiểm soát côn trùng vector'] || 'Đang cập nhật...'}</p>
-            <p><b>Quản lý Kháng thuốc (IRM):</b> Không có thông tin IRM trong dữ liệu.</p>
+            <p><b>Chất Đối kháng VSV:</b> ${bioProtocol.Chất_Đối_kháng_VSV || 'Đang cập nhật...'}</p>
+            <p><b>Cảm ứng Kháng Bệnh (SAR):</b> ${bioProtocol.Cảm_ứng_Kháng_Bệnh_SAR || 'Không có.'}</p>
+            <p><b>Kiểm soát Côn trùng Vector:</b> ${bioProtocol.Kiểm_soát_Côn_trùng_Vector || 'Đang cập nhật...'}</p>
+            <p><b>Quản lý Kháng thuốc (IRM):</b> ${bioProtocol.Quản_lý_Kháng_thuốc_IRM || 'Đang cập nhật...'}</p>
         `;
     } else {
         sectionIVBioContent = '<p>Đang cập nhật giải pháp sinh học và thay thế...</p>';
     }
     
-    
+   
     let html = `
         <div class="protocol-header">
-            <h3>${protocol['Tên bệnh'] || 'Chưa xác định'}</h3>
-            <p class="classification">Phân loại: <b>${protocol['Phân loại'] || 'Đang cập nhật'}</b></p>
+            <h3>${protocol.Tên_Bệnh || 'Chưa xác định'}</h3>
+            <p class="classification">Phân loại: <b>${protocol.Phân_loại || 'Đang cập nhật'}</b></p>
         </div>
         <hr>
         
@@ -160,10 +153,10 @@ function displayDiseaseDetails(protocol) {
                     I. Tác nhân, Chu kỳ và Điều kiện (Cơ sở)
                 </summary>
                 <div class="detail-content">
-                    <p><b>Tác nhân:</b> ${protocol['I. tác nhân chu kỳ và điều kiện']?.['Tác nhân sinh học'] || 'Đang cập nhật...'}</p>
-                    <p><b>Cơ chế lây lan:</b> ${protocol['I. tác nhân chu kỳ và điều kiện']?.['Cơ chế lây lan'] || 'Đang cập nhật...'}</p>
-                    <p><b>Nhiệt độ tối ưu:</b> ${protocol['I. tác nhân chu kỳ và điều kiện']?.['Nhiệt độ thời điểm tối ưu'] || 'Đang cập nhật...'}</p>
-                    <p><b>Dấu hiệu:</b> ${protocol['I. tác nhân chu kỳ và điều kiện']?.['Dấu hiệu chẩn đoán chuyên sâu'] || 'Đang cập nhật...'}</p>
+                    <p><b>Tác nhân:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Tác_nhân_Sinh_học || 'Đang cập nhật...'}</p>
+                    <p><b>Cơ chế lây lan:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Cơ_chế_Lây_lan || 'Đang cập nhật...'}</p>
+                    <p><b>Nhiệt độ tối ưu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Nhiệt_độ_Thời_điểm_tối_ưu || 'Đang cập nhật...'}</p>
+                    <p><b>Dấu hiệu:</b> ${protocol.I_Tác_nhân_Chu_kỳ_và_Điều_kiện?.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu || 'Đang cập nhật...'}</p>
                 </div>
             </details>
 
@@ -183,17 +176,17 @@ function displayDiseaseDetails(protocol) {
                     III. Chiến lược Kiểm soát Hóa học (Thuốc)
                 </summary>
                 <div class="detail-content">
-                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${chemicalProtocol?.['Nguyên tắc frac irac'] || 'Đang cập nhật...'}</p>
+                    <p><b>Nguyên tắc FRAC/IRAC:</b> ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Nguyên_tắc_FRAC_IRAC || 'Đang cập nhật...'}</p>
                     
                     <h4>Phác đồ theo Giai đoạn:</h4>
                     ${phacDoGiaiDoan.length > 0 ? phacDoGiaiDoan.map(step => `
                         <div class="stage-step">
-                            <p><b>Giai đoạn:</b> ${step['Giai đoạn'] || 'N/A'}</p>
-                            <p><b>Hoạt chất đề xuất:</b> <span>${step['Hoạt chất đề xuất'] || 'N/A'}</span> (Nhóm: ${step['Nhóm frac irac'] || 'N/A'})</p>
-                            <p><b>Lưu ý:</b> ${step['Lưu ý ứng dụng'] || 'N/A'}</p>
+                            <p><b>Giai đoạn:</b> ${step.Giai_đoạn || 'N/A'}</p>
+                            <p><b>Hoạt chất đề xuất:</b> <span>${step.Hoạt_chất_Đề_xuất || 'N/A'}</span> (Nhóm: ${step.Nhóm_FRAC_IRAC || 'N/A'})</p>
+                            <p><b>Lưu ý:</b> ${step.Lưu_ý_Ứng_dụng || 'N/A'}</p>
                         </div>
                     `).join('') : '<p>Đang cập nhật phác đồ giai đoạn hóa học...</p>'}
-                    <p><b>Thuốc Trừ Tận gốc Eradicant:</b> ${chemicalProtocol?.['Thuốc trừ tận gốc eradicant'] || 'Không sử dụng.'}</p>
+                    <p><b>Thuốc Trừ Tận gốc Eradicant:</b> ${protocol.III_Chiến_lược_Kiểm_soát_Hóa_học?.Thuốc_Trừ_Tận_gốc_Eradicant || 'Không sử dụng.'}</p>
                 </div>
             </details>
             
@@ -231,14 +224,14 @@ async function predict(imageElement) {
     let predicted_index, confidence_score;
     
     try {
- 
+  
         const tensor = tf.browser.fromPixels(imageElement)
             .resizeNearestNeighbor([224, 224]) 
             .toFloat()
             .div(tf.scalar(255.0)) 
             .expandDims(); 
 
-        
+     
         const predictions = model.predict(tensor);
         const predictionArray = await predictions.data();
         
@@ -304,7 +297,6 @@ async function startCamera() {
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         try {
-            // Yêu cầu camera sau (environment) trên thiết bị di động
             currentStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             videoStream.srcObject = currentStream;
             videoStream.play();
@@ -372,7 +364,6 @@ cameraToggle.addEventListener('click', function() {
 captureButton.addEventListener('click', () => {
     resultContainer.style.display = 'none'; 
     
-    // Tải ảnh từ video stream lên canvas
     canvas.width = 224;
     canvas.height = 224;
     context.drawImage(videoStream, 0, 0, canvas.width, canvas.height); 
@@ -381,7 +372,6 @@ captureButton.addEventListener('click', () => {
     img.src = dataUrl;
     img.style.display = 'block'; 
     
-    // Ẩn camera UI
     videoStream.style.display = 'none';
     captureButton.style.display = 'none';
     stopButton.style.display = 'none';
@@ -392,8 +382,6 @@ captureButton.addEventListener('click', () => {
     predict(img);
 });
 
-
-stopButton.addEventListener('click', stopCamera);
 
 
 modeToggle.addEventListener('click', () => {
