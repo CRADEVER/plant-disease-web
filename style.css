@@ -1,6 +1,4 @@
-/* style.css (Phiên bản Hoàn Chỉnh - IPDM System) */
 
-/* === GLOBAL & BASE === */
 * {
     box-sizing: border-box;
     padding: 0;
@@ -28,9 +26,7 @@ hr {
     transition: border-color 0.5s;
 }
 
-/* === DARK/LIGHT MODE STYLES === */
 
-/* Light Mode */
 .light-mode {
     background-color: #f4f7f6; 
     color: #333333;
@@ -74,7 +70,7 @@ hr {
 }
 
 
-/* Dark Mode */
+
 .dark-mode {
     background-color: #1a1a1a; 
     color: #e0e0e0;
@@ -118,7 +114,6 @@ hr {
 }
 
 
-/* === HEADER & TOGGLE === */
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -142,7 +137,6 @@ hr {
 }
 
 
-/* === INPUT & CAMERA === */
 .input-selection-container {
     margin: 20px 0;
 }
@@ -223,7 +217,6 @@ hr {
 }
 
 
-/* === MAIN CONTENT (ROW) === */
 .row {
     display: flex;
     gap: 30px;
@@ -261,7 +254,6 @@ hr {
     margin: 20px;
 }
 
-/* === KẾT QUẢ TÓM TẮT (BOX RESULT) === */
 .box-result {
     display: none; 
     flex-direction: column;
@@ -291,7 +283,7 @@ hr {
     color: #4CAF50;
 }
 
-/* Progress Bar (ProgressBar.js) */
+
 .accuracy {
     display: flex;
     justify-content: center;
@@ -304,7 +296,6 @@ hr {
 }
 
 
-/* === TRẠNG THÁI CHUNG & LOADING === */
 
 .status {
     padding: 12px 20px;
@@ -342,7 +333,6 @@ hr {
     100% { transform: rotate(360deg); }
 }
 
-/* Loading Bar cho quá trình Dự đoán */
 .loading-bar {
     width: 90%;
     height: 25px;
@@ -396,7 +386,6 @@ hr {
 }
 
 
-/* === PHÁC ĐỒ QUẢN LÝ CHI TIẾT (MỚI) === */
 .protocol-detail-container {
     flex: 1 1 100%; 
     padding: 25px;
@@ -446,7 +435,6 @@ hr {
     transition: background-color 0.3s;
 }
 
-/* Thêm mũi tên chỉ báo (Custom Arrow) */
 .protocol-detail-section summary:before {
     content: '\25B8'; 
     margin-right: 5px;
@@ -501,7 +489,6 @@ hr {
 }
 
 
-/* === MEDIA QUERIES (RESPONSIVENESS) === */
 @media (max-width: 768px) {
     html, body {
         width: 100%;
