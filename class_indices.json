@@ -1,5 +1,5 @@
 {
-    "Phac do quan ly tong hop chi tiet": [
+    "Phac_do_Quan_Ly_Tong_Hop_Chi_tiet": [
         {
             "Tên bệnh": "Táo - Ghẻ Táo (Apple Scab)",
             "Mã id": "0",
@@ -1509,4 +1509,5 @@
             }
         }
     ]
+
 }
