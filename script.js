@@ -48,7 +48,6 @@ const progressBar = new ProgressBar.Circle('#progress', {
 // 1. Tải dữ liệu từ JSON
 async function fetchData(){
     try {
-        // Sử dụng BASE_PATH để tải class_indices.json
         let response = await fetch(`${BASE_PATH}class_indices.json`);
         
         if (!response.ok) {
@@ -76,35 +75,30 @@ async function fetchData(){
     }
 }
 
-// 2. Khởi tạo & Tải Model (ĐÃ FIX LỖI InputLayer VÀ ĐƯỜNG DẪN)
+// 2. Khởi tạo & Tải Model (ĐÃ FIX TRIỆT ĐỂ LỖI InputLayer)
 async function initialize() {
     mainStatus.className = 'status loading';
     mainStatus.innerHTML = '<i class="material-icons loading-icon">cached</i> Đang tải mô hình & dữ liệu...';
 
-    // Đảm bảo dữ liệu đã tải trước khi tải model
     await fetchData(); 
   
     try {
-        // SỬ DỤNG BASE_PATH ĐÃ CỐ ĐỊNH
         const modelUrl = `${BASE_PATH}tensorflowjs-model/model.json`; 
         
-        // 1. Tải model dưới dạng LayersModel
-        model = await tf.loadLayersModel(modelUrl); 
+        // 1. Tải model dưới dạng LayersModel VỚI TÙY CHỌN { strict: false }
+        model = await tf.loadLayersModel(modelUrl, { strict: false }); 
 
-        // ==========================================================
-        // 🚨 SỬA LỖI INPUTLAYER CUỐI CÙNG CHO MIXED PRECISION
+        // 2. Ép buộc Model Build để khởi tạo bộ nhớ WebGL
         const inputShape = [null, 224, 224, 3]; 
-        // Ép buộc Model Build 
         model.build(inputShape);
         
-        // Thực hiện Dummy Prediction để kích hoạt WebGL
+        // 3. Thực hiện Dummy Prediction để kích hoạt đồ thị tính toán
         const dummyInput = tf.zeros([1, 224, 224, 3], 'float32'); 
         const output = model.predict(dummyInput);
         
         // Dọn dẹp tensor
         output.dispose();
         dummyInput.dispose();
-        // ==========================================================
         
         mainStatus.className = 'status success';
         mainStatus.innerHTML = '<i class="material-icons">check_circle</i> Hệ thống sẵn sàng.';
@@ -316,7 +310,6 @@ async function startCamera() {
     boxResult.style.display = 'none';
 
     try {
-        // Request camera access, prioritize rear camera ('environment')
         currentStream = await navigator.mediaDevices.getUserMedia({ 
             video: { facingMode: 'environment' } 
         });
@@ -361,17 +354,14 @@ cameraToggle.addEventListener('click', () => {
 });
 
 captureButton.addEventListener('click', () => {
-    // Đảm bảo canvas có kích thước thực của video để chụp ảnh chất lượng cao
     canvas.width = videoStream.videoWidth;
     canvas.height = videoStream.videoHeight;
     context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
     
-    // Gán ảnh đã chụp vào thẻ <img>
     img.src = canvas.toDataURL('image/png');
     img.style.display = 'block';
     
     stopCamera();
-    // Chờ 1 chút để UI cập nhật rồi predict
     setTimeout(() => predict(img), 100);
 });
 
