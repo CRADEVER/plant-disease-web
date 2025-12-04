@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPDM - QUẢN LÝ BỆNH CÂY TRỒNG</title>
-    <meta name="description" content="Hệ thống chẩn đoán bệnh cây trồng bằng AI và phác đồ điều trị chi tiết.">
+    <title>IPDM - HỆ THỐNG PHÂN LOẠI & QUẢN LÝ BỆNH CÂY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -13,79 +14,72 @@
 </head>
 <body class="light-mode">
     <div class="header-container">
-        <div class="brand">
-            <i class="material-icons" style="font-size: 32px; color: #00a896;">eco</i>
-            <h1>IPDM SYSTEM</h1>
-        </div>
+        <h1>🌱 HỆ THỐNG IPDM NHẬN DIỆN & QUẢN LÝ BỆNH CÂY</h1>
         <button class="mode-toggle" id="modeToggle">
-            <i class="material-icons">brightness_4</i> <span>Chế độ Tối</span>
+            <i class="material-icons">brightness_4</i> Chế độ Tối
         </button>
     </div>
     <hr>
 
-    <div class="status" id="mainStatus">Đang khởi động hệ thống...</div> 
+    <div class="status" id="mainStatus">Đang khởi động...</div> 
     
     <div class="input-selection-container">
-        <div class="upload-area" id="dropZone">
-            <input type="file" id="uploadImage" accept="image/*" style="display: none;"/>
-            <div class="upload-content">
-                <i class="material-icons cloud-icon">cloud_upload</i>
-                <p>Kéo thả ảnh vào đây hoặc <span class="browse-link" onclick="document.getElementById('uploadImage').click();">Chọn ảnh</span></p>
+        <div class="upload-btn-container">
+            <div class="upload-btn-wrapper upload-wrapper">
+                <input type="file" id="uploadImage" accept="image/*" style="display: none;"/>
+                <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
+                    <span class="upload-btn">
+                        <i class="material-icons d-block">cloud_upload</i> Tải Ảnh Từ Thiết Bị
+                    </span>
+                </button>
             </div>
-        </div>
-        
-        <div class="camera-toggle-container">
-            <button class="btn camera-btn" id="cameraToggle">
-                <i class="material-icons">camera_alt</i> Sử dụng Camera
+            <button class="btn camera-btn font-weight-500" id="cameraToggle">
+                <i class="material-icons d-block">camera_alt</i> Bật Camera
             </button>
         </div>
     </div>
     
     <div class="camera-stream-container" id="cameraContainer">
-        <video id="videoStream" autoplay playsinline></video>
+        <video id="videoStream" width="100%" height="auto" autoplay></video>
         <div class="camera-controls">
             <button id="captureButton" class="capture-btn" disabled>
                 <i class="material-icons">camera</i> Chụp Ảnh
             </button>
             <button id="stopButton" class="capture-btn stop-btn">
-                <i class="material-icons">videocam_off</i> Đóng
+                <i class="material-icons">videocam_off</i> Dừng Camera
             </button>
         </div>
         <p class="camera-status" id="cameraStatus"></p>
     </div>
 
-    <div class="row">
+
+    <div class="row main-content-row">
         <div class="box image-box">
-            <div class="image-wrapper">
-                <img src="" alt="Ảnh phân tích" id="image">
-                <div class="scan-overlay" id="scanOverlay"></div> 
-            </div>
-            
-            <div class="image-placeholder" id="imagePlaceholder">
-                <i class="material-icons" style="font-size: 64px; color: #e0e0e0;">image</i>
-                <p>Chưa có ảnh nào được chọn</p>
-            </div>
+            <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
+            <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
+            <p class="image-placeholder">Vui lòng tải lên hoặc chụp ảnh để bắt đầu phân tích.</p>
         </div>
 
-        <div class="box box-result" id="boxResult" style="display: none;">
-            <div class="result-header">
-                <h2>Kết quả chẩn đoán</h2>
-            </div>
-            
-            <div class="accuracy-container">
-                <div class="progress" id="progress"></div>
-                <div class="confidence-text">
-                    <span class="confidence-label">Độ tin cậy</span>
-                    <span class="confidence-value"><span class="confidence">0</span>%</span>
-                </div>
+        <div class="box box-result" id="boxResult">
+            <div class="loading-bar" id="loadingPredictionBar">
+                <div class="loading-fill"></div>
+                <p>Đang phân tích ảnh...</p>
             </div>
 
-            <h3 class="pred_class">--</h3>
-            <p class="result-hint">Cuộn xuống để xem phác đồ điều trị chi tiết</p>
+            <h2>Dự đoán bệnh cây: <span class="pred_class">Chưa có kết quả</span></h2>
+            
+            <div class="accuracy">
+                <div class="progress" id="progress">
+                    </div>
+            </div>
+            <p class="confidence-summary">
+                ĐỘ CHÍNH XÁC: <b><span class="confidence">0</span></b> %
+            </p>
         </div>
     </div>
 
-    <div class="protocol-detail-container" id="resultContainer"></div>
+    <div class="box protocol-detail-container" id="resultContainer">
+        </div>
     
     <script src="script.js"></script>
 </body>
