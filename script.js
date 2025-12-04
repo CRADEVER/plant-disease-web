@@ -4,8 +4,8 @@ let class_indices = {};
 let currentStream;
 
 // ==============================================================
-// 🎯 KHẮC PHỤC TRIỆT ĐỂ LỖI 404 TRÊN GITHUB PAGES
-// BASE_PATH được thiết lập cho URL: https://cradever.github.io/plant-disease-web/
+// 🎯 ĐƯỜNG DẪN CỐ ĐỊNH CHO GITHUB PAGES
+// URL: https://cradever.github.io/plant-disease-web/
 const BASE_PATH = "/plant-disease-web/"; 
 // ==============================================================
 
@@ -61,9 +61,7 @@ async function fetchData(){
 
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // Map ID (string) sang object
                 disease_protocols_map[item.Mã_ID] = item;
-                // Tạo danh sách tên để hiển thị nhanh
                 class_indices[item.Mã_ID] = item.Tên_Bệnh; 
             });
             console.log("DEBUG: Đã tải dữ liệu bệnh thành công.");
@@ -78,28 +76,36 @@ async function fetchData(){
     }
 }
 
-// 2. Khởi tạo & Tải Model (FIXED)
+// 2. Khởi tạo & Tải Model (ĐÃ FIX LỖI InputLayer VÀ ĐƯỜNG DẪN)
 async function initialize() {
     mainStatus.className = 'status loading';
     mainStatus.innerHTML = '<i class="material-icons loading-icon">cached</i> Đang tải mô hình & dữ liệu...';
 
-    await fetchData();
+    // Đảm bảo dữ liệu đã tải trước khi tải model
+    await fetchData(); 
   
     try {
-        // SỬ DỤNG BASE_PATH ĐÃ ĐỊNH NGHĨA CHO MODEL
+        // SỬ DỤNG BASE_PATH ĐÃ CỐ ĐỊNH
         const modelUrl = `${BASE_PATH}tensorflowjs-model/model.json`; 
         
-        // 1. Tải model
+        // 1. Tải model dưới dạng LayersModel
         model = await tf.loadLayersModel(modelUrl); 
 
-        // 2. KHẮC PHỤC LỖI INPUTLAYER BẰNG DỰ ĐOÁN GIẢ (DUMMY PREDICTION)
-        const dummyInput = tf.zeros([1, 224, 224, 3]);
+        // ==========================================================
+        // 🚨 SỬA LỖI INPUTLAYER CUỐI CÙNG CHO MIXED PRECISION
+        const inputShape = [null, 224, 224, 3]; 
+        // Ép buộc Model Build 
+        model.build(inputShape);
+        
+        // Thực hiện Dummy Prediction để kích hoạt WebGL
+        const dummyInput = tf.zeros([1, 224, 224, 3], 'float32'); 
         const output = model.predict(dummyInput);
         
         // Dọn dẹp tensor
         output.dispose();
         dummyInput.dispose();
-
+        // ==========================================================
+        
         mainStatus.className = 'status success';
         mainStatus.innerHTML = '<i class="material-icons">check_circle</i> Hệ thống sẵn sàng.';
     } catch (error) {
