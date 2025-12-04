@@ -3,6 +3,12 @@ let disease_protocols_map = {};
 let class_indices = {}; 
 let currentStream;
 
+// ==============================================================
+// 🎯 KHẮC PHỤC TRIỆT ĐỂ LỖI 404 TRÊN GITHUB PAGES
+// BASE_PATH được thiết lập cho URL: https://cradever.github.io/plant-disease-web/
+const BASE_PATH = "/plant-disease-web/"; 
+// ==============================================================
+
 // DOM Elements
 const fileUpload = document.getElementById('uploadImage');
 const img = document.getElementById('image');
@@ -42,7 +48,8 @@ const progressBar = new ProgressBar.Circle('#progress', {
 // 1. Tải dữ liệu từ JSON
 async function fetchData(){
     try {
-        let response = await fetch('./class_indices.json');
+        // Sử dụng BASE_PATH để tải class_indices.json
+        let response = await fetch(`${BASE_PATH}class_indices.json`);
         
         if (!response.ok) {
             throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -71,7 +78,7 @@ async function fetchData(){
     }
 }
 
-// 2. Khởi tạo & Tải Model (ĐÃ FIX LỖI InputLayer)
+// 2. Khởi tạo & Tải Model (FIXED)
 async function initialize() {
     mainStatus.className = 'status loading';
     mainStatus.innerHTML = '<i class="material-icons loading-icon">cached</i> Đang tải mô hình & dữ liệu...';
@@ -79,13 +86,13 @@ async function initialize() {
     await fetchData();
   
     try {
-        const modelUrl = './tensorflowjs-model/model.json'; 
+        // SỬ DỤNG BASE_PATH ĐÃ ĐỊNH NGHĨA CHO MODEL
+        const modelUrl = `${BASE_PATH}tensorflowjs-model/model.json`; 
         
-        // 1. Tải model dưới dạng LayersModel
+        // 1. Tải model
         model = await tf.loadLayersModel(modelUrl); 
 
         // 2. KHẮC PHỤC LỖI INPUTLAYER BẰNG DỰ ĐOÁN GIẢ (DUMMY PREDICTION)
-        // Kích thước đầu vào của MobileNetV2 là [224, 224, 3]
         const dummyInput = tf.zeros([1, 224, 224, 3]);
         const output = model.predict(dummyInput);
         
@@ -98,7 +105,7 @@ async function initialize() {
     } catch (error) {
         console.error("Lỗi tải Model:", error);
         mainStatus.className = 'status error';
-        mainStatus.innerHTML = `<i class="material-icons">error</i> Lỗi tải Model: ${error.message}. Vui lòng kiểm tra file model.json trong thư mục tensorflowjs-model.`;
+        mainStatus.innerHTML = `<i class="material-icons">error</i> Lỗi tải Model: ${error.message}. Vui lòng kiểm tra file model và BASE_PATH.`;
     }
 }
 
@@ -178,7 +185,6 @@ function displayDiseaseDetails(protocol) {
     let sourcesHtml = '';
     Object.keys(sec5).forEach(key => {
         const src = sec5[key];
-        // Xử lý cả hai trường hợp: object có URL hoặc chỉ là string URL
         let url = '';
         let name = `Nguồn tham khảo ${key}`;
 
