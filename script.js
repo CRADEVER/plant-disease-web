@@ -50,7 +50,6 @@ async function fetchData(){
         
         let data = await response.json();
         
-        // Cấu trúc mới: Root -> Phac_do_Quan_Ly_Tong_Hop_Chi_tiet (Array)
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
 
         if (Array.isArray(protocolsArray)) {
@@ -72,7 +71,7 @@ async function fetchData(){
     }
 }
 
-// 2. Khởi tạo
+// 2. Khởi tạo & Tải Model (ĐÃ FIX LỖI InputLayer)
 async function initialize() {
     mainStatus.className = 'status loading';
     mainStatus.innerHTML = '<i class="material-icons loading-icon">cached</i> Đang tải mô hình & dữ liệu...';
@@ -80,24 +79,33 @@ async function initialize() {
     await fetchData();
   
     try {
-        // Đảm bảo đường dẫn model đúng
         const modelUrl = './tensorflowjs-model/model.json'; 
+        
+        // 1. Tải model dưới dạng LayersModel
         model = await tf.loadLayersModel(modelUrl); 
+
+        // 2. KHẮC PHỤC LỖI INPUTLAYER BẰNG DỰ ĐOÁN GIẢ (DUMMY PREDICTION)
+        // Kích thước đầu vào của MobileNetV2 là [224, 224, 3]
+        const dummyInput = tf.zeros([1, 224, 224, 3]);
+        const output = model.predict(dummyInput);
+        
+        // Dọn dẹp tensor
+        output.dispose();
+        dummyInput.dispose();
 
         mainStatus.className = 'status success';
         mainStatus.innerHTML = '<i class="material-icons">check_circle</i> Hệ thống sẵn sàng.';
     } catch (error) {
         console.error("Lỗi tải Model:", error);
         mainStatus.className = 'status error';
-        mainStatus.innerHTML = '<i class="material-icons">error</i> Không tìm thấy model TFJS.';
+        mainStatus.innerHTML = `<i class="material-icons">error</i> Lỗi tải Model: ${error.message}. Vui lòng kiểm tra file model.json trong thư mục tensorflowjs-model.`;
     }
 }
 
-// 3. Hiển thị chi tiết phác đồ (Cập nhật theo JSON mới)
+// 3. Hiển thị chi tiết phác đồ
 function displayDiseaseDetails(protocol) {
     resultContainer.style.display = 'block';
 
-    // Helper: Xử lý dữ liệu an toàn (tránh null/undefined)
     const getText = (val) => val ? val : 'Đang cập nhật...';
 
     // --- Section I: Tác nhân & Điều kiện ---
@@ -165,17 +173,25 @@ function displayDiseaseDetails(protocol) {
         </div>
     `;
 
-    // --- Section V: Nguồn tham khảo (Xử lý Object V_Nguồn_Thông_Tin) ---
+    // --- Section V: Nguồn tham khảo ---
     const sec5 = protocol.V_Nguồn_Thông_Tin || {};
     let sourcesHtml = '';
-    // Duyệt qua các key (1, 2, 3...) trong object
     Object.keys(sec5).forEach(key => {
         const src = sec5[key];
-        // Kiểm tra nếu src là object có URL (như JSON mẫu 1) hoặc string (như JSON mẫu 2)
+        // Xử lý cả hai trường hợp: object có URL hoặc chỉ là string URL
+        let url = '';
+        let name = `Nguồn tham khảo ${key}`;
+
         if (typeof src === 'object' && src.URL) {
-             sourcesHtml += `<li><a href="${src.URL}" target="_blank" class="source-link">${src.Tên_Nguồn || src.URL}</a></li>`;
+             url = src.URL;
+             name = src.Tên_Nguồn || src.URL;
         } else if (typeof src === 'string' && src.startsWith('http')) {
-             sourcesHtml += `<li><a href="${src}" target="_blank" class="source-link">Nguồn tham khảo ${key}</a></li>`;
+             url = src;
+             name = `Nguồn tham khảo ${key}`;
+        }
+        
+        if (url) {
+            sourcesHtml += `<li><a href="${url}" target="_blank" class="source-link">${name}</a></li>`;
         }
     });
 
@@ -215,7 +231,6 @@ function displayDiseaseDetails(protocol) {
     `;
 
     resultContainer.innerHTML = finalHtml;
-    // Cuộn xuống kết quả
     resultContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -289,6 +304,7 @@ async function startCamera() {
     boxResult.style.display = 'none';
 
     try {
+        // Request camera access, prioritize rear camera ('environment')
         currentStream = await navigator.mediaDevices.getUserMedia({ 
             video: { facingMode: 'environment' } 
         });
@@ -296,7 +312,8 @@ async function startCamera() {
         captureButton.disabled = false;
         cameraStatus.textContent = '';
     } catch (error) {
-        cameraStatus.textContent = 'Không thể truy cập camera.';
+        cameraStatus.textContent = 'Không thể truy cập camera. Vui lòng kiểm tra quyền truy cập.';
+        console.error("Camera error:", error);
     }
 }
 
@@ -306,6 +323,8 @@ function stopCamera() {
     }
     cameraContainer.style.display = 'none';
     imagePlaceholder.style.display = 'block';
+    captureButton.disabled = true;
+    cameraStatus.textContent = '';
 }
 
 fileUpload.addEventListener('change', function () {
@@ -330,10 +349,12 @@ cameraToggle.addEventListener('click', () => {
 });
 
 captureButton.addEventListener('click', () => {
+    // Đảm bảo canvas có kích thước thực của video để chụp ảnh chất lượng cao
     canvas.width = videoStream.videoWidth;
     canvas.height = videoStream.videoHeight;
-    context.drawImage(videoStream, 0, 0);
+    context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
     
+    // Gán ảnh đã chụp vào thẻ <img>
     img.src = canvas.toDataURL('image/png');
     img.style.display = 'block';
     
@@ -351,10 +372,6 @@ modeToggle.addEventListener('click', () => {
     modeToggle.innerHTML = isDark ? 
         '<i class="material-icons">wb_sunny</i> Chế độ Sáng' : 
         '<i class="material-icons">brightness_4</i> Chế độ Tối';
-    
-    progressBar.destroy();
-    // Re-create progress bar with new color
-    // (Giản lược cho ngắn gọn, thực tế nên update options)
 });
 
 // Run Init
