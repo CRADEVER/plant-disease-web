@@ -1,520 +1,107 @@
-
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-
-html, body {
-    width: 95%;
-    max-width: 1200px; 
-    margin: 50px auto;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    transition: background-color 0.5s, color 0.5s;
+/* Reset & Base */
+* { box-sizing: border-box; padding: 0; margin: 0; }
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    min-height: 100vh;
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 20px;
+    transition: all 0.3s;
 }
 
-h1, h2, h3 {
-    font-weight: 600;
-}
+/* Modes */
+.light-mode { background: #f4f7f6; color: #333; }
+.dark-mode { background: #1a1a1a; color: #e0e0e0; }
 
-hr {
-    border: none;
-    height: 1px;
-    margin: 20px 0;
-    transition: border-color 0.5s;
-}
+.light-mode .box, .light-mode .protocol-detail-container { background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.dark-mode .box, .dark-mode .protocol-detail-container { background: #2d2d2d; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-
-.light-mode {
-    background-color: #f4f7f6; 
-    color: #333333;
-}
-
-.light-mode h1, .light-mode h2, .light-mode h3 {
-    color: #1a1a1a;
-}
-
-.light-mode .upload-file, .light-mode .camera-btn {
-    background-color: white;
-    color: #444;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-.light-mode .capture-btn { 
-    background-color: #00a896;
-    color: white;
-}
-
-.light-mode .box, .light-mode .protocol-detail-container {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.light-mode .protocol-detail-section summary {
-    background-color: #f9f9f9;
-}
-
-.light-mode .mode-toggle {
-    background: #e0e0e0;
-    color: #444;
-    border: 1px solid #ccc;
-}
-.light-mode .camera-status {
-    color: #666;
-}
-.light-mode hr {
-    border-color: #e0e0e0;
-}
-
-
-
-.dark-mode {
-    background-color: #1a1a1a; 
-    color: #e0e0e0;
-}
-
-.dark-mode h1, .dark-mode h2, .dark-mode h3 {
-    color: #f0f0f0;
-}
-
-.dark-mode .upload-file, .dark-mode .camera-btn {
-    background-color: #2a2a2a;
-    color: #bbbbbb;
-    border: 1px solid #333;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-.dark-mode .capture-btn { 
-    background-color: #007a6a;
-    color: #f0f0f0;
-}
-
-.dark-mode .box, .dark-mode .protocol-detail-container {
-    background: #242424;
-    border: 1px solid #333333;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .protocol-detail-section summary {
-    background-color: #303030;
-}
-
-.dark-mode .mode-toggle {
-    background: #333;
-    color: #f0f0f0;
-    border: 1px solid #555;
-}
-.dark-mode .camera-status {
-    color: #aaa;
-}
-.dark-mode hr {
-    border-color: #3a3a3a;
-}
-
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-}
-
-.mode-toggle {
-    display: flex;
-    align-items: center;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-.mode-toggle i {
-    margin-right: 5px;
-}
-
-
-.input-selection-container {
-    margin: 20px 0;
-}
-
-.upload-btn-container {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+/* Header & Inputs */
+.header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+h1 { font-size: 1.5rem; color: #00a896; }
 
 .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: transform 0.2s, background-color 0.3s, color 0.3s;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    flex-direction: column; 
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn i {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-
-.camera-stream-container {
-    margin-top: 20px;
-    text-align: center;
-    display: none; 
-}
-
-#videoStream {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    display: none; 
-}
-
-.camera-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.capture-btn {
-    padding: 8px 15px;
-    display: none; 
-    align-items: center;
-    gap: 5px;
-    border: none;
-    border-radius: 20px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.capture-btn.stop-btn {
-    background-color: #ff5722 !important; 
-    color: white !important;
-}
-
-.camera-status {
-    margin-top: 10px;
-    font-style: italic;
-}
-
-
-.row {
-    display: flex;
-    gap: 30px;
-    margin-top: 30px;
-    flex-wrap: wrap; 
-}
-
-.box {
-    padding: 20px;
-    border-radius: 12px;
-    flex: 1;
-    min-width: 300px;
-    text-align: center;
-}
-
-.image-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    max-height: 500px;
-}
-
-.box img {
-    border-radius: 10px;
-    max-height: 400px;
-    max-width: 100%;
-    display: none;
-    object-fit: contain;
-}
-
-.image-placeholder {
-    font-style: italic;
-    margin: 20px;
-}
-
-.box-result {
-    display: none; 
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-}
-
-.box-result h2 {
-    margin-bottom: 15px;
-    font-size: 1.5em;
-}
-
-.box-result .pred_class {
-    color: #00a896; 
-    font-weight: 700;
-}
-
-.confidence-summary {
-    padding: 10px;
-    margin-top: 15px;
-    font-size: 1.1em;
-}
-
-.confidence-summary b {
-    font-size: 1.2em;
-    color: #4CAF50;
-}
-
-
-.accuracy {
-    display: flex;
-    justify-content: center;
-    margin-top: 25px;
-}
-
-.progress {
-    width: 150px;
-    height: 150px;
-}
-
-
-
-.status {
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin: 15px 10px;
-    text-align: center;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.status.loading {
-    background-color: #2196F3;
-    color: white;
-}
-
-.status.success {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.status.error {
-    background-color: #F44336;
-    color: white;
-}
-
-.loading-icon {
-    animation: spin 1.5s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-bar {
-    width: 90%;
-    height: 25px;
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 20px auto;
-    background-color: #e0e0e0;
-    position: relative;
-    display: none; 
-    align-items: center; 
-    justify-content: center;
-}
-
-.dark-mode .loading-bar {
-    background-color: #333;
-}
-
-.loading-fill {
-    height: 100%;
-    width: 100%;
-    background-color: #00a896; 
-    animation: loading-move 1.5s infinite linear;
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-
-.loading-bar p {
-    position: relative; 
-    z-index: 10;
-    line-height: 25px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.light-mode .loading-bar p {
-    color: #333;
-}
-.dark-mode .loading-bar p {
-    color: #f0f0f0;
-}
-
-
-@keyframes loading-move {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-
-.protocol-detail-container {
-    flex: 1 1 100%; 
-    padding: 25px;
-    margin-top: 20px;
-    text-align: left;
-    display: none; 
-}
-
-.protocol-header {
-    margin-bottom: 20px;
-}
-
-.protocol-header h3 {
-    font-size: 1.8em;
-    color: #00a896;
-}
-
-.protocol-sections {
-    margin-top: 20px;
-}
-
-.protocol-detail-section {
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid;
-    overflow: hidden;
-    transition: border-color 0.3s;
-}
-
-.light-mode .protocol-detail-section {
-    border-color: #ddd;
-}
-.dark-mode .protocol-detail-section {
-    border-color: #3a3a3a;
-}
-
-.protocol-detail-section summary {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1.1em;
-    list-style: none; 
-    position: relative;
-    transition: background-color 0.3s;
-}
-
-.protocol-detail-section summary:before {
-    content: '\25B8'; 
-    margin-right: 5px;
+    padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;
+    font-weight: 600; display: flex; align-items: center; gap: 8px;
     transition: transform 0.2s;
 }
+.btn:hover { transform: translateY(-2px); }
+.upload-file { background: #fff; color: #333; border: 1px solid #ddd; }
+.camera-btn { background: #00a896; color: white; }
+.capture-btn { background: #2196F3; color: white; width: 120px; justify-content: center; }
+.stop-btn { background: #f44336; }
 
-.protocol-detail-section[open] summary:before {
-    content: '\25BC'; 
-}
+.input-selection-container { margin-bottom: 20px; display: flex; justify-content: center; }
+.upload-btn-container { display: flex; gap: 15px; }
 
-.protocol-detail-section[open] summary {
-    border-bottom: 1px solid;
-}
+/* Camera */
+.camera-stream-container { display: none; text-align: center; margin-bottom: 20px; }
+#videoStream { width: 100%; max-width: 500px; border-radius: 10px; background: #000; }
+.camera-controls { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
 
-.light-mode .protocol-detail-section[open] summary {
-    border-bottom-color: #eee;
-}
-.dark-mode .protocol-detail-section[open] summary {
-    border-bottom-color: #333;
-}
+/* Main Layout */
+.row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+.box { flex: 1; min-width: 300px; padding: 20px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; }
 
+#image { max-width: 100%; max-height: 300px; border-radius: 8px; display: none; object-fit: contain; }
+.image-placeholder { color: #999; }
 
-.detail-content {
-    padding: 15px 25px;
-    font-size: 0.95em;
-}
+/* Result Box */
+.box-result { display: none; } /* Hidden by default */
+.pred_class { color: #00a896; font-weight: bold; }
+.accuracy { margin: 15px 0; }
+#progress { width: 120px; height: 120px; margin: 0 auto; position: relative; }
+.loading-bar { width: 100%; height: 4px; background: #eee; overflow: hidden; display: none; margin-bottom: 10px; }
+.loading-fill { width: 50%; height: 100%; background: #00a896; animation: load 1s infinite linear; }
+@keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
 
-.detail-content ul {
-    margin-left: 20px;
-    padding-left: 0;
-    list-style: disc;
-}
+/* Protocol Details Styles - NEW */
+.protocol-detail-container { display: none; padding: 30px; border-radius: 12px; margin-bottom: 50px; }
+.protocol-header { border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+.protocol-header h3 { color: #00a896; font-size: 1.8rem; margin-bottom: 5px; }
+.badge { background: #e0f2f1; color: #00796b; padding: 4px 10px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; }
+.dark-mode .badge { background: #004d40; color: #b2dfdb; }
 
-.detail-content p, .detail-content ul {
-    margin-bottom: 10px;
-}
+.protocol-detail-section { margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+.dark-mode .protocol-detail-section { border-color: #444; }
 
-.detail-content h4 {
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: #4CAF50; 
-}
+summary { padding: 15px; cursor: pointer; font-weight: 600; background: rgba(0,0,0,0.02); display: flex; align-items: center; gap: 10px; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary:hover { background: rgba(0,0,0,0.05); }
 
-.stage-step {
-    border-left: 3px solid #00a896;
-    padding: 5px 10px;
-    margin: 15px 0;
-    border-radius: 0 4px 4px 0;
-}
-.stage-step span {
-    font-weight: bold;
-}
+.detail-content { padding: 20px; font-size: 0.95rem; text-align: left; }
+.detail-content p { margin-bottom: 10px; }
 
+/* Styling for specific JSON elements */
+.highlight-box { background: #fff3e0; padding: 10px; border-left: 4px solid #ff9800; margin-top: 10px; border-radius: 4px; color: #333; }
+.alert-box { background: #ffebee; padding: 10px; border-left: 4px solid #f44336; margin-top: 10px; border-radius: 4px; color: #333; }
 
-@media (max-width: 768px) {
-    html, body {
-        width: 100%;
-        margin: 20px auto;
-        padding: 0 10px;
-    }
+.custom-list { padding-left: 20px; }
+.custom-list li { margin-bottom: 8px; }
 
-    .header-container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+/* Chemical Stages */
+.stage-step { background: rgba(0, 168, 150, 0.05); border: 1px solid rgba(0, 168, 150, 0.2); padding: 15px; margin-bottom: 10px; border-radius: 8px; }
+.step-header { font-weight: 700; color: #00796b; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+.chem-name { font-weight: bold; color: #d81b60; }
+.dark-mode .chem-name { color: #ff80ab; }
 
-    .mode-toggle {
-        margin-top: 10px;
-    }
+/* Sources */
+.sources-section { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #ccc; }
+.sources-section h4 { margin-bottom: 10px; display: flex; align-items: center; gap: 5px; font-size: 1rem; }
+.sources-section ul { list-style: none; }
+.sources-section li { margin-bottom: 5px; }
+.source-link { color: #2196F3; text-decoration: none; }
+.source-link:hover { text-decoration: underline; }
 
-    .row {
-        flex-direction: column;
-        gap: 20px;
-    }
+/* Utilities */
+.status { padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-size: 0.9rem; }
+.status.loading { background: #e3f2fd; color: #0d47a1; }
+.status.success { background: #e8f5e9; color: #1b5e20; }
+.status.error { background: #ffebee; color: #b71c1c; }
 
-    .box {
-        min-width: 100%;
-    }
-    
-    .input-selection-container {
-        margin: 10px 0;
-    }
+/* Responsive */
+@media (max-width: 600px) {
+    .row { flex-direction: column; }
+    .header-container { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .mode-toggle { align-self: flex-end; }
 }
