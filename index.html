@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPDM - HỆ THỐNG PHÂN LOẠI & QUẢN LÝ BỆNH CÂY</title>
+    <title>IPDM - Hệ Thống Quản Lý Bệnh Cây</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -13,39 +12,37 @@
 </head>
 <body class="light-mode">
     <div class="header-container">
-        <h1>🌱 HỆ THỐNG IPDM NHẬN DIỆN BỆNH CÂY</h1>
+        <h1>🌱 IPDM: CHẨN ĐOÁN & PHÁC ĐỒ ĐIỀU TRỊ</h1>
         <button class="mode-toggle" id="modeToggle">
             <i class="material-icons">brightness_4</i> Chế độ Tối
         </button>
     </div>
     <hr>
 
-    <div class="status" id="mainStatus">Đang khởi động...</div> 
+    <div class="status" id="mainStatus">Đang khởi động hệ thống AI...</div> 
     
     <div class="input-selection-container">
         <div class="upload-btn-container">
-            <div class="upload-btn-wrapper upload-wrapper">
+            <div class="upload-btn-wrapper">
                 <input type="file" id="uploadImage" accept="image/*" style="display: none;"/>
-                <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
-                    <span class="upload-btn">
-                        <i class="material-icons d-block">cloud_upload</i> Tải Ảnh
-                    </span>
+                <button class="btn upload-file" onclick="document.getElementById('uploadImage').click();">
+                    <i class="material-icons">cloud_upload</i> Tải Ảnh Lên
                 </button>
             </div>
-            <button class="btn camera-btn font-weight-500" id="cameraToggle">
-                <i class="material-icons d-block">camera_alt</i> Camera
+            <button class="btn camera-btn" id="cameraToggle">
+                <i class="material-icons">camera_alt</i> Dùng Camera
             </button>
         </div>
     </div>
     
     <div class="camera-stream-container" id="cameraContainer">
-        <video id="videoStream" width="100%" height="auto" autoplay playsinline></video>
+        <video id="videoStream" autoplay playsinline></video>
         <div class="camera-controls">
-            <button id="captureButton" class="capture-btn" disabled>
+            <button id="captureButton" class="capture-btn">
                 <i class="material-icons">camera</i> Chụp
             </button>
             <button id="stopButton" class="capture-btn stop-btn">
-                <i class="material-icons">videocam_off</i> Dừng
+                <i class="material-icons">videocam_off</i> Đóng
             </button>
         </div>
         <p class="camera-status" id="cameraStatus"></p>
@@ -54,23 +51,27 @@
     <div class="row main-content-row">
         <div class="box image-box">
             <img src="" alt="Ảnh phân tích" id="image">
-            <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
-            <p class="image-placeholder">Chọn ảnh hoặc dùng camera để bắt đầu.</p>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <p class="image-placeholder">
+                <i class="material-icons" style="font-size: 48px; color: #ccc;">image</i><br>
+                Chọn ảnh hoặc chụp để phân tích
+            </p>
         </div>
 
         <div class="box box-result" id="boxResult">
             <div class="loading-bar" id="loadingPredictionBar">
                 <div class="loading-fill"></div>
-                <p>Đang chẩn đoán...</p>
+                <p>Đang chẩn đoán bệnh...</p>
             </div>
 
-            <h2>Kết quả: <span class="pred_class">---</span></h2>
+            <h2>Kết quả chẩn đoán:</h2>
+            <h3 class="pred_class">---</h3>
             
             <div class="accuracy">
                 <div class="progress" id="progress"></div>
             </div>
             <p class="confidence-summary">
-                Độ tin cậy: <b><span class="confidence">0</span></b> %
+                Độ tin cậy: <b><span class="confidence">0</span>%</b>
             </p>
         </div>
     </div>
