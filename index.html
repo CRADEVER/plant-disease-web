@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPDM - HỆ THỐNG PHÂN LOẠI & QUẢN LÝ BỆNH CÂY</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -14,7 +13,7 @@
 </head>
 <body class="light-mode">
     <div class="header-container">
-        <h1>🌱 HỆ THỐNG IPDM NHẬN DIỆN & QUẢN LÝ BỆNH CÂY</h1>
+        <h1>🌱 HỆ THỐNG IPDM NHẬN DIỆN BỆNH CÂY</h1>
         <button class="mode-toggle" id="modeToggle">
             <i class="material-icons">brightness_4</i> Chế độ Tối
         </button>
@@ -29,51 +28,49 @@
                 <input type="file" id="uploadImage" accept="image/*" style="display: none;"/>
                 <button class="btn upload-file font-weight-500" onclick="document.getElementById('uploadImage').click();">
                     <span class="upload-btn">
-                        <i class="material-icons d-block">cloud_upload</i> Tải Ảnh Từ Thiết Bị
+                        <i class="material-icons d-block">cloud_upload</i> Tải Ảnh
                     </span>
                 </button>
             </div>
             <button class="btn camera-btn font-weight-500" id="cameraToggle">
-                <i class="material-icons d-block">camera_alt</i> Bật Camera
+                <i class="material-icons d-block">camera_alt</i> Camera
             </button>
         </div>
     </div>
     
     <div class="camera-stream-container" id="cameraContainer">
-        <video id="videoStream" width="100%" height="auto" autoplay></video>
+        <video id="videoStream" width="100%" height="auto" autoplay playsinline></video>
         <div class="camera-controls">
             <button id="captureButton" class="capture-btn" disabled>
-                <i class="material-icons">camera</i> Chụp Ảnh
+                <i class="material-icons">camera</i> Chụp
             </button>
             <button id="stopButton" class="capture-btn stop-btn">
-                <i class="material-icons">videocam_off</i> Dừng Camera
+                <i class="material-icons">videocam_off</i> Dừng
             </button>
         </div>
         <p class="camera-status" id="cameraStatus"></p>
     </div>
 
-
     <div class="row main-content-row">
         <div class="box image-box">
-            <img src="" alt="Ảnh lá cây đã chọn/chụp" id="image">
+            <img src="" alt="Ảnh phân tích" id="image">
             <canvas id="canvas" width="224" height="224" style="display: none;"></canvas>
-            <p class="image-placeholder">Vui lòng tải lên hoặc chụp ảnh để bắt đầu phân tích.</p>
+            <p class="image-placeholder">Chọn ảnh hoặc dùng camera để bắt đầu.</p>
         </div>
 
         <div class="box box-result" id="boxResult">
             <div class="loading-bar" id="loadingPredictionBar">
                 <div class="loading-fill"></div>
-                <p>Đang phân tích ảnh...</p>
+                <p>Đang chẩn đoán...</p>
             </div>
 
-            <h2>Dự đoán bệnh cây: <span class="pred_class">Chưa có kết quả</span></h2>
+            <h2>Kết quả: <span class="pred_class">---</span></h2>
             
             <div class="accuracy">
-                <div class="progress" id="progress">
-                    </div>
+                <div class="progress" id="progress"></div>
             </div>
             <p class="confidence-summary">
-                ĐỘ CHÍNH XÁC: <b><span class="confidence">0</span></b> %
+                Độ tin cậy: <b><span class="confidence">0</span></b> %
             </p>
         </div>
     </div>
