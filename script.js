@@ -1,5 +1,5 @@
 /* =========================================
-   IPDM SYSTEM - LOGIC CORE (Phiên bản Ảnh Phạm vi - Đã sửa lỗi Key JSON)
+   IPDM SYSTEM - LOGIC CORE (Phiên bản Hoàn thiện Key JSON)
    ========================================= */
 
 // --- Biến toàn cục ---
@@ -36,7 +36,6 @@ const closeScopeBtn = document.getElementById('closeScopeBtn');
 // --- 1. KHỞI TẠO & EFFECT ---
 
 $(document).ready(function() {
-    // Kích hoạt hiệu ứng mặt nước trên background (nen.png)
     try {
         $('#ripple-background').ripples({
             resolution: 512,
@@ -59,20 +58,23 @@ async function initialize() {
     }
 }
 
+// --- HÀM TẢI DỮ LIỆU JSON ---
 async function fetchData() {
     try {
         let response = await fetch('./class_indices.json');
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         let data = await response.json();
         
+        // Key gốc của JSON
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
+        
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // SỬA LỖI Ở ĐÂY: Dùng đúng key trong JSON (Ma_ID thay vì Mã_ID)
+                // Map đúng Key: Ma_ID và Ten_Benh_Tieng_Viet (không dấu)
                 disease_protocols_map[item.Ma_ID] = item;
                 class_indices[item.Ma_ID] = item.Ten_Benh_Tieng_Viet; 
             });
-            console.log("Dữ liệu đã tải: ", Object.keys(disease_protocols_map).length);
+            console.log("Dữ liệu đã tải thành công:", Object.keys(disease_protocols_map).length, "bệnh.");
         }
     } catch (error) {
         console.error("Data Error:", error);
@@ -116,7 +118,7 @@ async function predict(sourceElement) {
         
         tensor.dispose();
 
-        // Ngưỡng tin cậy (Ví dụ: > 45%)
+        // Ngưỡng tin cậy > 45%
         if (maxPrediction > 0.45) {
             const idString = String(maxIndex);
             const diseaseName = class_indices[idString] || "Không xác định";
@@ -125,7 +127,6 @@ async function predict(sourceElement) {
             resultBtn.classList.remove('hidden');
             lastPredictionId = idString; 
             
-            // Nếu độ tin cậy rất cao, đổi màu status
             systemStatus.innerText = `Phát hiện: ${diseaseName} (${Math.round(maxPrediction*100)}%)`;
         } else {
             resultText.innerText = "Chưa rõ bệnh...";
@@ -138,7 +139,7 @@ async function predict(sourceElement) {
     }
 }
 
-// --- 3. CAMERA LOGIC (QUÉT) ---
+// --- 3. CAMERA LOGIC ---
 
 async function startCameraScanning() {
     stopCamera(); 
@@ -162,7 +163,6 @@ async function startCameraScanning() {
             isScanning = true;
             systemStatus.innerText = "Đang quét... Giữ chắc tay";
             
-            // Quét mỗi 500ms
             scanInterval = setInterval(() => {
                 if (isScanning && model) {
                     predict(videoStream);
@@ -215,7 +215,6 @@ uploadInput.addEventListener('change', function (e) {
             
             systemStatus.innerText = "Đang xử lý ảnh...";
 
-            // Chờ ảnh load xong mới predict
             displayImage.onload = () => {
                 predict(displayImage);
                 systemStatus.innerText = "Hoàn tất phân tích";
@@ -225,7 +224,7 @@ uploadInput.addEventListener('change', function (e) {
     }
 });
 
-// --- 5. OVERLAY LOGIC ---
+// --- 5. OVERLAY & RENDER LOGIC (ĐÃ BỔ SUNG MỤC IV) ---
 
 resultBtn.addEventListener('click', () => {
     if (lastPredictionId && disease_protocols_map[lastPredictionId]) {
@@ -238,68 +237,99 @@ closeDetailBtn.addEventListener('click', () => {
     detailOverlay.classList.add('hidden');
 });
 
-// Hàm hiển thị chi tiết phác đồ
+// Hàm hiển thị chi tiết phác đồ (Đã sửa và bổ sung MỤC IV)
 function renderProtocolDetail(protocol) {
-    // SỬA LỖI KEY Ở ĐÂY: Dùng key không dấu (Ten_Benh_Tieng_Viet)
-    const diseaseName = protocol.Ten_Benh_Tieng_Viet;
-    const isHealthy = diseaseName.toLowerCase().includes("khỏe mạnh");
-    
-    // Cập nhật các key truy cập object con
-    const tacNhan = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien;
-    const canhTac = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau;
-    const hoaHoc = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc;
+    // 1. Lấy thông tin chung
+    const tenBenh = protocol.Ten_Benh_Tieng_Viet;
+    const tenKhoaHoc = protocol.Ten_Khoa_Hoc;
+    const phanLoai = protocol.Phan_Loai_Nhom_Cay;
+    const isHealthy = tenBenh.toLowerCase().includes("khỏe mạnh");
 
+    // 2. Truy cập các KEY chính (I, II, III, IV)
+    const muc1 = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien || {};
+    const muc2 = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau || {};
+    const muc3 = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc || {};
+    const muc4 = protocol.IV_Nguon_Tham_Khao_Uy_Tin || []; // Key IV là một mảng
+
+    // HTML Builder
     let html = `
         <div class="protocol-header">
-            <h3>${diseaseName}</h3>
+            <h3>${tenBenh}</h3>
+            <p style="font-size: 0.9em; font-style: italic; color: #555;">${tenKhoaHoc}</p>
             <span class="status-pill" style="background:${isHealthy ? '#4CAF50' : '#FF9800'}">
-                ${protocol.Phan_Loai_Nhom_Cay}
+                ${phanLoai}
             </span>
         </div>
         <div class="detail-body">
+            
             <details class="protocol-detail-section" open>
-                <summary><i class="material-icons">search</i> Chẩn đoán & Tác nhân</summary>
+                <summary><i class="material-icons">search</i> I. Tác nhân & Chu kỳ</summary>
                 <div class="detail-content">
-                    <p><strong>Tác nhân:</strong> ${tacNhan?.Tac_Nhan_Sinh_Hoc || 'N/A'}</p>
+                    <p><strong>Tác nhân:</strong> ${muc1.Tac_Nhan_Sinh_Hoc || 'N/A'}</p>
+                    <p><strong>Cơ chế lây lan:</strong> ${muc1.Co_Che_Lay_Lan || 'N/A'}</p>
+                    <p><strong>Điều kiện:</strong> ${muc1.Nhiet_Do_Thoi_Diem_Toi_Uu || 'N/A'}</p>
                      <div class="symptom-box">
-                        <strong>Dấu hiệu:</strong><br>
-                        ${tacNhan?.Dau_Hieu_Chuan_Doan_Chuyen_Sau ? tacNhan.Dau_Hieu_Chuan_Doan_Chuyen_Sau.replace(/\n/g, '<br>') : 'N/A'}
+                        <strong>Dấu hiệu chuyên sâu:</strong><br>
+                        ${muc1.Dau_Hieu_Chuan_Doan_Chuyen_Sau ? muc1.Dau_Hieu_Chuan_Doan_Chuyen_Sau.replace(/\n/g, '<br>') : 'N/A'}
                     </div>
                 </div>
             </details>
     `;
 
-    if (canhTac) {
+    // MỤC II: BIỆN PHÁP CANH TÁC
+    html += `
+        <details class="protocol-detail-section">
+            <summary><i class="material-icons">agriculture</i> II. Biện pháp Canh tác</summary>
+            <div class="detail-content">
+                <p>• <strong>Giống:</strong> ${muc2.Giong_Khang_Benh || 'N/A'}</p>
+                <p>• <strong>Vệ sinh đất:</strong> ${muc2.Quan_Ly_Tan_Du_Dat || 'N/A'}</p>
+                <p>• <strong>Tưới tiêu:</strong> ${muc2.Quan_Ly_Nuoc_Tuoi || 'N/A'}</p>
+                <p>• <strong>Dinh dưỡng:</strong> ${muc2.Quan_Ly_Dinh_Duong_Tong_Hop || 'N/A'}</p>
+            </div>
+        </details>
+    `;
+
+    // MỤC III: HÓA HỌC
+    if (!isHealthy && (muc3.Hoat_Chat_Phong_Ngua || muc3.Hoat_Chat_Dieu_Tri_Tru_Khuan)) {
         html += `
             <details class="protocol-detail-section">
-                <summary><i class="material-icons">agriculture</i> Biện pháp Canh tác</summary>
+                <summary><i class="material-icons">science</i> III. Kiểm soát Hóa học</summary>
                 <div class="detail-content">
-                    <p>• <strong>Vệ sinh:</strong> ${canhTac.Quan_Ly_Tan_Du_Dat || 'N/A'}</p>
-                    <p>• <strong>Tưới tiêu:</strong> ${canhTac.Quan_Ly_Nuoc_Tuoi || 'N/A'}</p>
-                    <p>• <strong>Dinh dưỡng:</strong> ${canhTac.Quan_Ly_Dinh_Duong_Tong_Hop || 'N/A'}</p>
+                    <p style="color:#2E7D32"><strong>Hoạt chất Phòng ngừa:</strong> ${muc3.Hoat_Chat_Phong_Ngua || 'N/A'}</p>
+                    <p style="color:#d32f2f"><strong>Hoạt chất Điều trị:</strong> ${muc3.Hoat_Chat_Dieu_Tri_Tru_Khuan || 'N/A'}</p>
+                    <p><em>Lưu ý: ${muc3.Luu_Y_Tong_Hop || ''}</em></p>
+                </div>
+            </details>
+        `;
+    }
+    
+    // MỤC IV: NGUỒN THAM KHẢO (ĐÃ BỔ SUNG)
+    if (Array.isArray(muc4) && muc4.length > 0) {
+        let referenceList = '<ul class="reference-list">';
+        muc4.forEach(ref => {
+            if (ref.Ten_Nguon && ref.URL) {
+                referenceList += `<li><a href="${ref.URL}" target="_blank">${ref.Ten_Nguon} <i class="material-icons" style="font-size:1em; vertical-align:middle;">link</i></a></li>`;
+            }
+        });
+        referenceList += '</ul>';
+
+        html += `
+            <details class="protocol-detail-section">
+                <summary><i class="material-icons">book</i> IV. Nguồn tham khảo</summary>
+                <div class="detail-content">
+                    ${referenceList}
                 </div>
             </details>
         `;
     }
 
-    if (!isHealthy && hoaHoc) {
-        html += `
-            <details class="protocol-detail-section">
-                <summary><i class="material-icons">science</i> Thuốc BVTV (Hóa học)</summary>
-                <div class="detail-content">
-                    <p style="color:#d32f2f"><strong>Phòng ngừa:</strong> ${hoaHoc.Hoat_Chat_Phong_Ngua || 'N/A'}</p>
-                    <p style="color:#d32f2f"><strong>Điều trị:</strong> ${hoaHoc.Hoat_Chat_Dieu_Tri_Tru_Khuan || 'N/A'}</p>
-                    <p><em>Lưu ý: ${hoaHoc.Luu_Y_Tong_Hop}</em></p>
-                </div>
-            </details>
-        `;
-    }
 
-    html += `</div>`;
+    html += `</div>`; // End detail-body
     detailContent.innerHTML = html;
 }
 
-// 5b. Hiển thị Phạm vi (Scope) - UPDATED FOR IMAGES
+// --- 6. PHẠM VI (SCOPE) ---
+
 scopeBtn.addEventListener('click', () => {
     renderScopeList();
     scopeOverlay.classList.remove('hidden');
@@ -312,7 +342,7 @@ closeScopeBtn.addEventListener('click', () => {
 function renderScopeList() {
     scopeContent.innerHTML = '';
     
-    // Sắp xếp theo ID số để hiển thị thứ tự chuẩn (0, 1, 2...)
+    // Sắp xếp theo Ma_ID (số)
     const sortedKeys = Object.keys(disease_protocols_map).sort((a, b) => parseInt(a) - parseInt(b));
 
     sortedKeys.forEach(key => {
@@ -320,11 +350,10 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        // Đường dẫn ảnh (sử dụng key là ID, ví dụ 0.png, 1.png)
+        // Đường dẫn ảnh theo Ma_ID (ví dụ: 0.png, 1.jpg)
         const pngPath = `./images/${key}.png`;
         const jpgPath = `./images/${key}.jpg`;
 
-        // SỬA LỖI KEY: item.Ten_Benh_Tieng_Viet
         div.innerHTML = `
             <div class="scope-img-wrapper">
                 <img src="${pngPath}" 
@@ -335,7 +364,7 @@ function renderScopeList() {
             <div class="scope-name">${item.Ten_Benh_Tieng_Viet}</div>
         `;
         
-        // Click vào item để xem chi tiết
+        // Sự kiện Click hiển thị chi tiết (đã fix)
         div.addEventListener('click', () => {
             renderProtocolDetail(item);
             detailOverlay.classList.remove('hidden'); 
