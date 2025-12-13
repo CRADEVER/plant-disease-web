@@ -27,23 +27,28 @@
         <div id="systemStatus" class="status-pill">Đang tải dữ liệu AI...</div>
 
         <div class="viewport-container">
-            <img id="displayImage" src="" alt="Ảnh tải lên" class="hidden">
+            <img id="displayImage" src="" alt="Ảnh phân tích" style="display: none;">
+            <video id="videoStream" style="display: none;" autoplay></video>
+            <canvas id="canvas" style="display: none;"></canvas>
             
-            <video id="videoStream" autoplay playsinline muted class="hidden"></video>
-            
-            <div id="placeholderUI">
-                <i class="material-icons placeholder-icon">spa</i>
-                <p>Chọn phương thức để bắt đầu</p>
+            <div id="placeholderUI" class="placeholder-ui">
+                <i class="material-icons" style="font-size: 48px;">image</i><br>
+                Chọn ảnh hoặc quét camera
             </div>
+        </div>
 
-            <button id="resultBtn" class="result-floating-btn hidden">
-                <span class="pulse-ring"></span>
-                <span id="resultText">Đang quét...</span>
-                <i class="material-icons">touch_app</i>
+        <div class="result-area">
+            <div id="loadingPredictionBar" class="loading-bar hidden">
+                <div class="loading-fill"></div>
+                <p>Đang chẩn đoán bệnh...</p>
+            </div>
+            <p id="resultText">Kết quả: ---</p>
+            <button id="resultBtn" class="detail-btn hidden">
+                <i class="material-icons">info</i> Xem Phác đồ Chi tiết
             </button>
         </div>
 
-        <div class="control-bar">
+        <div class="control-panel">
             <input type="file" id="uploadInput" accept="image/*" hidden>
             <button class="control-btn" onclick="document.getElementById('uploadInput').click()">
                 <i class="material-icons">image</i>
@@ -70,7 +75,7 @@
             <h2>Chi tiết Phác đồ</h2>
         </div>
         <div class="overlay-content" id="detailContent">
-            </div>
+        </div>
     </div>
 
     <div id="scopeOverlay" class="overlay hidden">
@@ -81,9 +86,9 @@
             <h2>Danh mục bệnh hỗ trợ</h2>
         </div>
         <div class="overlay-content grid-view" id="scopeContent">
-            </div>
+        </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
