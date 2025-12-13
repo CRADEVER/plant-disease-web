@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPDM - Hệ Thống Quản Lý Bệnh Cây</title>
+    <title>IPDM - HỆ THỐNG CHẨN ĐOÁN & QUẢN LÝ BỆNH CÂY</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -38,7 +41,7 @@
     <div class="camera-stream-container" id="cameraContainer">
         <video id="videoStream" autoplay playsinline></video>
         <div class="camera-controls">
-            <button id="captureButton" class="capture-btn">
+            <button id="captureButton" class="capture-btn" disabled>
                 <i class="material-icons">camera</i> Chụp
             </button>
             <button id="stopButton" class="capture-btn stop-btn">
@@ -51,7 +54,7 @@
     <div class="row main-content-row">
         <div class="box image-box">
             <img src="" alt="Ảnh phân tích" id="image">
-            <canvas id="canvas" style="display: none;"></canvas>
+            <canvas id="canvas" width="640" height="480" style="display: none;"></canvas> 
             <p class="image-placeholder">
                 <i class="material-icons" style="font-size: 48px; color: #ccc;">image</i><br>
                 Chọn ảnh hoặc chụp để phân tích
@@ -64,20 +67,19 @@
                 <p>Đang chẩn đoán bệnh...</p>
             </div>
 
-            <h2>Kết quả chẩn đoán:</h2>
-            <h3 class="pred_class">---</h3>
+            <h2>Kết quả chẩn đoán: <span class="pred_class">---</span></h2>
             
             <div class="accuracy">
                 <div class="progress" id="progress"></div>
             </div>
             <p class="confidence-summary">
-                Độ tin cậy: <b><span class="confidence">0</span>%</b>
+                Độ tin cậy: <b><span class="confidence">0.00</span>%</b>
             </p>
         </div>
     </div>
 
-    <div class="box protocol-detail-container" id="resultContainer">
-        </div>
+    <div class="box protocol-detail-container" id="resultContainer"> 
+    </div>
     
     <script src="script.js"></script>
 </body>
