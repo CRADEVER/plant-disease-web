@@ -1,5 +1,5 @@
 /* =========================================
-   IPDM SYSTEM - LOGIC CORE (Phiên bản Hoàn thiện Key JSON)
+   IPDM SYSTEM - LOGIC CORE (Phiên bản Hoàn thiện Key JSON - Có đủ 4 Mục I, II, III, IV)
    ========================================= */
 
 // --- Biến toàn cục ---
@@ -58,19 +58,18 @@ async function initialize() {
     }
 }
 
-// --- HÀM TẢI DỮ LIỆU JSON ---
+// --- HÀM TẢI DỮ LIỆU JSON (ĐÃ SỬA KHỚP VỚI JSON) ---
 async function fetchData() {
     try {
         let response = await fetch('./class_indices.json');
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         let data = await response.json();
         
-        // Key gốc của JSON
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
         
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // Map đúng Key: Ma_ID và Ten_Benh_Tieng_Viet (không dấu)
+                // Key được xác nhận là Ma_ID và Ten_Benh_Tieng_Viet
                 disease_protocols_map[item.Ma_ID] = item;
                 class_indices[item.Ma_ID] = item.Ten_Benh_Tieng_Viet; 
             });
@@ -224,7 +223,7 @@ uploadInput.addEventListener('change', function (e) {
     }
 });
 
-// --- 5. OVERLAY & RENDER LOGIC (ĐÃ BỔ SUNG MỤC IV) ---
+// --- 5. OVERLAY & RENDER LOGIC (ĐÃ CÓ ĐỦ 4 MỤC) ---
 
 resultBtn.addEventListener('click', () => {
     if (lastPredictionId && disease_protocols_map[lastPredictionId]) {
@@ -237,7 +236,7 @@ closeDetailBtn.addEventListener('click', () => {
     detailOverlay.classList.add('hidden');
 });
 
-// Hàm hiển thị chi tiết phác đồ (Đã sửa và bổ sung MỤC IV)
+// Hàm hiển thị chi tiết phác đồ (Đã kiểm tra và có đủ 4 mục)
 function renderProtocolDetail(protocol) {
     // 1. Lấy thông tin chung
     const tenBenh = protocol.Ten_Benh_Tieng_Viet;
@@ -249,7 +248,7 @@ function renderProtocolDetail(protocol) {
     const muc1 = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien || {};
     const muc2 = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau || {};
     const muc3 = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc || {};
-    const muc4 = protocol.IV_Nguon_Tham_Khao_Uy_Tin || []; // Key IV là một mảng
+    const muc4 = protocol.IV_Nguon_Tham_Khao_Uy_Tin || []; 
 
     // HTML Builder
     let html = `
@@ -267,7 +266,7 @@ function renderProtocolDetail(protocol) {
                 <div class="detail-content">
                     <p><strong>Tác nhân:</strong> ${muc1.Tac_Nhan_Sinh_Hoc || 'N/A'}</p>
                     <p><strong>Cơ chế lây lan:</strong> ${muc1.Co_Che_Lay_Lan || 'N/A'}</p>
-                    <p><strong>Điều kiện:</strong> ${muc1.Nhiet_Do_Thoi_Diem_Toi_Uu || 'N/A'}</p>
+                    <p><strong>Điều kiện:</strong> ${muc1.Nhiet_Do_Thoi_DIem_Toi_Uu || 'N/A'}</p>
                      <div class="symptom-box">
                         <strong>Dấu hiệu chuyên sâu:</strong><br>
                         ${muc1.Dau_Hieu_Chuan_Doan_Chuyen_Sau ? muc1.Dau_Hieu_Chuan_Doan_Chuyen_Sau.replace(/\n/g, '<br>') : 'N/A'}
@@ -289,7 +288,7 @@ function renderProtocolDetail(protocol) {
         </details>
     `;
 
-    // MỤC III: HÓA HỌC
+    // MỤC III: HÓA HỌC (Chỉ hiện nếu không phải cây khỏe mạnh)
     if (!isHealthy && (muc3.Hoat_Chat_Phong_Ngua || muc3.Hoat_Chat_Dieu_Tri_Tru_Khuan)) {
         html += `
             <details class="protocol-detail-section">
@@ -303,7 +302,7 @@ function renderProtocolDetail(protocol) {
         `;
     }
     
-    // MỤC IV: NGUỒN THAM KHẢO (ĐÃ BỔ SUNG)
+    // MỤC IV: NGUỒN THAM KHẢO
     if (Array.isArray(muc4) && muc4.length > 0) {
         let referenceList = '<ul class="reference-list">';
         muc4.forEach(ref => {
@@ -328,7 +327,7 @@ function renderProtocolDetail(protocol) {
     detailContent.innerHTML = html;
 }
 
-// --- 6. PHẠM VI (SCOPE) ---
+// --- 6. PHẠM VI (SCOPE) - Đã sửa lỗi click và ảnh. ---
 
 scopeBtn.addEventListener('click', () => {
     renderScopeList();
@@ -350,7 +349,7 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        // Đường dẫn ảnh theo Ma_ID (ví dụ: 0.png, 1.jpg)
+        // Đường dẫn ảnh theo Ma_ID
         const pngPath = `./images/${key}.png`;
         const jpgPath = `./images/${key}.jpg`;
 
@@ -364,7 +363,7 @@ function renderScopeList() {
             <div class="scope-name">${item.Ten_Benh_Tieng_Viet}</div>
         `;
         
-        // Sự kiện Click hiển thị chi tiết (đã fix)
+        // Sự kiện Click hiển thị chi tiết
         div.addEventListener('click', () => {
             renderProtocolDetail(item);
             detailOverlay.classList.remove('hidden'); 
