@@ -7,7 +7,7 @@
     --accent-yellow: #ffc107;
     --text-dark: #333;
     --text-light: #fff;
-    --glass-bg: rgba(255, 255, 255, 0.15); /* Màu nền trong suốt của App Container */
+    --glass-bg: rgba(255, 255, 255, 0.15);
     --glass-border: rgba(255, 255, 255, 0.3);
     --overlay-bg: #f8f9fa;
 }
@@ -19,11 +19,11 @@ body, html {
     overflow: hidden; 
 }
 
-/* --- BACKGROUND RIPPLE (Không dùng blur) --- */
+/* --- BACKGROUND RIPPLE (Đã cập nhật tên file) --- */
 #ripple-background {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url('nen.png'); /* Ảnh nền sắc nét */
+    background-image: url('nen.png'); /* Đổi thành nen.png */
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -36,237 +36,234 @@ body, html {
     height: 100%;
     max-width: 600px; 
     margin: 0 auto;
-    /* KHÔNG DÙNG backdrop-filter: blur(x) ở đây để nền trong suốt sắc nét */
-    background: var(--glass-bg); 
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    position: relative;
 }
 
+/* HEADER */
 header {
     text-align: center;
-    margin-bottom: 20px;
+    padding: 15px 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 10;
 }
-
-h1 {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-}
-
-/* Status Pill */
-.status-pill {
-    padding: 5px 10px;
-    border-radius: 20px;
-    background-color: #ffc107;
-    color: var(--text-dark);
-    font-weight: 500;
-    text-align: center;
-    margin-bottom: 15px;
-    transition: background-color 0.3s;
-}
-
-/* Viewport (Video/Image) */
-.viewport-container {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3; /* Tỉ lệ chuẩn cho video/ảnh */
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
-    background-color: #333; /* Màu nền tối cho placeholder */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#displayImage, #videoStream {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-}
-
-.placeholder-ui {
-    color: #ccc;
-    text-align: center;
-    font-size: 1rem;
-}
-
-/* Result Area */
-.result-area {
-    text-align: center;
-    margin-bottom: 20px;
-    min-height: 80px;
-}
-
-.result-area p {
+header h1 {
     font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.detail-btn {
-    padding: 10px 20px;
-    margin-top: 10px;
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s;
-}
-
-.detail-btn:hover {
-    background-color: #008f7d;
-}
-
-/* Control Panel */
-.control-panel {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-}
-
-.control-btn {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 5px;
-    background-color: #e0e0e0;
-    color: var(--text-dark);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+/* STATUS PILL */
+.status-pill {
+    margin: 0 auto 10px;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: 500;
-    transition: background-color 0.3s;
-}
-
-.control-btn:hover {
-    background-color: #ccc;
-}
-
-.control-btn .material-icons {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.main-action {
-    background-color: var(--accent-yellow);
-    color: var(--text-dark);
-}
-.main-action:hover {
-    background-color: #ffb300;
-}
-
-/* Loading Bar */
-.loading-bar {
-    width: 100%;
-    height: 5px;
-    background-color: #eee;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    position: relative;
-}
-
-.loading-fill {
-    height: 100%;
-    width: 0;
-    background-color: var(--primary-color);
-    animation: loading 2s infinite;
-}
-
-@keyframes loading {
-    0% { width: 0; }
-    50% { width: 80%; }
-    100% { width: 0; }
-}
-
-.loading-bar p {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.9rem;
-    color: var(--text-dark);
-    font-weight: 400;
-}
-
-/* --- OVERLAY STYLES (Chi tiết & Phạm vi) --- */
-.overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: var(--overlay-bg);
-    z-index: 1000;
-    padding: 20px;
-    overflow-y: auto;
-    transition: transform 0.3s ease-out;
-    transform: translateX(100%);
-}
-
-.overlay.hidden {
-    transform: translateX(100%);
-}
-
-.overlay-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.overlay-header h2 {
-    flex-grow: 1;
-    text-align: center;
-    font-size: 1.8rem;
-    color: var(--primary-color);
-}
-
-.back-btn {
-    background: none;
-    border: none;
-    color: var(--text-dark);
-    cursor: pointer;
-    font-size: 1rem;
+    width: fit-content;
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-/* Scope Grid View */
-.grid-view {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 15px;
-    padding-bottom: 50px; /* Để tránh bị khuất */
+/* --- VIEWPORT (CAMERA/IMAGE) --- */
+.viewport-container {
+    flex: 1;
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    margin: 0 10px;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.scope-item {
+#displayImage, #videoStream {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Đổi thành contain để thấy toàn bộ ảnh bệnh */
+    background: black;
+}
+
+.hidden { display: none !important; }
+
+#placeholderUI {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+}
+.placeholder-icon { font-size: 64px; display: block; margin-bottom: 10px; }
+
+/* --- RESULT FLOATING BUTTON --- */
+.result-floating-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--accent-yellow);
+    color: #000;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+    animation: popIn 0.3s ease-out;
+    white-space: nowrap;
+}
+
+@keyframes popIn {
+    from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50px;
+    border: 2px solid var(--accent-yellow);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* --- CONTROL BAR --- */
+.control-bar {
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.control-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: white;
+    padding: 10px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 5px;
+    width: 80px;
     cursor: pointer;
     transition: transform 0.2s;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+}
+.control-btn span { font-size: 0.75rem; }
+.control-btn:active { transform: scale(0.95); }
+
+.control-btn.main-action {
+    background: var(--primary-color);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(0, 168, 150, 0.5);
+    border: 3px solid rgba(255,255,255,0.2);
+}
+.control-btn.main-action i { font-size: 32px; }
+
+/* --- OVERLAYS (FULL SCREEN) --- */
+.overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
 }
 
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.overlay-header {
+    background: #fff;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 101;
+}
+
+.overlay-header h2 {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    margin-right: 40px;
+    color: var(--text-dark);
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.overlay-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    color: #333;
+}
+
+/* --- Scope Grid View (Updated for Images) --- */
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Cột nhỏ hơn chút */
+    gap: 15px;
+}
+.scope-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.scope-item:active {
+    transform: scale(0.95);
+    background-color: #f0f0f0;
+}
+
+/* Wrapper để crop ảnh thành hình vuông/chữ nhật đẹp */
 .scope-img-wrapper {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; /* Tỉ lệ vuông */
     border-radius: 6px;
     overflow: hidden;
     margin-bottom: 8px;
-    background-color: #f0f0f0; 
+    background-color: #f0f0f0; /* Màu nền khi ảnh chưa tải */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -275,7 +272,7 @@ h1 {
 .scope-img-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Cắt ảnh vừa khung, không bị méo */
     display: block;
 }
 
@@ -284,74 +281,14 @@ h1 {
     font-weight: 500; 
     line-height: 1.3;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; /* Giới hạn 2 dòng tên */
     -webkit-box-orient: vertical;
     overflow: hidden;
-    color: var(--text-dark);
 }
 
 /* Detail Content Styling */
 .protocol-header h3 { color: var(--primary-color); font-size: 1.5rem; margin-bottom: 10px; }
-
-.detail-section {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #fff;
-}
-
-.detail-section summary {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--text-dark);
-    cursor: pointer;
-    padding: 5px 0;
-}
-
-.detail-content {
-    padding-top: 10px;
-    line-height: 1.8;
-}
-
-.detail-content p {
-    margin-bottom: 10px;
-}
-
-.detail-content strong {
-    color: var(--primary-color);
-}
-
-.highlight-chem {
-    color: #f44336;
-    font-weight: bold;
-}
-.sub-text {
-    font-size: 0.85em;
-    opacity: 0.8;
-}
-
-/* Source Links Styles */
-.source-list { list-style: none !important; padding: 0 !important; }
-.source-list li { 
-    margin-bottom: 8px; 
-}
-.source-list li a {
-    color: #00a896;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* Responsiveness */
-@media (max-width: 650px) {
-    .app-container {
-        padding: 10px;
-        border-radius: 0;
-        height: 100%;
-    }
-    .overlay {
-        padding: 10px;
-    }
-}
+.protocol-detail-section { margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+.protocol-detail-section summary { padding: 15px; background: #f9f9f9; font-weight: 600; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; }
+.detail-content { padding: 15px; line-height: 1.6; }
+.symptom-box { border-left: 5px solid #ffc107; padding: 10px 15px; margin: 15px 0; background: rgba(255, 193, 7, 0.1); border-radius: 0 4px 4px 0; }

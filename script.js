@@ -1,5 +1,5 @@
 /* =========================================
-   IPDM SYSTEM - LOGIC CORE (Phiên bản Sửa lỗi Triệt để)
+   IPDM SYSTEM - LOGIC CORE (Phiên bản Ảnh Phạm vi)
    ========================================= */
 
 // --- Biến toàn cục ---
@@ -11,120 +11,66 @@ let isScanning = false;
 let scanInterval = null;
 let lastPredictionId = null; 
 
-// Đường dẫn Model (Cần thay thế bằng đường dẫn model thực tế)
-const MODEL_PATH = './model/model.json';
-const THRESHOLD = 0.8; // Ngưỡng dự đoán (80%)
-
 // --- DOM Elements ---
-const fileUpload = document.getElementById('uploadImage');
-const imgElement = document.getElementById('image'); // img trong image-box
-const placeholder = document.querySelector('.image-placeholder');
-const boxResult = document.getElementById('boxResult');
-const predClassSpan = document.querySelector('.pred_class');
-const confidenceSpan = document.querySelector('.confidence');
-const mainStatus = document.getElementById('mainStatus'); // Thanh trạng thái chính
-const loadingBar = document.getElementById('loadingPredictionBar'); 
-
-// Camera Elements
-const cameraToggle = document.getElementById('cameraToggle');
-const cameraContainer = document.getElementById('cameraContainer');
+const systemStatus = document.getElementById('systemStatus');
+const displayImage = document.getElementById('displayImage');
 const videoStream = document.getElementById('videoStream');
-const captureButton = document.getElementById('captureButton');
-const stopButton = document.getElementById('stopButton');
-const cameraStatus = document.getElementById('cameraStatus');
-const canvas = document.getElementById('canvas');
-const context = canvas.getContext('2d');
+const placeholderUI = document.getElementById('placeholderUI');
+const resultBtn = document.getElementById('resultBtn');
+const resultText = document.getElementById('resultText');
 
-// UI Elements
-const modeToggle = document.getElementById('modeToggle');
-const body = document.body;
+// Buttons
+const uploadInput = document.getElementById('uploadInput');
+const cameraToggle = document.getElementById('cameraToggle');
+const scopeBtn = document.getElementById('scopeBtn');
 
-// Overlay (Detail & Scope)
+// Overlays
 const detailOverlay = document.getElementById('detailOverlay');
 const detailContent = document.getElementById('detailContent');
 const closeDetailBtn = document.getElementById('closeDetailBtn');
+
 const scopeOverlay = document.getElementById('scopeOverlay');
 const scopeContent = document.getElementById('scopeContent');
 const closeScopeBtn = document.getElementById('closeScopeBtn');
-const scopeBtn = document.getElementById('scopeBtn'); // Nút mở Phạm vi
 
-// Progress Bar Init (Tái tạo lại vì bị thiếu trong code cũ)
-let progressBar;
+// --- 1. KHỞI TẠO & EFFECT ---
+
 $(document).ready(function() {
-    progressBar = new ProgressBar.Circle('#progress', {
-        color: '#00a896',
-        strokeWidth: 10,
-        trailWidth: 10,
-        trailColor: '#f3f3f3',
-        easing: 'easeInOut',
-        duration: 1400,
-        text: {
-            autoStyleContainer: false
-        },
-        from: { color: '#FFEA82', a: 0 },
-        to: { color: '#00a896', a: 1 },
-        step: function(state, circle) {
-            circle.path.setAttribute('stroke', state.color);
-        }
-    });
-
-    // Kích hoạt hiệu ứng mặt nước trên background
+    // Kích hoạt hiệu ứng mặt nước trên background (nen.png)
     try {
-        // Cần đảm bảo thư viện ripples đã được link trong index.html
-        $('#ripple-background').ripples({ 
-            resolution: 512, 
-            dropRadius: 20, 
+        $('#ripple-background').ripples({
+            resolution: 512,
+            dropRadius: 20,
             perturbance: 0.04,
-            interactive: true
         });
-        console.log("Hiệu ứng mặt nước đã kích hoạt.");
     } catch (e) {
-        console.error("Lỗi kích hoạt hiệu ứng Ripples. Đã cài jQuery và Ripples chưa?", e);
+        console.log("Ripples effect error:", e);
     }
-    
-    initialize();
 });
 
-// --- 1. KHỞI TẠO HỆ THỐNG ---
-
 async function initialize() {
-    mainStatus.innerText = "Đang tải dữ liệu bệnh...";
     try {
         await fetchData();
-        mainStatus.innerText = "Đang tải mô hình AI...";
         await loadModel();
-        
-        mainStatus.innerText = "Hệ thống SẴN SÀNG";
-        mainStatus.style.backgroundColor = "#00a896";
-        
     } catch (e) {
-        console.error("Lỗi khởi tạo hệ thống:", e);
-        mainStatus.innerText = "Lỗi nghiêm trọng: Không thể khởi tạo hệ thống.";
-        mainStatus.style.backgroundColor = "#f44336";
+        systemStatus.innerText = "Lỗi khởi động hệ thống.";
+        systemStatus.style.background = "#f44336";
     }
 }
 
-// --- SỬA LỖI TẢI DỮ LIỆU ---
 async function fetchData() {
     try {
         let response = await fetch('./class_indices.json');
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         let data = await response.json();
         
-        // Lấy mảng dữ liệu bệnh từ khóa chính
-        const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet; 
-        
-        if (Array.isArray(protocolsArray) && protocolsArray.length > 0) {
+        const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
+        if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // Sử dụng Ma_ID làm key
-                const key = String(item.Ma_ID); 
-                disease_protocols_map[key] = item;
-                class_indices[key] = item.Ten_Benh_Tieng_Viet; // Lưu tên bệnh vào index
+                disease_protocols_map[item.Mã_ID] = item;
+                class_indices[item.Mã_ID] = item.Tên_Bệnh; 
             });
-            console.log(`Dữ liệu đã tải thành công: ${Object.keys(disease_protocols_map).length} mục.`);
-        } else {
-             console.error("JSON Error: Mảng dữ liệu rỗng hoặc không đúng định dạng.");
-             throw new Error("Dữ liệu JSON rỗng.");
+            console.log("Dữ liệu đã tải: ", Object.keys(disease_protocols_map).length);
         }
     } catch (error) {
         console.error("Data Error:", error);
@@ -133,235 +79,220 @@ async function fetchData() {
 }
 
 async function loadModel() {
-    // Tải mô hình đã được chuyển đổi từ Keras/TF sang TF.js
-    model = await tf.loadLayersModel(MODEL_PATH);
-    console.log("Mô hình đã tải thành công.");
-}
+    try {
+        model = await tf.loadGraphModel('./tensorflowjs-model/model.json'); 
+        // Warm-up
+        const dummy = tf.zeros([1, 224, 224, 3]);
+        model.predict(dummy).dispose();
+        dummy.dispose();
 
-// --- 2. XỬ LÝ ẢNH & DỰ ĐOÁN ---
-
-fileUpload.addEventListener('change', (event) => {
-    if (event.target.files.length === 0) return;
-    
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-        imgElement.src = e.target.result;
-        imgElement.style.display = 'block';
-        placeholder.style.display = 'none';
-        
-        stopCamera(); 
-        predict(imgElement);
-    };
-    reader.readAsDataURL(file);
-});
-
-
-function preprocess(img) {
-    return tf.tidy(() => {
-        let tensor = tf.browser.fromPixels(img);
-
-        // Kích thước Model (Cần kiểm tra lại kích thước chính xác của model bạn)
-        const resized = tf.image.resizeBilinear(tensor, [256, 256]);
-        
-        // Chuẩn hóa (0-1)
-        const normalized = resized.toFloat().div(tf.scalar(255));
-        
-        // Thêm chiều batch (1, 256, 256, 3)
-        const batched = normalized.expandDims(0);
-        
-        return batched;
-    });
-}
-
-async function predict(img) {
-    if (!model) {
-        alert("Mô hình AI chưa sẵn sàng. Vui lòng chờ.");
-        return;
+        systemStatus.innerText = "Sẵn sàng | Chọn phương thức";
+        systemStatus.style.background = "#4CAF50";
+    } catch (error) {
+        console.error("Model Error:", error);
+        systemStatus.innerText = "Lỗi tải Model AI";
+        systemStatus.style.background = "#f44336";
+        throw error;
     }
+}
 
-    loadingBar.classList.remove('hidden');
-    predClassSpan.innerText = "Đang xử lý...";
-    confidenceSpan.innerText = "---";
-    progressBar.set(0); 
+// --- 2. XỬ LÝ DỰ ĐOÁN (CORE AI) ---
+
+async function predict(sourceElement) {
+    if (!model) return;
 
     try {
-        const preprocessedImage = preprocess(img);
-        
-        const prediction = await model.predict(preprocessedImage).data();
-        const maxPrediction = Math.max(...prediction);
-        const predictionIndex = prediction.indexOf(maxPrediction);
-        
-        // Lấy tên bệnh và ID
-        const idString = String(predictionIndex);
-        const diseaseName = class_indices[idString] || "Không xác định";
+        const tensor = tf.browser.fromPixels(sourceElement)
+            .resizeNearestNeighbor([224, 224])
+            .toFloat()
+            .div(tf.scalar(255.0))
+            .expandDims();
 
-        // Cập nhật kết quả
-        if (maxPrediction >= THRESHOLD && disease_protocols_map[idString]) {
-            predClassSpan.innerText = diseaseName;
-            confidenceSpan.innerText = `${Math.round(maxPrediction * 100)}%`;
-            lastPredictionId = idString;
-            
-        } else {
-            predClassSpan.innerText = "Không rõ bệnh";
-            confidenceSpan.innerText = `${Math.round(maxPrediction * 100)}%`;
-            lastPredictionId = null;
-        }
+        const predictions = await model.predict(tensor).data();
+        const maxPrediction = Math.max(...predictions);
+        const maxIndex = predictions.indexOf(maxPrediction);
         
-        // Cập nhật progress bar
-        progressBar.animate(maxPrediction);
+        tensor.dispose();
+
+        // Ngưỡng tin cậy (Ví dụ: > 45%)
+        if (maxPrediction > 0.45) {
+            const idString = String(maxIndex);
+            const diseaseName = class_indices[idString] || "Không xác định";
+            
+            resultText.innerText = diseaseName;
+            resultBtn.classList.remove('hidden');
+            lastPredictionId = idString; 
+            
+            // Nếu độ tin cậy rất cao, đổi màu status
+            systemStatus.innerText = `Phát hiện: ${diseaseName} (${Math.round(maxPrediction*100)}%)`;
+        } else {
+            resultText.innerText = "Chưa rõ bệnh...";
+            lastPredictionId = null;
+            systemStatus.innerText = "Đang quét...";
+        }
 
     } catch (error) {
-        console.error("Lỗi dự đoán:", error);
-        predClassSpan.innerText = "Lỗi dự đoán";
-        confidenceSpan.innerText = "---";
-    } finally {
-        loadingBar.classList.add('hidden');
+        console.error("Predict Error", error);
     }
 }
 
-// --- 3. XỬ LÝ CAMERA (Giữ nguyên logic của bạn) ---
+// --- 3. CAMERA LOGIC (QUÉT) ---
 
-async function startCamera() {
-    // ... (Giữ nguyên logic startCamera) ...
+async function startCameraScanning() {
+    stopCamera(); 
+    displayImage.classList.add('hidden');
+    placeholderUI.classList.add('hidden');
+    videoStream.classList.remove('hidden');
+    resultBtn.classList.add('hidden'); 
+
     try {
-        if (currentStream) currentStream.getTracks().forEach(track => track.stop());
-
-        currentStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment' }
-        });
-
+        const constraints = { 
+            video: { 
+                facingMode: 'environment', 
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            } 
+        };
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
         videoStream.srcObject = currentStream;
-        cameraContainer.classList.remove('hidden');
-        placeholder.style.display = 'none';
-        imgElement.style.display = 'none';
-        cameraStatus.innerText = "Camera đang hoạt động...";
-        captureButton.removeAttribute('disabled');
         
-        // Lệnh này được thêm vào để đảm bảo video chạy trước khi chụp
-        videoStream.play();
+        videoStream.onloadedmetadata = () => {
+            isScanning = true;
+            systemStatus.innerText = "Đang quét... Giữ chắc tay";
+            
+            // Quét mỗi 500ms
+            scanInterval = setInterval(() => {
+                if (isScanning && model) {
+                    predict(videoStream);
+                }
+            }, 500); 
+        };
 
     } catch (err) {
-        console.error("Lỗi truy cập Camera:", err);
-        alert("Không thể truy cập camera. Vui lòng kiểm tra quyền truy cập.");
-        stopCamera();
+        console.error(err);
+        systemStatus.innerText = "Lỗi Camera";
+        alert("Không thể truy cập Camera. Vui lòng kiểm tra quyền.");
     }
 }
 
 function stopCamera() {
+    isScanning = false;
+    if (scanInterval) clearInterval(scanInterval);
     if (currentStream) {
         currentStream.getTracks().forEach(track => track.stop());
         currentStream = null;
     }
-    
-    cameraContainer.classList.add('hidden');
-    placeholder.style.display = 'block';
-    captureButton.setAttribute('disabled', 'true');
-    cameraStatus.innerText = "";
+    videoStream.classList.add('hidden');
 }
 
-// Event Listeners Camera
 cameraToggle.addEventListener('click', () => {
-    if (cameraContainer.classList.contains('hidden')) {
-        startCamera();
-    } else {
+    if (isScanning) {
         stopCamera();
+        placeholderUI.classList.remove('hidden');
+        systemStatus.innerText = "Đã dừng quét";
+        resultBtn.classList.add('hidden');
+    } else {
+        startCameraScanning();
     }
 });
 
-stopButton.addEventListener('click', stopCamera);
+// --- 4. UPLOAD LOGIC ---
 
-captureButton.addEventListener('click', () => {
-    // Vẽ frame hiện tại lên canvas
-    canvas.width = videoStream.videoWidth;
-    canvas.height = videoStream.videoHeight;
-    context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
-    
-    // Chuyển thành ảnh hiển thị
-    imgElement.src = canvas.toDataURL('image/jpeg', 0.9); 
-    imgElement.style.display = 'block';
-    placeholder.style.display = 'none';
-    
-    stopCamera(); // Tắt camera sau khi chụp
-    
-    predict(imgElement);
+uploadInput.addEventListener('change', function (e) {
+    const file = this.files[0];
+    if (file) {
+        stopCamera(); 
+        
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+            displayImage.src = evt.target.result;
+            displayImage.classList.remove('hidden');
+            videoStream.classList.add('hidden');
+            placeholderUI.classList.add('hidden');
+            resultBtn.classList.add('hidden');
+            
+            systemStatus.innerText = "Đang xử lý ảnh...";
+
+            // Chờ ảnh load xong mới predict
+            displayImage.onload = () => {
+                predict(displayImage);
+                systemStatus.innerText = "Hoàn tất phân tích";
+            };
+        };
+        reader.readAsDataURL(file);
+    }
 });
 
-// --- 4. HIỂN THỊ CHI TIẾT VÀ PHẠM VI ---
+// --- 5. OVERLAY LOGIC ---
 
-document.getElementById('detailBtn').addEventListener('click', showDetail);
-
-function showDetail() {
+resultBtn.addEventListener('click', () => {
     if (lastPredictionId && disease_protocols_map[lastPredictionId]) {
         renderProtocolDetail(disease_protocols_map[lastPredictionId]);
         detailOverlay.classList.remove('hidden');
-    } else {
-        alert("Không có kết quả dự đoán để hiển thị chi tiết.");
     }
-}
+});
 
 closeDetailBtn.addEventListener('click', () => {
     detailOverlay.classList.add('hidden');
 });
 
-// Hàm hiển thị chi tiết (Giữ nguyên logic cũ, chỉ thay đổi tên thuộc tính)
+// Hàm hiển thị chi tiết phác đồ
 function renderProtocolDetail(protocol) {
-    const tacNhan = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien;
-    const canhTac = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau;
-    const hoaHoc = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc;
-    const nguonTK = protocol.IV_Nguon_Tham_Khao_Uy_Tin;
-
-    detailContent.innerHTML = `
+    const isHealthy = protocol.Tên_Bệnh.toLowerCase().includes("khỏe mạnh");
+    
+    let html = `
         <div class="protocol-header">
-            <h3>${protocol.Ten_Benh_Tieng_Viet}</h3>
-            <p><strong>Tên Khoa Học:</strong> ${protocol.Ten_Khoa_Hoc}</p>
-            <p><strong>Nhóm Cây:</strong> ${protocol.Phan_Loai_Nhom_Cay}</p>
+            <h3>${protocol.Tên_Bệnh}</h3>
+            <span class="status-pill" style="background:${isHealthy ? '#4CAF50' : '#FF9800'}">
+                ${protocol.Phân_loại || protocol.Phân_Loại_Nhom_Cay}
+            </span>
         </div>
-
-        <details class="detail-section" open>
-            <summary>I. Tác Nhân & Điều Kiện Gây Bệnh</summary>
-            <div class="detail-content">
-                <p>• <strong>Tác nhân:</strong> ${tacNhan.Tac_Nhan_Sinh_Hoc}</p>
-                <p>• <strong>Cơ chế lây lan:</strong> ${tacNhan.Co_Che_Lay_Lan}</p>
-                <p>• <strong>Điều kiện tối ưu:</strong> ${tacNhan.Nhiet_Do_Thoi_DIem_Toi_Uu}</p>
-                <p>• <strong>Chẩn đoán chuyên sâu:</strong> ${tacNhan.Dau_Hieu_Chuan_Doan_Chuyen_Sau}</p>
-            </div>
-        </details>
-        
-        <details class="detail-section">
-            <summary>II. Biện Pháp Canh Tác Tổng Hợp</summary>
-            <div class="detail-content">
-                <p>• <strong>Giống:</strong> ${canhTac.Giong_Khang_Benh}</p>
-                <p>• <strong>Quản lý tàn dư:</strong> ${canhTac.Quan_Ly_Tan_Du_Dat}</p>
-                <p>• <strong>Quản lý nước:</strong> ${canhTac.Quan_Ly_Nuoc_Tuoi}</p>
-                <p>• <strong>Dinh dưỡng:</strong> ${canhTac.Quan_Ly_Dinh_Duong_Tong_Hop}</p>
-            </div>
-        </details>
-
-        <details class="detail-section">
-            <summary>III. Chiến Lược Kiểm Soát Hóa Học</summary>
-            <div class="detail-content">
-                <p>• <strong>Phòng ngừa:</strong> <span class="highlight-chem">${hoaHoc.Hoat_Chat_Phong_Ngua}</span></p>
-                <p>• <strong>Điều trị:</strong> <span class="highlight-chem">${hoaHoc.Hoat_Chat_Dieu_Tri_Tru_Khuan}</span></p>
-                <p class="warning-text"><i class="material-icons">warning</i>${hoaHoc.Luu_Y_Tong_Hop}</p>
-            </div>
-        </details>
-
-        <details class="detail-section">
-            <summary>IV. Nguồn Tham Khảo</summary>
-            <div class="detail-content">
-                <ul class="source-list">
-                    ${nguonTK.map(src => `
-                        <li><a href="${src.URL}" target="_blank"><i class="material-icons">link</i> ${src.Ten_Nguon}</a></li>
-                    `).join('')}
-                </ul>
-            </div>
-        </details>
+        <div class="detail-body">
+            <details class="protocol-detail-section" open>
+                <summary><i class="material-icons">search</i> Chẩn đoán & Tác nhân</summary>
+                <div class="detail-content">
+                    <p><strong>Tác nhân:</strong> ${protocol.I_Tác_Nhan_Chu_Ky_Dieu_Kien?.Tac_Nhan_Sinh_Hoc || 'N/A'}</p>
+                     <div class="symptom-box">
+                        <strong>Dấu hiệu:</strong><br>
+                        ${protocol.I_Tác_Nhan_Chu_Ky_Dieu_Kien?.Dau_Hieu_Chuan_Doan_Chuyen_Sau ? protocol.I_Tác_Nhan_Chu_Ky_Dieu_Kien.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu.replace(/\n/g, '<br>') : 'N/A'}
+                    </div>
+                </div>
+            </details>
     `;
+
+    if (protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau) {
+        const cult = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau;
+        html += `
+            <details class="protocol-detail-section">
+                <summary><i class="material-icons">agriculture</i> Biện pháp Canh tác</summary>
+                <div class="detail-content">
+                    <p>• <strong>Vệ sinh:</strong> ${cult.Quan_Ly_Tan_Du_Dat || 'N/A'}</p>
+                    <p>• <strong>Tưới tiêu:</strong> ${cult.Quan_Ly_Nuoc_Tuoi || 'N/A'}</p>
+                    <p>• <strong>Dinh dưỡng:</strong> ${cult.Quan_Ly_Dinh_Duong_Tong_Hop || 'N/A'}</p>
+                </div>
+            </details>
+        `;
+    }
+
+    if (!isHealthy && protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc) {
+        const chem = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc;
+        html += `
+            <details class="protocol-detail-section">
+                <summary><i class="material-icons">science</i> Thuốc BVTV (Hóa học)</summary>
+                <div class="detail-content">
+                    <p style="color:#d32f2f"><strong>Phòng ngừa:</strong> ${chem.Hoat_Chat_Phong_Ngua || 'N/A'}</p>
+                    <p style="color:#d32f2f"><strong>Điều trị:</strong> ${chem.Hoat_Chat_Dieu_Tri_Tru_Khuan || 'N/A'}</p>
+                    <p><em>Lưu ý: ${chem.Luu_Y_Tong_Hop}</em></p>
+                </div>
+            </details>
+        `;
+    }
+
+    html += `</div>`;
+    detailContent.innerHTML = html;
 }
 
-// Xử lý Phạm vi (Scope List)
+// 5b. Hiển thị Phạm vi (Scope) - UPDATED FOR IMAGES
 scopeBtn.addEventListener('click', () => {
     renderScopeList();
     scopeOverlay.classList.remove('hidden');
@@ -382,40 +313,30 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        // Khắc phục lỗi undefined.png bằng cách dùng đúng Ten_Benh_Tieng_Viet
-        const name = item.Ten_Benh_Tieng_Viet || `Bệnh ID ${key}`; 
-
-        // Đường dẫn ảnh (Giả định ảnh có tên 0.png, 1.jpg,...)
+        // Đường dẫn ảnh
         const pngPath = `./images/${key}.png`;
         const jpgPath = `./images/${key}.jpg`;
 
+        // Logic HTML: Thử load PNG, lỗi thì load JPG (Fallback ngay trong thẻ img)
         div.innerHTML = `
             <div class="scope-img-wrapper">
                 <img src="${pngPath}" 
                      onerror="this.onerror=null; this.src='${jpgPath}';" 
-                     alt="${name}"
+                     alt="${item.Tên_Bệnh}"
                      loading="lazy">
             </div>
-            <div class="scope-name">${name}</div>
+            <div class="scope-name">${item.Tên_Bệnh}</div>
         `;
         
+        // Click vào item để xem chi tiết
         div.addEventListener('click', () => {
             renderProtocolDetail(item);
-            detailOverlay.classList.remove('hidden');
-            scopeOverlay.classList.add('hidden'); 
+            detailOverlay.classList.remove('hidden'); 
         });
 
         scopeContent.appendChild(div);
     });
 }
 
-// --- CHẾ ĐỘ TỐI / SÁNG ---
-modeToggle.addEventListener('click', () => {
-    if (body.classList.contains('light-mode')) {
-        body.classList.replace('light-mode', 'dark-mode');
-        modeToggle.innerHTML = '<i class="material-icons">wb_sunny</i> Chế độ Sáng';
-    } else {
-        body.classList.replace('dark-mode', 'light-mode');
-        modeToggle.innerHTML = '<i class="material-icons">brightness_4</i> Chế độ Tối';
-    }
-});
+// --- Init ---
+document.addEventListener('DOMContentLoaded', initialize);
