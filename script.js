@@ -90,7 +90,8 @@ async function fetchData() {
 async function loadModel() {
     try {
         // Load model từ thư mục tensorflowjs-model
-        model = await tf.loadLayersModel('./tensorflowjs-model/model.json'); 
+        // Sử dụng loadGraphModel cho model được convert từ tf_saved_model
+model = await tf.loadGraphModel('./tensorflowjs-model/model.json'); 
         
         // Warm-up model (chạy thử 1 lần để các lần sau nhanh hơn)
         const dummy = tf.zeros([1, 224, 224, 3]);
@@ -410,3 +411,4 @@ modeToggle.addEventListener('click', () => {
 
 // --- KHỞI CHẠY ---
 document.addEventListener('DOMContentLoaded', initialize);
+
