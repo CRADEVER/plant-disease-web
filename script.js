@@ -1,5 +1,5 @@
 /* =========================================
-   IPDM SYSTEM - LOGIC CORE (Phiên bản Ảnh Phạm vi)
+   IPDM SYSTEM - LOGIC CORE (Phiên bản Ảnh Phạm vi - Đã sửa lỗi Key JSON)
    ========================================= */
 
 // --- Biến toàn cục ---
@@ -53,6 +53,7 @@ async function initialize() {
         await fetchData();
         await loadModel();
     } catch (e) {
+        console.error(e);
         systemStatus.innerText = "Lỗi khởi động hệ thống.";
         systemStatus.style.background = "#f44336";
     }
@@ -67,8 +68,9 @@ async function fetchData() {
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                disease_protocols_map[item.Mã_ID] = item;
-                class_indices[item.Mã_ID] = item.Tên_Bệnh; 
+                // SỬA LỖI Ở ĐÂY: Dùng đúng key trong JSON (Ma_ID thay vì Mã_ID)
+                disease_protocols_map[item.Ma_ID] = item;
+                class_indices[item.Ma_ID] = item.Ten_Benh_Tieng_Viet; 
             });
             console.log("Dữ liệu đã tải: ", Object.keys(disease_protocols_map).length);
         }
@@ -238,51 +240,56 @@ closeDetailBtn.addEventListener('click', () => {
 
 // Hàm hiển thị chi tiết phác đồ
 function renderProtocolDetail(protocol) {
-    const isHealthy = protocol.Tên_Bệnh.toLowerCase().includes("khỏe mạnh");
+    // SỬA LỖI KEY Ở ĐÂY: Dùng key không dấu (Ten_Benh_Tieng_Viet)
+    const diseaseName = protocol.Ten_Benh_Tieng_Viet;
+    const isHealthy = diseaseName.toLowerCase().includes("khỏe mạnh");
     
+    // Cập nhật các key truy cập object con
+    const tacNhan = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien;
+    const canhTac = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau;
+    const hoaHoc = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc;
+
     let html = `
         <div class="protocol-header">
-            <h3>${protocol.Tên_Bệnh}</h3>
+            <h3>${diseaseName}</h3>
             <span class="status-pill" style="background:${isHealthy ? '#4CAF50' : '#FF9800'}">
-                ${protocol.Phân_loại || protocol.Phân_Loại_Nhom_Cay}
+                ${protocol.Phan_Loai_Nhom_Cay}
             </span>
         </div>
         <div class="detail-body">
             <details class="protocol-detail-section" open>
                 <summary><i class="material-icons">search</i> Chẩn đoán & Tác nhân</summary>
                 <div class="detail-content">
-                    <p><strong>Tác nhân:</strong> ${protocol.I_Tác_Nhan_Chu_Ky_Dieu_Kien?.Tac_Nhan_Sinh_Hoc || 'N/A'}</p>
+                    <p><strong>Tác nhân:</strong> ${tacNhan?.Tac_Nhan_Sinh_Hoc || 'N/A'}</p>
                      <div class="symptom-box">
                         <strong>Dấu hiệu:</strong><br>
-                        ${protocol.I_Tác_Nhan_Chu_Ky_Dieu_Kien?.Dau_Hieu_Chuan_Doan_Chuyen_Sau ? protocol.I_Tác_Nhan_Chu_Ky_Dieu_Kien.Dấu_hiệu_Chẩn_đoán_Chuyên_sâu.replace(/\n/g, '<br>') : 'N/A'}
+                        ${tacNhan?.Dau_Hieu_Chuan_Doan_Chuyen_Sau ? tacNhan.Dau_Hieu_Chuan_Doan_Chuyen_Sau.replace(/\n/g, '<br>') : 'N/A'}
                     </div>
                 </div>
             </details>
     `;
 
-    if (protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau) {
-        const cult = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau;
+    if (canhTac) {
         html += `
             <details class="protocol-detail-section">
                 <summary><i class="material-icons">agriculture</i> Biện pháp Canh tác</summary>
                 <div class="detail-content">
-                    <p>• <strong>Vệ sinh:</strong> ${cult.Quan_Ly_Tan_Du_Dat || 'N/A'}</p>
-                    <p>• <strong>Tưới tiêu:</strong> ${cult.Quan_Ly_Nuoc_Tuoi || 'N/A'}</p>
-                    <p>• <strong>Dinh dưỡng:</strong> ${cult.Quan_Ly_Dinh_Duong_Tong_Hop || 'N/A'}</p>
+                    <p>• <strong>Vệ sinh:</strong> ${canhTac.Quan_Ly_Tan_Du_Dat || 'N/A'}</p>
+                    <p>• <strong>Tưới tiêu:</strong> ${canhTac.Quan_Ly_Nuoc_Tuoi || 'N/A'}</p>
+                    <p>• <strong>Dinh dưỡng:</strong> ${canhTac.Quan_Ly_Dinh_Duong_Tong_Hop || 'N/A'}</p>
                 </div>
             </details>
         `;
     }
 
-    if (!isHealthy && protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc) {
-        const chem = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc;
+    if (!isHealthy && hoaHoc) {
         html += `
             <details class="protocol-detail-section">
                 <summary><i class="material-icons">science</i> Thuốc BVTV (Hóa học)</summary>
                 <div class="detail-content">
-                    <p style="color:#d32f2f"><strong>Phòng ngừa:</strong> ${chem.Hoat_Chat_Phong_Ngua || 'N/A'}</p>
-                    <p style="color:#d32f2f"><strong>Điều trị:</strong> ${chem.Hoat_Chat_Dieu_Tri_Tru_Khuan || 'N/A'}</p>
-                    <p><em>Lưu ý: ${chem.Luu_Y_Tong_Hop}</em></p>
+                    <p style="color:#d32f2f"><strong>Phòng ngừa:</strong> ${hoaHoc.Hoat_Chat_Phong_Ngua || 'N/A'}</p>
+                    <p style="color:#d32f2f"><strong>Điều trị:</strong> ${hoaHoc.Hoat_Chat_Dieu_Tri_Tru_Khuan || 'N/A'}</p>
+                    <p><em>Lưu ý: ${hoaHoc.Luu_Y_Tong_Hop}</em></p>
                 </div>
             </details>
         `;
@@ -313,19 +320,19 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        // Đường dẫn ảnh
+        // Đường dẫn ảnh (sử dụng key là ID, ví dụ 0.png, 1.png)
         const pngPath = `./images/${key}.png`;
         const jpgPath = `./images/${key}.jpg`;
 
-        // Logic HTML: Thử load PNG, lỗi thì load JPG (Fallback ngay trong thẻ img)
+        // SỬA LỖI KEY: item.Ten_Benh_Tieng_Viet
         div.innerHTML = `
             <div class="scope-img-wrapper">
                 <img src="${pngPath}" 
                      onerror="this.onerror=null; this.src='${jpgPath}';" 
-                     alt="${item.Tên_Bệnh}"
+                     alt="${item.Ten_Benh_Tieng_Viet}"
                      loading="lazy">
             </div>
-            <div class="scope-name">${item.Tên_Bệnh}</div>
+            <div class="scope-name">${item.Ten_Benh_Tieng_Viet}</div>
         `;
         
         // Click vào item để xem chi tiết
