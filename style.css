@@ -1,36 +1,29 @@
 /* =========================================
-   IPDM SYSTEM - MODERN STYLE (Hoàn chỉnh)
+   IPDM SYSTEM - MODERN STYLE (Updated)
    ========================================= */
 
    :root {
-    --primary-color: #00a896; /* Xanh ngọc */
-    --primary-color-dark: #00897b;
+    --primary-color: #00a896;
     --accent-yellow: #ffc107;
     --text-dark: #333;
     --text-light: #fff;
     --glass-bg: rgba(255, 255, 255, 0.15);
     --glass-border: rgba(255, 255, 255, 0.3);
-    --overlay-bg: #f8f9fa; /* Màu nền cho chi tiết */
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --overlay-bg: #f8f9fa;
 }
 
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body, html {
     width: 100%; height: 100%;
     font-family: 'Roboto', sans-serif;
-    overflow-x: hidden; 
-    color: var(--text-dark);
+    overflow: hidden; 
 }
 
 /* --- BACKGROUND RIPPLE --- */
 #ripple-background {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url('nen.png'); /* Đảm bảo tên file này đúng */
+    background-image: url('nen.png'); 
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -40,327 +33,227 @@ body, html {
 .app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     max-width: 600px; 
     margin: 0 auto;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.2); /* Nền tối nhẹ cho hiệu ứng glass */
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    position: relative;
 }
 
+/* HEADER */
 header {
     text-align: center;
-    padding: 10px 0 20px 0;
+    padding: 15px 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 10;
 }
-
 header h1 {
-    color: var(--text-light);
-    font-size: 1.8rem;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* --- STATUS & PILLS --- */
-#systemStatus {
-    align-self: flex-start;
-    margin-bottom: 20px;
-}
-
+/* STATUS PILL */
 .status-pill {
-    padding: 4px 12px;
+    margin: 0 auto 10px;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
     border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text-light);
-    background: #555;
-    transition: background 0.3s;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* --- VIEWER CONTAINER --- */
+/* --- VIEWPORT (CAMERA/IMAGE) --- */
 .viewport-container {
-    flex-grow: 1;
-    background: var(--text-dark);
-    border-radius: 12px;
-    overflow: hidden;
+    flex: 1;
     position: relative;
-    box-shadow: var(--shadow);
+    background: rgba(0, 0, 0, 0.5);
+    margin: 0 10px;
+    border-radius: 15px;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
-}
-
-#placeholderUI {
-    color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    padding: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 #displayImage, #videoStream {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Giữ nguyên tỷ lệ, vừa khung */
-    display: block;
+    object-fit: contain; 
+    background: black;
 }
 
 .hidden { display: none !important; }
 
-/* --- RESULT PANEL --- */
-.result-panel {
+#placeholderUI {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+}
+.placeholder-icon { font-size: 64px; display: block; margin-bottom: 10px; }
+
+/* --- RESULT FLOATING BUTTON --- */
+.result-floating-btn {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.6);
-    color: var(--text-light);
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    transform: translateY(100%);
-    transition: transform 0.3s ease-out;
-}
-
-.result-panel.visible {
-    transform: translateY(0);
-}
-
-#resultText {
-    font-size: 1.1rem;
-    font-weight: 500;
-    flex-grow: 1;
-}
-
-#resultBtn {
-    background: var(--accent-yellow);
-    color: var(--text-dark);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--accent-yellow);
+    color: #000;
     border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+    animation: popIn 0.3s ease-out;
+    white-space: nowrap;
 }
 
-#resultBtn:hover {
-    background: #ffdb58;
+@keyframes popIn {
+    from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50px;
+    border: 2px solid var(--accent-yellow);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.3); opacity: 0; }
 }
 
 /* --- CONTROL BAR --- */
-.controls-bar {
+.control-bar {
+    padding: 20px;
     display: flex;
     justify-content: space-around;
-    padding-top: 10px;
+    align-items: flex-end;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
 }
 
 .control-btn {
     background: var(--glass-bg);
-    color: var(--text-light);
     border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    padding: 12px;
+    color: white;
+    padding: 10px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 5px;
+    width: 80px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    flex: 1;
-    margin: 0 5px;
-    min-width: 90px;
+    transition: transform 0.2s;
 }
-
-.control-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.control-btn:active {
-    transform: scale(0.98);
-}
-
-.control-btn i {
-    font-size: 1.5rem;
-    margin-bottom: 4px;
-}
-
-.control-btn span {
-    font-size: 0.75rem;
-    font-weight: 500;
-}
+.control-btn span { font-size: 0.75rem; }
+.control-btn:active { transform: scale(0.95); }
 
 .control-btn.main-action {
     background: var(--primary-color);
-    border: 1px solid var(--primary-color-dark);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(0, 168, 150, 0.5);
+    border: 3px solid rgba(255,255,255,0.2);
 }
+.control-btn.main-action i { font-size: 32px; }
 
-.control-btn.main-action:hover {
-    background: var(--primary-color-dark);
-}
-
-/* --- OVERLAY (CHI TIẾT & PHẠM VI) --- */
+/* --- OVERLAYS (FULL SCREEN) --- */
 .overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: var(--overlay-bg);
     z-index: 100;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
 
 .overlay-header {
+    background: #fff;
+    padding: 15px;
     display: flex;
     align-items: center;
-    padding: 15px 10px;
-    border-bottom: 1px solid #eee;
-    background: var(--text-light);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 101;
 }
 
 .overlay-header h2 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-left: 10px;
-    color: var(--primary-color-dark);
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    margin-right: 40px;
+    color: var(--text-dark);
 }
 
 .back-btn {
     background: none;
     border: none;
-    color: var(--primary-color);
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
     display: flex;
     align-items: center;
-}
-
-.back-btn i {
-    margin-right: 5px;
-    font-size: 1.3rem;
+    gap: 5px;
+    font-size: 1rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-weight: 500;
 }
 
 .overlay-content {
+    flex: 1;
+    overflow-y: auto;
     padding: 20px;
-    flex-grow: 1;
+    color: #333;
 }
 
-/* --- DETAIL CONTENT (Phác đồ) --- */
-.protocol-header {
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 15px;
-    margin-bottom: 20px;
-}
-
-.protocol-header h3 { 
-    color: var(--primary-color-dark); 
-    font-size: 1.5rem; 
-    margin-bottom: 5px; 
-}
-
-.protocol-detail-section {
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: var(--text-light);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.protocol-detail-section summary {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--primary-color);
-    padding: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    user-select: none;
-    outline: none;
-}
-
-.protocol-detail-section summary i {
-    margin-right: 10px;
-    font-size: 1.2rem;
-}
-
-.detail-content {
-    padding: 10px 15px 15px 15px;
-    border-top: 1px solid #eee;
-}
-
-.detail-content p {
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
-.symptom-box {
-    background: #fff8e1;
-    border: 1px solid #ffe082;
-    padding: 10px;
-    border-radius: 6px;
-    margin-top: 10px;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-/* --- RIÊNG CHO MỤC IV: NGUỒN THAM KHẢO --- */
-.reference-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 10px;
-}
-
-.reference-list li {
-    margin-bottom: 8px;
-}
-
-.reference-list li a {
-    color: var(--primary-color-dark);
-    text-decoration: none;
-    display: block;
-    padding: 5px 0;
-    border-bottom: 1px dashed #e0f2f1;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.reference-list li a:hover {
-    color: #004d40;
-    text-decoration: underline;
-}
-
-/* --- SCOPE (Phạm vi) --- */
-.overlay-content.grid-view {
+/* --- Scope Grid View --- */
+.grid-view {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
     gap: 15px;
-    padding: 20px;
 }
-
 .scope-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    padding: 8px;
-    border-radius: 8px;
-    background: var(--text-light);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
 }
-
-.scope-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.scope-item:active {
+    transform: scale(0.95);
+    background-color: #f0f0f0;
 }
 
 .scope-img-wrapper {
@@ -386,28 +279,24 @@ header h1 {
     font-size: 0.8rem; 
     font-weight: 500; 
     line-height: 1.3;
-    /* Giới hạn 2 dòng tên */
     display: -webkit-box;
     -webkit-line-clamp: 2; 
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 2.6em; /* Đảm bảo chiều cao nhất quán */
 }
 
-/* --- RESPONSIVENESS (Mobile First) --- */
-@media (max-width: 400px) {
-    .controls-bar {
-        flex-wrap: wrap;
-        padding-top: 5px;
-    }
+/* Detail Content Styling */
+.protocol-header h3 { color: var(--primary-color); font-size: 1.5rem; margin-bottom: 10px; }
+.protocol-detail-section { margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+.protocol-detail-section summary { padding: 15px; background: #f9f9f9; font-weight: 600; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; }
+.detail-content { padding: 15px; line-height: 1.6; }
+.symptom-box { border-left: 5px solid #ffc107; padding: 10px 15px; margin: 15px 0; background: rgba(255, 193, 7, 0.1); border-radius: 0 4px 4px 0; }
 
-    .control-btn {
-        flex-basis: 45%; 
-        margin: 5px;
-    }
+/* --- FIX: Z-INDEX FOR DETAIL OVERLAY --- */
+#detailOverlay {
+    z-index: 200 !important; /* Cao hơn scopeOverlay */
+}
 
-    .overlay-content.grid-view {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 10px;
-    }
+#detailOverlay .overlay-header {
+    z-index: 201; /* Đảm bảo header của nó cũng cao hơn */
 }

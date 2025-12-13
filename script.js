@@ -224,7 +224,7 @@ uploadInput.addEventListener('change', function (e) {
     }
 });
 
-// --- 5. OVERLAY & RENDER LOGIC (ĐÃ BỔ SUNG MỤC IV) ---
+// --- 5. OVERLAY & RENDER LOGIC ---
 
 resultBtn.addEventListener('click', () => {
     if (lastPredictionId && disease_protocols_map[lastPredictionId]) {
@@ -237,7 +237,7 @@ closeDetailBtn.addEventListener('click', () => {
     detailOverlay.classList.add('hidden');
 });
 
-// Hàm hiển thị chi tiết phác đồ (Đã sửa và bổ sung MỤC IV)
+// Hàm hiển thị chi tiết phác đồ
 function renderProtocolDetail(protocol) {
     // 1. Lấy thông tin chung
     const tenBenh = protocol.Ten_Benh_Tieng_Viet;
@@ -249,7 +249,7 @@ function renderProtocolDetail(protocol) {
     const muc1 = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien || {};
     const muc2 = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau || {};
     const muc3 = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc || {};
-    const muc4 = protocol.IV_Nguon_Tham_Khao_Uy_Tin || []; // Key IV là một mảng
+    const muc4 = protocol.IV_Nguon_Tham_Khao_Uy_Tin || []; 
 
     // HTML Builder
     let html = `
@@ -303,7 +303,7 @@ function renderProtocolDetail(protocol) {
         `;
     }
     
-    // MỤC IV: NGUỒN THAM KHẢO (ĐÃ BỔ SUNG)
+    // MỤC IV: NGUỒN THAM KHẢO
     if (Array.isArray(muc4) && muc4.length > 0) {
         let referenceList = '<ul class="reference-list">';
         muc4.forEach(ref => {
@@ -350,21 +350,21 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        // Đường dẫn ảnh theo Ma_ID (ví dụ: 0.png, 1.jpg)
-        const pngPath = `./images/${key}.png`;
-        const jpgPath = `./images/${key}.jpg`;
+        // --- SỬA ĐỔI: Chỉ ưu tiên JPG và jpg, không dùng png ---
+        const jpgPath = `./images/${key}.jpg`;     // Ưu tiên 1
+        const jpgUpperPath = `./images/${key}.JPG`; // Ưu tiên 2 (Backup)
 
         div.innerHTML = `
             <div class="scope-img-wrapper">
-                <img src="${pngPath}" 
-                     onerror="this.onerror=null; this.src='${jpgPath}';" 
+                <img src="${jpgPath}" 
+                     onerror="this.onerror=null; if(this.src.indexOf('.JPG') === -1) { this.src='${jpgUpperPath}'; }" 
                      alt="${item.Ten_Benh_Tieng_Viet}"
                      loading="lazy">
             </div>
             <div class="scope-name">${item.Ten_Benh_Tieng_Viet}</div>
         `;
         
-        // Sự kiện Click hiển thị chi tiết (đã fix)
+        // Sự kiện Click hiển thị chi tiết
         div.addEventListener('click', () => {
             renderProtocolDetail(item);
             detailOverlay.classList.remove('hidden'); 
