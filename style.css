@@ -1,3 +1,10 @@
+/*
+ * IPDM System - Style Sheet (style.css)
+ * Phiên bản: Tối ưu
+ * Mục đích: Giao diện hiện đại, Dark Mode, Responsive và dễ đọc.
+ */
+
+/* --- RESET & TYPOGRAPHY --- */
 * {
     box-sizing: border-box;
     padding: 0;
@@ -8,6 +15,7 @@ html, body {
     width: 95%;
     max-width: 1200px; 
     margin: 20px auto;
+    /* Sử dụng font Roboto đã link trong HTML */
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     transition: background-color 0.5s, color 0.5s;
     line-height: 1.6;
@@ -31,24 +39,13 @@ hr {
     color: #333333;
 }
 .light-mode h1, .light-mode h2, .light-mode h3 { color: #1a1a1a; }
-.light-mode .upload-file, .light-mode .camera-btn {
-    background-color: white;
-    color: #444;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-.light-mode .capture-btn { background-color: #00a896; color: white; }
+.light-mode hr { border-top: 1px solid #e0e0e0; }
 .light-mode .box, .light-mode .protocol-detail-container {
     background: #ffffff;
     border: 1px solid #e0e0e0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Shadow mạnh hơn */
 }
-.light-mode .protocol-detail-section summary { background-color: #f9f9f9; }
-.light-mode .protocol-detail-section summary:hover { background-color: #f0f0f0; }
-.light-mode .mode-toggle {
-    background: #e0e0e0; color: #444; border: 1px solid #ccc;
-}
-.light-mode hr { border-color: #e0e0e0; }
+.light-mode .info-list li { background-color: #f0f0f0; }
 
 /* --- DARK MODE --- */
 .dark-mode {
@@ -56,251 +53,374 @@ hr {
     color: #e0e0e0;
 }
 .dark-mode h1, .dark-mode h2, .dark-mode h3 { color: #f0f0f0; }
-.dark-mode .upload-file, .dark-mode .camera-btn {
-    background-color: #2a2a2a;
-    color: #bbbbbb;
-    border: 1px solid #333;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-.dark-mode .capture-btn { background-color: #007a6a; color: #f0f0f0; }
+.dark-mode hr { border-top: 1px solid #333333; }
 .dark-mode .box, .dark-mode .protocol-detail-container {
     background: #1e1e1e;
     border: 1px solid #333333;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); /* Shadow nổi bật hơn trong dark mode */
 }
-.dark-mode .protocol-detail-section summary { background-color: #2c2c2c; }
-.dark-mode .protocol-detail-section summary:hover { background-color: #383838; }
-.dark-mode .mode-toggle {
-    background: #333; color: #f0f0f0; border: 1px solid #555;
-}
-.dark-mode hr { border-color: #3a3a3a; }
+.dark-mode .info-list li { background-color: #252525; }
 
-/* --- HEADER & CONTROLS --- */
+/* --- HEADER & BUTTONS --- */
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    flex-wrap: wrap;
+    padding-bottom: 10px;
 }
-.header-container h1 { font-size: 1.5rem; color: #00a896; }
-
 .mode-toggle {
-    display: flex;
-    align-items: center;
+    background: none;
+    border: 1px solid;
     padding: 8px 15px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s;
-}
-.mode-toggle i { margin-right: 5px; }
-
-.input-selection-container { margin: 20px 0; }
-.upload-btn-container {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: transform 0.2s, background-color 0.3s;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-width: 160px;
-}
-.btn:hover { transform: translateY(-2px); }
-.btn i { font-size: 20px; }
-
-/* --- CAMERA --- */
-.camera-stream-container {
-    margin-top: 20px;
-    text-align: center;
-    display: none; 
-    position: relative;
-}
-#videoStream {
-    max-width: 100%;
-    max-height: 70vh;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    object-fit: cover;
-}
-.camera-controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
-}
-.capture-btn {
-    padding: 10px 20px;
-    display: none; 
-    align-items: center;
-    gap: 8px;
-    border: none;
     border-radius: 25px;
-    font-size: 16px;
-    font-weight: 500;
     cursor: pointer;
-}
-.capture-btn.stop-btn { background-color: #d32f2f !important; color: white !important; }
-.camera-status { margin-top: 10px; font-style: italic; font-size: 0.9em; opacity: 0.8; }
-
-/* --- MAIN CONTENT ROW --- */
-.row {
+    font-size: 0.9em;
+    font-weight: 500;
     display: flex;
-    gap: 30px;
-    margin-top: 30px;
-    flex-wrap: wrap; 
-}
-.box {
-    padding: 20px;
-    border-radius: 12px;
-    flex: 1;
-    min-width: 300px;
-    text-align: center;
-}
-.image-box {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 300px;
+    gap: 5px;
+    transition: background-color 0.3s, color 0.3s;
 }
-.box img {
-    border-radius: 10px;
-    max-height: 400px;
-    max-width: 100%;
-    display: none;
-    object-fit: contain;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.light-mode .mode-toggle {
+    color: #444;
+    border-color: #ddd;
 }
-.image-placeholder { font-style: italic; margin: 20px; opacity: 0.7; }
-
-/* --- RESULTS BOX --- */
-.box-result {
-    display: none; 
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.dark-mode .mode-toggle {
+    color: #ccc;
+    border-color: #333;
 }
-.box-result h2 { margin-bottom: 15px; font-size: 1.4em; }
-.box-result .pred_class { color: #00a896; font-weight: 700; }
-.confidence-summary { padding: 10px; margin-top: 15px; font-size: 1.1em; }
-.confidence-summary b { font-size: 1.2em; color: #4CAF50; }
-
-.accuracy {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-.progress { width: 140px; height: 140px; position: relative; }
 
 /* --- STATUS BAR --- */
 .status {
-    padding: 12px 20px;
+    padding: 10px 20px;
     border-radius: 8px;
-    margin: 15px 0;
-    text-align: center;
+    margin-bottom: 20px;
     font-weight: 500;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
 }
-.status.loading { background-color: #2196F3; color: white; }
-.status.success { background-color: #4CAF50; color: white; }
-.status.error { background-color: #F44336; color: white; }
-.loading-icon { animation: spin 1.5s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.status.loading { background-color: #ffe082; color: #5d4037; }
+.status.success { background-color: #a5d6a7; color: #1b5e20; }
+.status.error { background-color: #ef9a9a; color: #b71c1c; }
+.loading-icon {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 
-.loading-bar {
-    width: 90%;
-    height: 30px;
-    border-radius: 15px;
-    overflow: hidden;
-    margin: 20px auto;
-    background-color: #e0e0e0;
+/* --- INPUT SELECTION --- */
+.input-selection-container {
+    margin-bottom: 20px;
+}
+.upload-btn-container {
+    display: flex;
+    gap: 15px;
+}
+.btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1em;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease-in-out;
+}
+.upload-file, .camera-btn {
+    background-color: #00a896;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 168, 150, 0.3);
+}
+.upload-file:hover, .camera-btn:hover {
+    background-color: #007a6a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(0, 168, 150, 0.4);
+}
+
+/* --- CAMERA STREAM --- */
+.camera-stream-container {
+    display: none; /* Mặc định ẩn */
+    flex-direction: column;
+    align-items: center;
+    background: #000;
+    border-radius: 8px;
+    margin-bottom: 20px;
     position: relative;
-    display: none; 
-    align-items: center; 
+    padding: 10px;
+}
+#videoStream {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    border-radius: 6px;
+    display: none;
+}
+.camera-controls {
+    margin-top: 15px;
+    display: flex;
+    gap: 15px;
+}
+.capture-btn {
+    background-color: #00a896;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+.capture-btn.stop-btn {
+    background-color: #f44336;
+}
+.capture-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.camera-status {
+    color: #ccc;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+/* --- MAIN CONTENT LAYOUT --- */
+.row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.main-content-row {
+    align-items: flex-start;
+}
+.box {
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1;
+    min-height: 350px;
+    transition: all 0.5s;
+}
+/* Hình ảnh và Kết quả chiếm cùng tỉ lệ, Kết quả phải có chiều rộng nhất định */
+.image-box { 
+    flex: 2; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    padding: 10px;
+    min-height: 400px;
 }
-.dark-mode .loading-bar { background-color: #333; }
-.loading-fill {
-    height: 100%;
-    width: 40%;
-    background-color: #00a896; 
-    animation: loading-move 1.5s infinite linear;
+.box-result { 
+    flex: 1.5; 
+    position: relative;
+    text-align: center;
+    min-width: 300px;
+}
+
+/* --- IMAGE & PLACEHOLDER --- */
+#image {
+    max-width: 100%;
+    max-height: 380px;
+    height: auto;
+    border-radius: 4px;
+    object-fit: contain;
+    display: none; /* Mặc định ẩn */
+}
+.image-placeholder {
+    text-align: center;
+    font-style: italic;
+    color: #aaa;
+    line-height: 1.8;
+}
+
+/* --- RESULT BOX & PROGRESS BAR --- */
+.loading-bar {
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: none; /* Mặc định ẩn */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 8px;
+    z-index: 10;
 }
-.loading-bar p {
-    position: relative; z-index: 10; line-height: 30px; font-size: 0.9em; font-weight: 600;
+.dark-mode .loading-bar {
+    background: rgba(30, 30, 30, 0.95);
 }
-.light-mode .loading-bar p { color: #333; }
-.dark-mode .loading-bar p { color: #fff; }
-@keyframes loading-move { 0% { left: -40%; } 100% { left: 100%; } }
+.loading-fill {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #00a896;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+.box-result h2 { 
+    margin-bottom: 5px; 
+    font-size: 1.4em; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.box-result .pred_class { 
+    color: #00a896; 
+    font-weight: 700; 
+    font-size: 1.2em; 
+}
+.accuracy {
+    margin: 20px auto;
+    width: 150px;
+    height: 150px;
+}
+.confidence-summary {
+    margin-top: 15px;
+    font-size: 1.1em;
+}
 
 /* --- PROTOCOL DETAILS --- */
 .protocol-detail-container {
-    flex: 1 1 100%; 
+    display: none; /* Mặc định ẩn */
     padding: 30px;
     margin-top: 20px;
-    text-align: left;
-    display: none; 
 }
-.protocol-header { margin-bottom: 25px; }
-.protocol-header h3 { font-size: 1.8em; color: #00a896; margin-bottom: 5px; }
-.protocol-header .classification { font-size: 1.1em; opacity: 0.8; }
-.protocol-sections { margin-top: 20px; }
 
+.protocol-header { 
+    margin-bottom: 25px; 
+    padding-bottom: 10px; 
+    border-bottom: 2px solid #00a896; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.protocol-header h3 { 
+    font-size: 2.2em; 
+    color: #00a896; 
+    margin-bottom: 8px; 
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 5px;
+}
+.badge-success {
+    background-color: #4CAF50; /* Xanh lá đậm */
+    color: white;
+}
+.badge-warning {
+    background-color: #FF9800; /* Cam/Vàng nổi bật */
+    color: white;
+}
+
+/* Accordion Style cho Details */
 .protocol-detail-section {
+    border: 1px solid #ddd;
+    border-radius: 6px;
     margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid;
-    overflow: hidden;
     transition: all 0.3s;
 }
-.light-mode .protocol-detail-section { border-color: #ddd; }
-.dark-mode .protocol-detail-section { border-color: #3a3a3a; }
-
+.dark-mode .protocol-detail-section {
+    border: 1px solid #333;
+}
 .protocol-detail-section summary {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px;
+    padding: 15px 20px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.1em;
-    list-style: none; 
+    list-style: none; /* Ẩn dấu mũi tên mặc định */
     position: relative;
+    transition: background-color 0.2s;
 }
-.protocol-detail-section summary::-webkit-details-marker { display: none; }
-.protocol-detail-section summary:after {
+.protocol-detail-section summary:hover {
+    background-color: rgba(0, 168, 150, 0.05);
+}
+.dark-mode .protocol-detail-section summary:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+.protocol-detail-section summary i {
+    margin-right: 10px;
+    font-size: 1.2em;
+    color: #00a896;
+}
+
+/* Ký hiệu mở/đóng thủ công */
+.protocol-detail-section summary::after {
     content: '+'; 
     position: absolute; right: 20px; font-size: 1.2em;
+    font-weight: 400;
 }
-.protocol-detail-section[open] summary:after { content: '-'; }
-.protocol-detail-section[open] summary { border-bottom: 1px solid rgba(0,0,0,0.1); }
+.protocol-detail-section[open] summary::after { content: '-'; }
+.protocol-detail-section[open] summary { 
+    border-bottom: 1px solid #eee; 
+}
+.dark-mode .protocol-detail-section[open] summary { 
+    border-bottom: 1px solid #333; 
+}
 
-.detail-content { padding: 20px; font-size: 0.95em; }
+/* Content Area */
+.detail-content { 
+    padding: 20px; 
+    font-size: 0.95em; 
+    line-height: 1.6;
+}
 .detail-content p { margin-bottom: 12px; }
-.detail-content h4 { margin-top: 15px; margin-bottom: 10px; color: #4CAF50; }
-.detail-content ul { padding-left: 20px; margin-bottom: 15px; }
-.detail-content li { margin-bottom: 8px; }
+.detail-content strong { font-weight: 700; }
+.detail-content .tiny { font-size: 1em; margin-right: 5px; color: #00a896; }
 
+/* Biện pháp Canh tác List */
+.info-list {
+    list-style: none;
+    padding: 0;
+}
+.info-list li {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.4;
+}
+
+/* Symptoms Box */
+.symptom-box {
+    border-left: 5px solid #ffc107;
+    padding: 10px 15px;
+    margin: 15px 0;
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 0 4px 4px 0;
+}
+.dark-mode .symptom-box {
+    background: rgba(255, 193, 7, 0.05);
+    border-color: #ffb300;
+}
+
+/* Chemical Stages */
+.stages-container {
+    margin-top: 15px;
+}
 .stage-step {
     border-left: 4px solid #00a896;
     padding: 10px 15px;
@@ -308,27 +428,89 @@ hr {
     margin: 15px 0;
     border-radius: 0 4px 4px 0;
 }
-.stage-step p { margin: 5px 0; }
-.stage-step span { font-weight: bold; color: #007a6a; }
+.dark-mode .stage-step {
+    background: rgba(0, 168, 150, 0.15);
+}
+.step-title {
+    font-weight: 700;
+    color: #007a6a;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+.highlight-chem {
+    color: #f44336; /* Màu đỏ nổi bật cho Hoạt chất */
+    font-weight: bold;
+}
+.sub-text {
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+.warning-text {
+    border: 1px solid #f44336;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+    background: rgba(244, 67, 54, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+.dark-mode .warning-text {
+    background: rgba(244, 67, 54, 0.15);
+}
 
 /* Source Links Styles */
 .source-list { list-style: none !important; padding: 0 !important; }
-.source-list li { margin-bottom: 8px; }
-.source-list a {
-    text-decoration: none;
+.source-list li { 
+    margin-bottom: 8px; 
+}
+.source-list li a {
     color: #00a896;
-    display: inline-flex;
+    text-decoration: none;
+    display: flex;
     align-items: center;
     gap: 5px;
-    transition: color 0.2s;
 }
-.source-list a:hover { color: #007a6a; text-decoration: underline; }
-.source-list a:before { content: '🔗'; font-size: 0.9em; }
+.source-list li a:hover {
+    text-decoration: underline;
+}
 
-@media (max-width: 768px) {
-    html, body { width: 100%; margin: 10px auto; padding: 0 5px; }
-    .header-container { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .header-container h1 { font-size: 1.2rem; }
-    .row { flex-direction: column; gap: 20px; }
-    .box { min-width: 100%; }
+/* --- RESPONSIVENESS --- */
+@media (max-width: 900px) {
+    .row {
+        flex-direction: column;
+    }
+    .main-content-row {
+        flex-direction: column;
+    }
+    .box-result {
+        min-width: 100%;
+        order: -1; /* Đưa kết quả lên đầu trên mobile */
+    }
+    .image-box {
+        min-height: 300px;
+    }
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .upload-btn-container {
+        flex-direction: column;
+    }
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .protocol-header h3 {
+        font-size: 1.8em;
+    }
+    .detail-content {
+        padding: 15px;
+    }
 }
