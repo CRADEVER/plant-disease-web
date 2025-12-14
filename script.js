@@ -1,3 +1,8 @@
+/* =========================================
+   IPDM SYSTEM - LOGIC CORE (Phiên bản Hoàn thiện Key JSON)
+   ========================================= */
+
+// --- Biến toàn cục ---
 let model;
 let disease_protocols_map = {}; 
 let class_indices = {}; 
@@ -6,6 +11,7 @@ let isScanning = false;
 let scanInterval = null;
 let lastPredictionId = null; 
 
+// --- DOM Elements ---
 const systemStatus = document.getElementById('systemStatus');
 const displayImage = document.getElementById('displayImage');
 const videoStream = document.getElementById('videoStream');
@@ -13,10 +19,12 @@ const placeholderUI = document.getElementById('placeholderUI');
 const resultBtn = document.getElementById('resultBtn');
 const resultText = document.getElementById('resultText');
 
+// Buttons
 const uploadInput = document.getElementById('uploadInput');
 const cameraToggle = document.getElementById('cameraToggle');
 const scopeBtn = document.getElementById('scopeBtn');
 
+// Overlays
 const detailOverlay = document.getElementById('detailOverlay');
 const detailContent = document.getElementById('detailContent');
 const closeDetailBtn = document.getElementById('closeDetailBtn');
@@ -24,6 +32,8 @@ const closeDetailBtn = document.getElementById('closeDetailBtn');
 const scopeOverlay = document.getElementById('scopeOverlay');
 const scopeContent = document.getElementById('scopeContent');
 const closeScopeBtn = document.getElementById('closeScopeBtn');
+
+// --- 1. KHỞI TẠO & EFFECT ---
 
 $(document).ready(function() {
     try {
@@ -48,16 +58,19 @@ async function initialize() {
     }
 }
 
+// --- HÀM TẢI DỮ LIỆU JSON ---
 async function fetchData() {
     try {
         let response = await fetch('./class_indices.json');
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         let data = await response.json();
         
+        // Key gốc của JSON
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
         
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
+                // Map đúng Key: Ma_ID và Ten_Benh_Tieng_Viet (không dấu)
                 disease_protocols_map[item.Ma_ID] = item;
                 class_indices[item.Ma_ID] = item.Ten_Benh_Tieng_Viet; 
             });
@@ -72,6 +85,7 @@ async function fetchData() {
 async function loadModel() {
     try {
         model = await tf.loadGraphModel('./tensorflowjs-model/model.json'); 
+        // Warm-up
         const dummy = tf.zeros([1, 224, 224, 3]);
         model.predict(dummy).dispose();
         dummy.dispose();
@@ -85,6 +99,8 @@ async function loadModel() {
         throw error;
     }
 }
+
+// --- 2. XỬ LÝ DỰ ĐOÁN (CORE AI) ---
 
 async function predict(sourceElement) {
     if (!model) return;
@@ -102,6 +118,7 @@ async function predict(sourceElement) {
         
         tensor.dispose();
 
+        // Ngưỡng tin cậy > 45%
         if (maxPrediction > 0.45) {
             const idString = String(maxIndex);
             const diseaseName = class_indices[idString] || "Không xác định";
@@ -121,6 +138,8 @@ async function predict(sourceElement) {
         console.error("Predict Error", error);
     }
 }
+
+// --- 3. CAMERA LOGIC ---
 
 async function startCameraScanning() {
     stopCamera(); 
@@ -179,6 +198,8 @@ cameraToggle.addEventListener('click', () => {
     }
 });
 
+// --- 4. UPLOAD LOGIC ---
+
 uploadInput.addEventListener('change', function (e) {
     const file = this.files[0];
     if (file) {
@@ -203,6 +224,8 @@ uploadInput.addEventListener('change', function (e) {
     }
 });
 
+// --- 5. OVERLAY & RENDER LOGIC ---
+
 resultBtn.addEventListener('click', () => {
     if (lastPredictionId && disease_protocols_map[lastPredictionId]) {
         renderProtocolDetail(disease_protocols_map[lastPredictionId]);
@@ -214,17 +237,21 @@ closeDetailBtn.addEventListener('click', () => {
     detailOverlay.classList.add('hidden');
 });
 
+// Hàm hiển thị chi tiết phác đồ
 function renderProtocolDetail(protocol) {
+    // 1. Lấy thông tin chung
     const tenBenh = protocol.Ten_Benh_Tieng_Viet;
     const tenKhoaHoc = protocol.Ten_Khoa_Hoc;
     const phanLoai = protocol.Phan_Loai_Nhom_Cay;
     const isHealthy = tenBenh.toLowerCase().includes("khỏe mạnh");
 
+    // 2. Truy cập các KEY chính (I, II, III, IV)
     const muc1 = protocol.I_Tac_Nhan_Chu_Ky_Dieu_Kien || {};
     const muc2 = protocol.II_Bien_Phap_Canh_Tac_Chuyen_Sau || {};
     const muc3 = protocol.III_Chien_Luoc_Kiem_Soat_Hoa_Hoc || {};
     const muc4 = protocol.IV_Nguon_Tham_Khao_Uy_Tin || []; 
 
+    // HTML Builder
     let html = `
         <div class="protocol-header">
             <h3>${tenBenh}</h3>
@@ -249,6 +276,7 @@ function renderProtocolDetail(protocol) {
             </details>
     `;
 
+    // MỤC II: BIỆN PHÁP CANH TÁC
     html += `
         <details class="protocol-detail-section">
             <summary><i class="material-icons">agriculture</i> II. Biện pháp Canh tác</summary>
@@ -261,6 +289,7 @@ function renderProtocolDetail(protocol) {
         </details>
     `;
 
+    // MỤC III: HÓA HỌC
     if (!isHealthy && (muc3.Hoat_Chat_Phong_Ngua || muc3.Hoat_Chat_Dieu_Tri_Tru_Khuan)) {
         html += `
             <details class="protocol-detail-section">
@@ -274,6 +303,7 @@ function renderProtocolDetail(protocol) {
         `;
     }
     
+    // MỤC IV: NGUỒN THAM KHẢO
     if (Array.isArray(muc4) && muc4.length > 0) {
         let referenceList = '<ul class="reference-list">';
         muc4.forEach(ref => {
@@ -294,9 +324,11 @@ function renderProtocolDetail(protocol) {
     }
 
 
-    html += `</div>`;
+    html += `</div>`; // End detail-body
     detailContent.innerHTML = html;
 }
+
+// --- 6. PHẠM VI (SCOPE) ---
 
 scopeBtn.addEventListener('click', () => {
     renderScopeList();
@@ -310,6 +342,7 @@ closeScopeBtn.addEventListener('click', () => {
 function renderScopeList() {
     scopeContent.innerHTML = '';
     
+    // Sắp xếp theo Ma_ID (số)
     const sortedKeys = Object.keys(disease_protocols_map).sort((a, b) => parseInt(a) - parseInt(b));
 
     sortedKeys.forEach(key => {
@@ -317,10 +350,9 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        const paddedKey = String(key).padStart(4, '0');
-        
-        const jpgPath = `./images/${paddedKey}.jpg`;     
-        const jpgUpperPath = `./images/${paddedKey}.JPG`; 
+        // --- SỬA ĐỔI: Chỉ ưu tiên JPG và jpg, không dùng png ---
+        const jpgPath = `./images/${key}.jpg`;     // Ưu tiên 1
+        const jpgUpperPath = `./images/${key}.JPG`; // Ưu tiên 2 (Backup)
 
         div.innerHTML = `
             <div class="scope-img-wrapper">
@@ -332,6 +364,7 @@ function renderScopeList() {
             <div class="scope-name">${item.Ten_Benh_Tieng_Viet}</div>
         `;
         
+        // Sự kiện Click hiển thị chi tiết
         div.addEventListener('click', () => {
             renderProtocolDetail(item);
             detailOverlay.classList.remove('hidden'); 
@@ -341,4 +374,5 @@ function renderScopeList() {
     });
 }
 
+// --- Init ---
 document.addEventListener('DOMContentLoaded', initialize);
