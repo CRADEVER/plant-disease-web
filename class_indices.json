@@ -1,7 +1,7 @@
 {
   "Phac_do_Quan_Ly_Tong_Hop_Chi_tiet": [
       {
-          "Ma_ID": "0",
+          "Ma_ID": "00",
           "Ten_Benh_Tieng_Viet": "Táo - Ghẻ Táo (Apple Scab)",
           "Ten_Khoa_Hoc": "Nấm Venturia inaequalis",
           "Phan_Loai_Nhom_Cay": "Cây Ăn Quả (Táo)",
@@ -34,7 +34,7 @@
           ]
       },
       {
-          "Ma_ID": "1",
+          "Ma_ID": "01",
           "Ten_Benh_Tieng_Viet": "Táo - Thối Đen (Apple Black Rot)",
           "Ten_Khoa_Hoc": "Nấm Botryosphaeria obtusa",
           "Phan_Loai_Nhom_Cay": "Cây Ăn Quả (Táo)",
@@ -67,7 +67,7 @@
           ]
       },
       {
-          "Ma_ID": "2",
+          "Ma_ID": "02",
           "Ten_Benh_Tieng_Viet": "Táo - Rỉ Sắt Táo Tuyết Tùng (Cedar Apple Rust)",
           "Ten_Khoa_Hoc": "Nấm Gymnosporangium juniperi-virginianae",
           "Phan_Loai_Nhom_Cay": "Cây Ăn Quả (Táo)",
@@ -100,7 +100,7 @@
           ]
       },
       {
-          "Ma_ID": "3",
+          "Ma_ID": "03",
           "Ten_Benh_Tieng_Viet": "Táo - Khỏe Mạnh",
           "Ten_Khoa_Hoc": "N/A",
           "Phan_Loai_Nhom_Cay": "Cây Ăn Quả (Táo)",
@@ -133,7 +133,7 @@
           ]
       },
       {
-          "Ma_ID": "4",
+          "Ma_ID": "04",
           "Ten_Benh_Tieng_Viet": "Anh Đào - Phấn Trắng (Cherry Powdery Mildew)",
           "Ten_Khoa_Hoc": "Nấm Podosphaera clandestina",
           "Phan_Loai_Nhom_Cay": "Cây Ăn Quả (Anh Đào)",
@@ -166,7 +166,7 @@
           ]
       },
       {
-          "Ma_ID": "5",
+          "Ma_ID": "05",
           "Ten_Benh_Tieng_Viet": "Anh Đào - Khỏe Mạnh",
           "Ten_Khoa_Hoc": "N/A",
           "Phan_Loai_Nhom_Cay": "Cây Ăn Quả (Anh Đào)",
@@ -199,7 +199,7 @@
           ]
       },
       {
-          "Ma_ID": "6",
+          "Ma_ID": "06",
           "Ten_Benh_Tieng_Viet": "Ngô - Đốm Lá Xám/Đốm Lá Cercospora (Cercospora Leaf Spot)",
           "Ten_Khoa_Hoc": "Nấm Cercospora zeae-maydis",
           "Phan_Loai_Nhom_Cay": "Cây Lương Thực (Ngô)",
@@ -232,7 +232,7 @@
           ]
       },
       {
-          "Ma_ID": "7",
+          "Ma_ID": "07",
           "Ten_Benh_Tieng_Viet": "Ngô - Bệnh Rỉ Sắt Thông Thường (Common Rust)",
           "Ten_Khoa_Hoc": "Nấm Puccinia sorghi",
           "Phan_Loai_Nhom_Cay": "Cây Lương Thực (Ngô)",
@@ -265,7 +265,7 @@
           ]
       },
       {
-          "Ma_ID": "8",
+          "Ma_ID": "08",
           "Ten_Benh_Tieng_Viet": "Ngô - Bệnh Bạc Lá Phía Bắc (Northern Leaf Blight - NLB)",
           "Ten_Khoa_Hoc": "Nấm Exserohilum turcicum",
           "Phan_Loai_Nhom_Cay": "Cây Lương Thực (Ngô)",
@@ -298,7 +298,7 @@
           ]
       },
       {
-          "Ma_ID": "9",
+          "Ma_ID": "09",
           "Ten_Benh_Tieng_Viet": "Ngô - Khỏe Mạnh",
           "Ten_Khoa_Hoc": "N/A",
           "Phan_Loai_Nhom_Cay": "Cây Lương Thực (Ngô)",
