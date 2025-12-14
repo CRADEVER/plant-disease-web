@@ -1,5 +1,5 @@
 /* =========================================
-   IPDM SYSTEM - LOGIC CORE (Phiên bản Hoàn thiện Key JSON)
+   IPDM SYSTEM - LOGIC CORE (Phiên bản Hoàn thiện Zero Padding 2 chữ số)
    ========================================= */
 
 // --- Biến toàn cục ---
@@ -65,12 +65,10 @@ async function fetchData() {
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         let data = await response.json();
         
-        // Key gốc của JSON
         const protocolsArray = data.Phac_do_Quan_Ly_Tong_Hop_Chi_tiet;
         
         if (Array.isArray(protocolsArray)) {
             protocolsArray.forEach(item => {
-                // Map đúng Key: Ma_ID và Ten_Benh_Tieng_Viet (không dấu)
                 disease_protocols_map[item.Ma_ID] = item;
                 class_indices[item.Ma_ID] = item.Ten_Benh_Tieng_Viet; 
             });
@@ -339,6 +337,12 @@ closeScopeBtn.addEventListener('click', () => {
     scopeOverlay.classList.add('hidden');
 });
 
+// HÀM MỚI: Chuyển Ma_ID thành tên file có 2 chữ số (00, 01, ..., 10, ...)
+function getTwoDigitFileName(maId) {
+    // String(maId) chuyển số thành chuỗi, padStart(2, '0') thêm số 0 vào đầu nếu cần
+    return String(maId).padStart(4, '0'); 
+}
+
 function renderScopeList() {
     scopeContent.innerHTML = '';
     
@@ -350,9 +354,12 @@ function renderScopeList() {
         const div = document.createElement('div');
         div.className = 'scope-item';
         
-        // --- SỬA ĐỔI: Chỉ ưu tiên JPG và jpg, không dùng png ---
-        const jpgPath = `./images/${key}.jpg`;     // Ưu tiên 1
-        const jpgUpperPath = `./images/${key}.JPG`; // Ưu tiên 2 (Backup)
+        // --- SỬ DỤNG HÀM MỚI ĐỂ LẤY TÊN FILE ĐÚNG (VD: 01, 10) ---
+        const paddedName = getTwoDigitFileName(key); 
+        
+        // Cần tìm: ./images/01.jpg hoặc ./images/10.jpg
+        const jpgPath = `./images/${paddedName}.jpg`;     // Ưu tiên 1
+        const jpgUpperPath = `./images/${paddedName}.JPG`; // Ưu tiên 2 (Backup)
 
         div.innerHTML = `
             <div class="scope-img-wrapper">
